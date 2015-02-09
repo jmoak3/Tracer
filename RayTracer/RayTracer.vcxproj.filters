@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Shapes">
+      <UniqueIdentifier>{2212ba01-f4e7-4b22-a5f2-fd68a1c62180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{b9d35fa6-5c27-4055-a9e3-094e0ec475a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Private">
+      <UniqueIdentifier>{5313827f-e981-4368-b0ce-5b4575659314}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Public">
+      <UniqueIdentifier>{bbf88eb2-62d5-4e29-9a39-f86586d58060}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shapes\Public">
+      <UniqueIdentifier>{6b14bd2f-c183-4167-979d-915a1152de51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shapes\Private">
+      <UniqueIdentifier>{64e61a03-0ffe-4ef0-b85b-97ccd1e1df25}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
