@@ -11,12 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Inlines.h" />
+    <ClInclude Include="Source\Normal.h" />
     <ClInclude Include="Source\Point.h" />
     <ClInclude Include="Source\Ray.h" />
     <ClInclude Include="Source\Shape.h" />
     <ClInclude Include="Source\Vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Normal.cpp" />
     <ClCompile Include="Source\Point.cpp" />
     <ClCompile Include="Source\Ray.cpp" />
     <ClCompile Include="Source\Shape.cpp" />

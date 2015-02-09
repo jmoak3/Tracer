@@ -21,31 +21,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Shape.h">
-      <Filter>Shapes\Private</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Point.h">
-      <Filter>Constructions\Private</Filter>
+      <Filter>Constructions\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Ray.h">
-      <Filter>Constructions\Private</Filter>
+      <Filter>Constructions\Public</Filter>
     </ClInclude>
     <ClInclude Include="Source\Vector.h">
-      <Filter>Constructions\Private</Filter>
+      <Filter>Constructions\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Shape.h">
+      <Filter>Shapes\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Inlines.h">
+      <Filter>Constructions\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Normal.h">
+      <Filter>Constructions\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Shape.cpp">
-      <Filter>Shapes\Public</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Ray.cpp">
-      <Filter>Constructions\Public</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Point.cpp">
-      <Filter>Constructions\Public</Filter>
+      <Filter>Constructions\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Vector.cpp">
-      <Filter>Constructions\Public</Filter>
+      <Filter>Constructions\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ray.cpp">
+      <Filter>Constructions\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Shape.cpp">
+      <Filter>Shapes\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Normal.cpp">
+      <Filter>Constructions\Private</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

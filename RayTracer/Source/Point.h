@@ -1,7 +1,8 @@
-#include "Vector.h"//Pleeeeeease don't break this
 
-#ifndef _POINT_H_
-#define _POINT_H_
+#ifndef POINT_H
+#define POINT_H
+#include "Inlines.h"
+#include "Vector.h"//Pleeeeeease don't break this
 
 class Point
 {
