@@ -10,6 +10,18 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Point.h" />
+    <ClInclude Include="Source\Ray.h" />
+    <ClInclude Include="Source\Shape.h" />
+    <ClInclude Include="Source\Vector.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Point.cpp" />
+    <ClCompile Include="Source\Ray.cpp" />
+    <ClCompile Include="Source\Shape.cpp" />
+    <ClCompile Include="Source\Vector.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DB9CB3C5-C472-4108-992D-A92BFB8396DA}</ProjectGuid>
     <RootNamespace>RayTracer</RootNamespace>
@@ -63,8 +75,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
