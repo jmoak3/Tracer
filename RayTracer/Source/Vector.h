@@ -1,15 +1,15 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include "Point.h" 
 #include "Inlines.h"
+#include "Point.h" 
 
 class Vector
 {
 public:
 	Vector();
 	Vector(float xx, float yy, float zz);
-	Vector(Point &p1, Point &p2); 
+	Vector(const Point &p1, const Point &p2);
 	explicit Vector(Normal &n);
 	~Vector() {};
 

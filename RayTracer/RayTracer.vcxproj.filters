@@ -39,6 +39,10 @@
     <ClInclude Include="Source\Normal.h">
       <Filter>Constructions\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Sphere.h">
+      <Filter>Shapes\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -57,5 +61,9 @@
       <Filter>Constructions\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\RayTracer.cpp" />
+    <ClCompile Include="Source\Sphere.cpp">
+      <Filter>Shapes\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Camera.cpp" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
 #include "Normal.h"
 #include <fstream>
 
-bool writeToTGA(int * pixels, int height, int width)
+bool writeToTGA(RGB * pixels, int height, int width)
 {
 	std::ofstream outFile("Image", std::ios::binary);
 	if (!outFile) return false;
@@ -24,9 +24,9 @@ bool writeToTGA(int * pixels, int height, int width)
 	{
 		for (int x = 0; x < width; ++x)
 		{
-			outFile.put((char)pixels[(y*width) + x+2]);
-			outFile.put((char)pixels[(y*width) + x+1]);
-			outFile.put((char)pixels[(y*width) + x]);
+			outFile.put((char)pixels[(y*width) + x].blue);
+			outFile.put((char)pixels[(y*width) + x].green);
+			outFile.put((char)pixels[(y*width) + x].red);
 		}
 	}
 	outFile.close();
@@ -39,16 +39,12 @@ int main(int argc, char * argv[])
 	const int height = atoi(argv[0]);
 	const int width = atoi(argv[1]);
 
-	int ***pixels = new int **[height];
+	RGB **pixels = new RGB *[height];
 	for (int i = 0; i < height; ++i)
-	{
-		pixels[i] = new int *[width];
-		for (int j = 0; j < width; ++j)
-		{
-			pixels[i][j] = new int[3];
-		}
-	}
+		pixels[i] = new RGB [width];
 
-	assert(writeToTGA((int*)pixels, height, width));
+
+
+	assert(writeToTGA((RGB*)pixels, height, width));
 	return 0;
 }

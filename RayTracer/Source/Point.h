@@ -1,8 +1,8 @@
-
 #ifndef POINT_H
 #define POINT_H
+
 #include "Inlines.h"
-#include "Vector.h"//Pleeeeeease don't break this
+class Vector;
 
 class Point
 {
@@ -12,7 +12,7 @@ public:
 	~Point() {};
 
 	Point operator+(const Vector &v) const;
-	Point& operator+=(const Vector &v);
+	Point operator+=(const Vector &v);
 	Point operator-(const Vector &v) const;
 	Point& operator-=(const Vector &v);
 

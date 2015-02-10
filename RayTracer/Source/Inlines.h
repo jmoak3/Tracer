@@ -6,6 +6,13 @@
 #include "Normal.h"
 #include <assert.h>
 #include <math.h>
+#include <utility>
+
+struct RGB
+{
+	int red, green, blue;
+} rgb;
+
 
 inline float Dot(const Vector &v1, const Vector &v2) { return (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z); }
 
@@ -56,5 +63,24 @@ inline void CoordinateSystem(Vector &v1, Vector &v2, Vector &v3)
 inline float Distance(const Point &p1, const Point &p2) { return (p1 - p2).Length(); }
 
 inline float DistanceSquared(const Point &p1, const Point &p2) { return (p1 - p2).LengthSquared(); }
+
+inline bool Quadratic(float A, float B, float C, float *t0, float *t1)
+{
+	float discrim = (B*B - 4.f * A*C);
+	if (discrim < 0.f) return false;
+	rtDiscrim = sqrtf(discrim);
+
+	float q;
+
+	if (B < 0)
+		q = -0.5f*(B - rtDiscrim);
+	else
+		q = 0.5f*(B + rtDiscrim);
+	*t0 = q / A;
+	*t1 = C / q;
+	if (*t1 < *t0) swap(*t0, *t1);
+	return true;
+}
+
 
 #endif
