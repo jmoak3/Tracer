@@ -56,5 +56,6 @@
     <ClCompile Include="Source\Normal.cpp">
       <Filter>Constructions\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\RayTracer.cpp" />
   </ItemGroup>
 </Project>

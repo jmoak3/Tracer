@@ -10,8 +10,8 @@ class Ray
 {
 public:
 	Ray();
-	Ray(Point oo, Vector &dd);
-	Ray(Point oo, Point p1, Point p2);
+	Ray(const Point &oo, const Vector &dd, float start, float end = INFINITY, float t = 0.f, float dep = 0);
+	Ray(const Point &oo, const Vector &dd, const Ray &parent, float start, float end = INFINITY);
 	~Ray() {};
 
 	Point o;

@@ -4,7 +4,11 @@
 class Shape
 {
 	Shape();
-	~Shape() {};
+	virtual ~Shape() {};
+
+
+
+	virtual bool HasBB();
 
 };
 

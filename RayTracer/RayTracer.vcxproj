@@ -22,6 +22,7 @@
     <ClCompile Include="Source\Normal.cpp" />
     <ClCompile Include="Source\Point.cpp" />
     <ClCompile Include="Source\Ray.cpp" />
+    <ClCompile Include="Source\RayTracer.cpp" />
     <ClCompile Include="Source\Shape.cpp" />
     <ClCompile Include="Source\Vector.cpp" />
   </ItemGroup>
