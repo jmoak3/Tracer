@@ -1,4 +1,6 @@
 #include "Normal.h"
+#include "Vector.h"
+#include <math.h>
 
 Normal::Normal()
 {
@@ -31,7 +33,7 @@ Normal Normal::operator-(const Normal &n) const
 	return Normal(x - n.x, y - n.y, z - n.z);
 }
 
-Normal& Normal::operator+=(const Normal &n)
+Normal& Normal::operator-=(const Normal &n)
 {
 	x -= n.x; y -= n.y; z -= n.z;
 	return *this;

@@ -1,4 +1,7 @@
 #include "Vector.h"
+#include "Normal.h"
+#include "Point.h"
+#include <math.h>
 
 Vector::Vector()
 {
@@ -37,7 +40,7 @@ Vector Vector::operator-(const Vector &v) const
 	return Vector(x - v.x, y - v.y, z - v.z);
 }
 
-Vector& Vector::operator+=(const Vector &v)
+Vector& Vector::operator-=(const Vector &v)
 {
 	x -= v.x; y -= v.y; z -= v.z;
 	return *this;

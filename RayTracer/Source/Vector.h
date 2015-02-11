@@ -1,8 +1,9 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include "Inlines.h"
-#include "Point.h" 
+#include <assert.h>
+class Normal;
+class Point;
 
 class Vector
 {

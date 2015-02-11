@@ -1,4 +1,7 @@
 #include "Sphere.h"
+#include "Point.h"
+#include "Ray.h"
+#include "Inlines.h"
 
 Sphere::Sphere(Point &p, RGB &color, float r)
 {
@@ -18,7 +21,7 @@ bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon) const
 	Ray r = Ray(ray);
 	r.o -= sphereToOrigin;
 	float A = r.d.x*r.d.x + r.d.y*r.d.y + r.d.z*r.d.z;
-	float B = 2.f*(r.d.x*r.o.x + r.d.y*r.d.y + r.d.z*r.o.z);
+	float B = 2.f*(r.d.x*r.o.x + r.d.y*r.o.y + r.d.z*r.o.z);
 	float C = r.o.x*r.o.x + r.o.y*r.o.y + r.o.z*r.o.z - Radius*Radius;
 
 	float t0, t1 = 0.f;
@@ -43,4 +46,10 @@ bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon) const
 bool Sphere::IntersectP(const Ray &ray) const
 {
 	//Here we'd hit a BB or something
+	return true;
+}
+
+RGB Sphere::GetColor()
+{
+	return Color;
 }

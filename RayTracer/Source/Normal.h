@@ -1,8 +1,7 @@
 #ifndef NORMAL_H
 #define NORMAL_H
 
-#include "Inlines.h"
-#include "Vector.h"
+class Vector;
 
 class Normal
 {

@@ -1,4 +1,6 @@
 #include "Ray.h"
+#include "Point.h"
+#include "Vector.h"
 
 Ray::Ray()
 {
@@ -10,7 +12,7 @@ Ray::Ray()
 	depth = 0;
 }
 
-Ray::Ray(const Point &oo, const Vector &dd, float start, float end = INFINITY, float t = 0.f, float dep = 0)
+Ray::Ray(const Point &oo, const Vector &dd, float start, float end, float t, int dep)
 {
 	o = oo;
 	d = dd;

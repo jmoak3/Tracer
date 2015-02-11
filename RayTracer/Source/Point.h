@@ -1,8 +1,8 @@
 #ifndef POINT_H
 #define POINT_H
-
-#include "Inlines.h"
 class Vector;
+class Normal;
+
 
 class Point
 {
@@ -12,8 +12,9 @@ public:
 	~Point() {};
 
 	Point operator+(const Vector &v) const;
-	Point operator+=(const Vector &v);
+	Point& operator+=(const Vector &v);
 	Point operator-(const Vector &v) const;
+	Vector operator-(const Point &p) const;
 	Point& operator-=(const Vector &v);
 
 	float x, y, z;

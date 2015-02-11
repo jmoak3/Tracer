@@ -1,8 +1,9 @@
 #ifndef SPHERE_H
 #define SPHERE_H
+
 #include "Inlines.h"
-#include "Point.h"
 #include "Shape.h"
+#include "Point.h"
 #include "Ray.h"
 
 class Sphere : public Shape
