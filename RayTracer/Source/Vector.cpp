@@ -74,13 +74,13 @@ Vector& Vector::operator/=(const float f)
 
 float Vector::operator[](int i) const
 {
-	assert(i > 0 && i < 3);
+	assert(i >= 0 && i < 3);
 	return (&x)[i];
 }
 
 float& Vector::operator[](int i)
 {
-	assert(i > 0 && i < 3);
+	assert(i >= 0 && i < 3);
 	return (&x)[i];
 }
 

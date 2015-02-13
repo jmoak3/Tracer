@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\BoundingBox.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Inlines.h" />
     <ClInclude Include="Source\Normal.h" />
@@ -22,6 +23,7 @@
     <ClInclude Include="Source\Vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\BoundingBox.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Normal.cpp" />
     <ClCompile Include="Source\Point.cpp" />

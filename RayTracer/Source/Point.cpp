@@ -1,5 +1,6 @@
 #include "Point.h"
 #include "Vector.h"
+#include <math.h>
 
 Point::Point()
 {
@@ -9,6 +10,7 @@ Point::Point()
 Point::Point(float xx, float yy, float zz)
 {
 	x = xx; y = yy; z = zz;
+	assert(!HasNans());
 }
 
 Point Point::operator+(const Vector &v) const
@@ -36,4 +38,21 @@ Point& Point::operator-=(const Vector &v)
 {
 	x -= v.x; y -= v.y; z -= v.z;
 	return *this;
+}
+
+float Point::operator[](int i) const
+{
+	assert(i >= 0 && i < 3);
+	return (&x)[i];
+}
+
+float& Point::operator[](int i)
+{
+	assert(i >= 0 && i < 3);
+	return (&x)[i];
+}
+
+bool Point::HasNans() const
+{
+	return isnan(x) || isnan(y) || isnan(z);
 }
