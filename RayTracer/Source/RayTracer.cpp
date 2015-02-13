@@ -4,6 +4,7 @@
 
 #include <fstream>
 
+//FIXME: Doesn't seem to work LOL
 bool writeToTGA(RGB * pixels, int height, int width)
 {
 	std::ofstream outFile("Image.tga", std::ios::binary);
@@ -34,6 +35,8 @@ bool writeToTGA(RGB * pixels, int height, int width)
 
 int main(int argc, char * argv[])
 {
+	//Will be rewritten!!!!!!!!!! 
+	//NEED TRACING OBJECT!!!!
 	assert(argc > 2 && argc < 4);
 	const int height = atoi(argv[1]);
 	const int width = atoi(argv[2]);
