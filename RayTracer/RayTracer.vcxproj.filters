@@ -60,6 +60,9 @@
     <ClInclude Include="Source\Camera.h">
       <Filter>Medium\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Matrix4x4.h">
+      <Filter>Constructions\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -89,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="Source\Camera.cpp">
       <Filter>Medium\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Matrix4x4.cpp">
+      <Filter>Constructions\Private</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

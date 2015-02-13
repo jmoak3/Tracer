@@ -17,7 +17,7 @@ protected:
 	RGB Color;
 	
 	Shape(const Transform *w2o, const Transform *o2w, const RGB &color, const bool &reflect);
-	virtual ~Shape() {};
+	virtual ~Shape() { delete WorldToObject; delete ObjectToWorld; };
 };
 
 #endif

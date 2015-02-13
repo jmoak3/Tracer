@@ -2,6 +2,7 @@
 #include "Normal.h"
 #include "Point.h"
 #include <math.h>
+#include <assert.h>
 
 Vector::Vector()
 {

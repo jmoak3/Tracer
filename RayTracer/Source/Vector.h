@@ -1,7 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <assert.h>
 class Normal;
 class Point;
 

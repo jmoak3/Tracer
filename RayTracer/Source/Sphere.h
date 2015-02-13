@@ -10,6 +10,7 @@ class Sphere : public Shape
 {
 public:
 	Sphere(const Transform *w2o, const Transform *o2w, const RGB &color, const bool &reflect, const float r);
+	~Sphere() {};
 	bool Intersect(const Ray &ray, float * tHit, float *rayEpsilon) const;
 	bool CanIntersect(const Ray &ray) const;
 	BoundingBox GetBBox() const;
