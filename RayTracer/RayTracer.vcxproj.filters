@@ -19,6 +19,15 @@
     <Filter Include="Constructions\Public">
       <UniqueIdentifier>{bbf88eb2-62d5-4e29-9a39-f86586d58060}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Medium">
+      <UniqueIdentifier>{ac1b64a6-5eb2-4898-9b81-a2c1c717507a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Medium\Private">
+      <UniqueIdentifier>{24602700-606e-4207-b223-ddfdc7ab1f1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Medium\Public">
+      <UniqueIdentifier>{dbdd35a2-96e5-4f19-befe-69cdba05490d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Point.h">
@@ -42,11 +51,15 @@
     <ClInclude Include="Source\Sphere.h">
       <Filter>Shapes\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Transform.h">
       <Filter>Constructions\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\BoundingBox.h" />
+    <ClInclude Include="Source\BoundingBox.h">
+      <Filter>Constructions\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera.h">
+      <Filter>Medium\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -68,10 +81,14 @@
     <ClCompile Include="Source\Sphere.cpp">
       <Filter>Shapes\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Transform.cpp">
       <Filter>Constructions\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\BoundingBox.cpp" />
+    <ClCompile Include="Source\BoundingBox.cpp">
+      <Filter>Constructions\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Camera.cpp">
+      <Filter>Medium\Public</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
