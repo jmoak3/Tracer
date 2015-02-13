@@ -8,6 +8,7 @@ struct RGB
 #include "Point.h"
 #include "Vector.h"
 #include "Normal.h"
+#include "Quaternion.h"
 #include "Camera.h"
 #include <assert.h>
 #include <math.h>
@@ -17,6 +18,8 @@ struct RGB
 inline float Dot(const Vector &v1, const Vector &v2) { return (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z); }
 
 inline float Dot(const Normal &n1, const Normal &n2) { return (n1.x*n2.x + n1.y*n2.y + n1.z*n2.z); }
+
+inline float Dot(const Quaternion& q1, const Quaternion& q2) { return Dot(q1.v, q2.v) + q1.w * q2.w; }
 
 inline float AbsDot(const Vector &v1, const Vector &v2) { return fabsf(Dot(v1, v2)); }
 
@@ -36,14 +39,17 @@ inline Normal Cross(const Normal &n1, const Normal &n2)
 				  (n1.x * n2.y) - (n1.y * n2.x));
 }
 
-inline Vector operator*(float f, const Vector &v) { return v*f; }
+inline Vector operator*(const float f, const Vector &v) { return v*f; }
 
-inline Normal operator*(float f, const Normal &n) { return n*f; }
+inline Normal operator*(const float f, const Normal &n) { return n*f; }
+
+inline Quaternion operator*(const float f, const Quaternion &q) { return q*f; }
 
 inline Vector Normalize(const Vector &v) { return v / v.Length(); }
 
 inline Normal Normalize(const Normal &n) { return n / n.Length(); }
 
+inline Quaternion Normalize(const Quaternion &q) { return q / sqrtf(Dot(q, q)); }
 
 inline void CoordinateSystem(Vector &v1, Vector &v2, Vector &v3)
 {
@@ -81,6 +87,5 @@ inline bool Quadratic(float A, float B, float C, float *t0, float *t1)
 	if (*t1 < *t0) std::swap(*t0, *t1);
 	return true;
 }
-
 
 #endif

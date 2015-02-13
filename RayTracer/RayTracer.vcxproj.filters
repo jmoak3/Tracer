@@ -63,6 +63,9 @@
     <ClInclude Include="Source\Matrix4x4.h">
       <Filter>Constructions\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Quaternion.h">
+      <Filter>Constructions\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -94,6 +97,9 @@
       <Filter>Medium\Public</Filter>
     </ClCompile>
     <ClCompile Include="Source\Matrix4x4.cpp">
+      <Filter>Constructions\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Quaternion.cpp">
       <Filter>Constructions\Private</Filter>
     </ClCompile>
   </ItemGroup>
