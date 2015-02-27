@@ -2,17 +2,19 @@
 #define CAMERA_H
 #include "Vector.h"
 #include "Point.h"
-
+#include "Transform.h"
 //FIX ME
 class Camera
 {
 public:
-	Camera(const Transform *w2o, const Transform *o2w, const float fov, const float near, const float &far);
+	Camera(const Transform &proj)
 	~Camera() {};
 	
 	
 private:
-	float Fov, NearPlane, FarPlane, AspectRatio, 
+	Transform CameraToScreen, RasterToCamera;
+	Transform ScreenToRaster, RasterToScreen;
+	float Fov, NearPlane, FarPlane, AspectRatio;
 };
 
 #endif

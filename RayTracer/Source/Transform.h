@@ -100,8 +100,8 @@ inline Transform Rotate(const float angle, const Vector &axis)
 	float m[4][4];
 
 	m[0][0] = a.x*a.x + (1.f - a.x*a.x)*c;
-	m[0][1] = a.x*a.y*(1.f - c) - a.z*s);
-	m[0][2] = a.x*a.z*(1.f - c) + a.y*s);
+	m[0][1] = a.x*a.y*(1.f - c) - a.z*s;
+	m[0][2] = a.x*a.z*(1.f - c) + a.y*s;
 	m[0][3] = 0;
 	
 	m[1][0] = a.x*a.y*(1.f - c) + a.z*s;
