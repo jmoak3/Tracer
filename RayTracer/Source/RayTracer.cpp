@@ -44,9 +44,13 @@ int main(int argc, char * argv[])
 	RGB color; color.red = 255; color.green = 0.f; color.blue = 0;
 	RGB color2; color2.red = 0; color2.green = 255; color2.blue = 0;
 	RGB bg; bg.red = 166; bg.green = 166; bg.blue = 166;
-	Shape * sphere = new Sphere(Point(-100.f, 50.f, 400.f), color, 100.f);
-	Shape * sphere2 = new Sphere(Point(0.f, 0.f, 200.f), color2, 50.f);
-	Camera cam(height, width);
+	Transform sph1T = Translate(Vector(0.f, 0.f, 200.f));
+	Transform sph1InvT = Translate(Vector(0.f, 0.f, -200.f));
+	Transform sph2T = Translate(Vector(0.f, 50.f, 50.f));
+	Transform sph2InvT = Translate(Vector(0.f, -50.f, -50.f));
+	Shape * sphere = new Sphere(&sph1T, &sph1InvT, color, false, 100.f);
+	Shape * sphere2 = new Sphere(&sph2T, &sph2InvT, color2, false, 50.f);
+	//Camera cam;
 
 	printf("P6 %i %i 255 ", height, width);
 	

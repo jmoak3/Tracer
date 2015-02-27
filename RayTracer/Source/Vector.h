@@ -1,6 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <math.h>
 class Normal;
 class Point;
 
@@ -45,9 +46,10 @@ inline Vector Cross(const Vector &v1, const Vector &v2)
 		(v1.x * v2.y) - (v1.y * v2.x));
 }
 
-inline float AbsDot(const Vector &v1, const Vector &v2) { return fabsf(Dot(v1, v2)); }
 
 inline float Dot(const Vector &v1, const Vector &v2) { return (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z); }
+
+inline float AbsDot(const Vector &v1, const Vector &v2) { return fabsf(Dot(v1, v2)); }
 
 inline Vector operator*(const float f, const Vector &v) { return v*f; }
 

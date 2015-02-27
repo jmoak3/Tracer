@@ -28,10 +28,11 @@ public:
 	float w;
 };
 
+inline float Dot(const Quaternion& q1, const Quaternion& q2) { return Dot(q1.v, q2.v) + q1.w * q2.w; }
+
 inline Quaternion Normalize(const Quaternion &q) { return q / sqrtf(Dot(q, q)); }
 
 inline Quaternion operator*(const float f, const Quaternion &q) { return q*f; }
 
-inline float Dot(const Quaternion& q1, const Quaternion& q2) { return Dot(q1.v, q2.v) + q1.w * q2.w; }
 
 #endif

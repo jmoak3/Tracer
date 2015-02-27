@@ -2,6 +2,7 @@
 #include "Point.h"
 #include "Ray.h"
 #include "Inlines.h"
+#include "Transform.h"
 
 Sphere::Sphere(const Transform *w2o, const Transform *o2w, const RGB &color, const bool &reflect, const float r)
 	: Shape(w2o, o2w, color, reflect)
