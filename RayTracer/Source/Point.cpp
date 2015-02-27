@@ -1,6 +1,7 @@
 #include "Point.h"
 #include "Vector.h"
 #include <math.h>
+#include <assert.h>
 
 Point::Point()
 {

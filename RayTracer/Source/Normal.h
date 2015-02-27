@@ -30,4 +30,22 @@ public:
 	float x, y, z;
 };
 
+inline Normal Normalize(const Normal &n)
+{
+	return n / n.Length();
+}
+
+inline Normal Cross(const Normal &n1, const Normal &n2)
+{
+	return Normal((n1.y * n2.z) - (n1.z * n2.y),
+		(n1.z * n2.x) - (n1.x * n2.z),
+		(n1.x * n2.y) - (n1.y * n2.x));
+}
+
+inline float Dot(const Normal &n1, const Normal &n2) { return (n1.x*n2.x + n1.y*n2.y + n1.z*n2.z); }
+
+inline Normal operator*(const float f, const Normal &n) { return n*f; }
+
+inline float AbsDot(const Normal &n1, const Normal &n2) { return fabsf(Dot(n1, n2)); }
+
 #endif

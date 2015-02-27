@@ -1,6 +1,7 @@
 #include "Normal.h"
 #include "Vector.h"
 #include <math.h>
+#include <assert.h>
 
 Normal::Normal()
 {

@@ -59,7 +59,7 @@ Matrix4x4::Matrix4x4(float t00, float t01, float t02, float t03,
 	m[3][3] = t33;
 }
 
-Matrix4x4 Matrix4x4::Transpose(const Matrix4x4 &mat)
+Matrix4x4 Transpose(const Matrix4x4 &mat)
 {
 	return Matrix4x4(mat.m[0][0], mat.m[1][0], mat.m[2][0], mat.m[3][0],
 					 mat.m[0][1], mat.m[1][1], mat.m[2][1], mat.m[3][1],
@@ -88,7 +88,7 @@ Matrix4x4 Matrix4x4::Mul(const Matrix4x4 &m1, const Matrix4x4 &m2)
 	return r;
 }
 
-Matrix4x4 Matrix4x4::Inverse(const Matrix4x4 &mat)
+Matrix4x4 Inverse(const Matrix4x4 &mat)
 {
 	//SPECIAL THANKS TO
 	//PHYSICALLY BASED RENDERING: FROM THEORY TO IMPLEMENTATION
