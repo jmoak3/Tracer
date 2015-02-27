@@ -12,7 +12,7 @@ Sphere::Sphere(const Transform *w2o, const Transform *o2w, const RGB &color, con
 bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon) const
 {
 	Ray r;
-	(*WorldToObject)(ray, &r);
+	WorldToObject(ray, &r);
 
 	float A = r.d.x*r.d.x + r.d.y*r.d.y + r.d.z*r.d.z;
 	float B = 2.f*(r.d.x*r.o.x + r.d.y*r.o.y + r.d.z*r.o.z);

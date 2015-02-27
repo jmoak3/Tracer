@@ -10,7 +10,7 @@ public:
 	Vector();
 	Vector(float xx, float yy, float zz);
 	Vector(const Point &p1, const Point &p2);
-	explicit Vector(Normal &n);
+	explicit inline Vector(Normal &n);
 	~Vector() {};
 
 	Vector operator+(const Vector &v) const;

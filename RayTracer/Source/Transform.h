@@ -4,6 +4,8 @@
 #include "Matrix4x4.h"
 #include "Vector.h"
 #include "Point.h"
+#include "Ray.h"
+#include "BoundingBox.h"
 
 class Transform
 {
@@ -19,6 +21,18 @@ public:
 	bool HasScale();
 	bool operator==(const Transform &t);
 	bool operator!=(const Transform &t);
+	inline Point operator()(const Point &p) const;
+	inline void operator()(const Point &p, Point *pTrans) const;
+	inline Vector operator()(const Vector &v) const;
+	inline void operator()(const Vector &v, Vector *vTrans) const;
+	inline Normal operator()(const Normal &n) const;
+	inline void operator()(const Normal &n, Normal *nTrans) const;
+	inline Ray operator()(const Ray &r) const;
+	inline void operator()(const Ray &r, Ray *rTrans) const;
+	inline BoundingBox operator()(const BoundingBox &bbox) const;
+	inline void operator()(const BoundingBox &bbox, BoundingBox *bboxTrans) const;
+	inline Transform operator()(const Transform &trans) const;
+	inline void operator()(const Transform &trans, Transform *transTrans) const;
 
 private:
 	Matrix4x4 m;
@@ -147,5 +161,7 @@ Transform LookAt(const Point &pos, const Point &look, const Vector &up)
 	m[2][3] = pos.z;
 	m[3][3] = 1;
 }
+
+
 
 #endif

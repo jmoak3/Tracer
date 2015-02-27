@@ -1,6 +1,12 @@
 #include "BoundingBox.h"
 #include <utility>
 
+BoundingBox::BoundingBox(const Point& p)
+{
+	Min = p;
+	Max = p;
+}
+
 BoundingBox::BoundingBox(const Point& min, const Point& max)
 {
 	Min = min;

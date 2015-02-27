@@ -7,7 +7,7 @@
 class Camera
 {
 public:
-	Camera(const Transform &proj)
+	Camera(const Transform &proj);
 	~Camera() {};
 	
 	
