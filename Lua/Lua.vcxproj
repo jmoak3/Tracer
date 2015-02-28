@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{50B3B885-208D-4847-80FF-0476845F710C}</ProjectGuid>
+    <RootNamespace>Lua</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\lapi.c" />
+    <ClCompile Include="Source\lauxlib.c" />
+    <ClCompile Include="Source\lbaselib.c" />
+    <ClCompile Include="Source\lbitlib.c" />
+    <ClCompile Include="Source\lcode.c" />
+    <ClCompile Include="Source\lcorolib.c" />
+    <ClCompile Include="Source\lctype.c" />
+    <ClCompile Include="Source\ldblib.c" />
+    <ClCompile Include="Source\ldebug.c" />
+    <ClCompile Include="Source\ldo.c" />
+    <ClCompile Include="Source\ldump.c" />
+    <ClCompile Include="Source\lfunc.c" />
+    <ClCompile Include="Source\lgc.c" />
+    <ClCompile Include="Source\linit.c" />
+    <ClCompile Include="Source\liolib.c" />
+    <ClCompile Include="Source\llex.c" />
+    <ClCompile Include="Source\lmathlib.c" />
+    <ClCompile Include="Source\lmem.c" />
+    <ClCompile Include="Source\loadlib.c" />
+    <ClCompile Include="Source\lobject.c" />
+    <ClCompile Include="Source\lopcodes.c" />
+    <ClCompile Include="Source\loslib.c" />
+    <ClCompile Include="Source\lparser.c" />
+    <ClCompile Include="Source\lstate.c" />
+    <ClCompile Include="Source\lstring.c" />
+    <ClCompile Include="Source\lstrlib.c" />
+    <ClCompile Include="Source\ltable.c" />
+    <ClCompile Include="Source\ltablib.c" />
+    <ClCompile Include="Source\ltm.c" />
+    <ClCompile Include="Source\lua.c" />
+    <ClCompile Include="Source\lundump.c" />
+    <ClCompile Include="Source\lutf8lib.c" />
+    <ClCompile Include="Source\lvm.c" />
+    <ClCompile Include="Source\lzio.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\lapi.h" />
+    <ClInclude Include="Source\lauxlib.h" />
+    <ClInclude Include="Source\lcode.h" />
+    <ClInclude Include="Source\lctype.h" />
+    <ClInclude Include="Source\ldebug.h" />
+    <ClInclude Include="Source\ldo.h" />
+    <ClInclude Include="Source\lfunc.h" />
+    <ClInclude Include="Source\lgc.h" />
+    <ClInclude Include="Source\llex.h" />
+    <ClInclude Include="Source\llimits.h" />
+    <ClInclude Include="Source\lmem.h" />
+    <ClInclude Include="Source\lobject.h" />
+    <ClInclude Include="Source\lopcodes.h" />
+    <ClInclude Include="Source\lparser.h" />
+    <ClInclude Include="Source\lprefix.h" />
+    <ClInclude Include="Source\lstate.h" />
+    <ClInclude Include="Source\lstring.h" />
+    <ClInclude Include="Source\ltable.h" />
+    <ClInclude Include="Source\ltm.h" />
+    <ClInclude Include="Source\lua.h" />
+    <ClInclude Include="Source\lua.hpp" />
+    <ClInclude Include="Source\luaconf.h" />
+    <ClInclude Include="Source\lualib.h" />
+    <ClInclude Include="Source\lundump.h" />
+    <ClInclude Include="Source\lvm.h" />
+    <ClInclude Include="Source\lzio.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Makefile" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
