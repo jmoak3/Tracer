@@ -10,8 +10,11 @@ Sphere::Sphere(const Transform *w2o, const Transform *o2w, const RGB &color, con
 	Radius = r;
 }
 
-bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon) const
+bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon, Ray * rRay, Normal * normal) const
 {
+	if (!CanIntersect(ray))
+		return false;
+
 	Ray r;
 	WorldToObject(ray, &r);
 
@@ -34,6 +37,20 @@ bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon) const
 	}
 
 	*tHit = thit;
+	Point hitOnSphere = r.o + r.d*thit;
+	*normal = Normal((hitOnSphere-Point(0.f,0.f,0.f)));
+	*normal = Normalize(*normal);
+	
+	Vector dir = Normalize(r.d);
+
+	rRay->d = Vector(2*(Dot(*normal, dir))*(*normal)) - dir;
+	rRay->o = r.o + r.d*thit;
+
+	ObjectToWorld(*rRay, rRay);
+	WorldToObject(*normal, normal);
+	*normal = Normalize(*normal);
+	rRay->d = Normalize(rRay->d);
+
 	*rayEpsilon = 5e-4 * *tHit;
 	return true;
 }

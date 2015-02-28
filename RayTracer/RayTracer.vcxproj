@@ -14,6 +14,7 @@
     <ClInclude Include="Source\BoundingBox.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Inlines.h" />
+    <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\Matrix4x4.h" />
     <ClInclude Include="Source\Normal.h" />
     <ClInclude Include="Source\Point.h" />
@@ -27,6 +28,7 @@
   <ItemGroup>
     <ClCompile Include="Source\BoundingBox.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\Light.cpp" />
     <ClCompile Include="Source\Matrix4x4.cpp" />
     <ClCompile Include="Source\Normal.cpp" />
     <ClCompile Include="Source\Point.cpp" />

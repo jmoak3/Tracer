@@ -1,8 +1,9 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include "Normal.h"
 #include <math.h>
-class Normal;
+
 class Point;
 
 class Vector
@@ -11,7 +12,7 @@ public:
 	Vector();
 	Vector(float xx, float yy, float zz);
 	Vector(const Point &p1, const Point &p2);
-	explicit inline Vector(Normal &n);
+	explicit Vector(Normal &n);
 	~Vector() {};
 
 	Vector operator+(const Vector &v) const;
@@ -46,6 +47,10 @@ inline Vector Cross(const Vector &v1, const Vector &v2)
 		(v1.x * v2.y) - (v1.y * v2.x));
 }
 
+
+inline float Dot(const Vector &v1, const Normal &n2) { return (v1.x*n2.x + v1.y*n2.y + v1.z*n2.z); }
+
+inline float Dot(const Normal &n1, const Vector &v2) { return (n1.x*v2.x + n1.y*v2.y + n1.z*v2.z); }
 
 inline float Dot(const Vector &v1, const Vector &v2) { return (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z); }
 

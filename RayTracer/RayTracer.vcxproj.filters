@@ -28,6 +28,15 @@
     <Filter Include="Medium\Public">
       <UniqueIdentifier>{dbdd35a2-96e5-4f19-befe-69cdba05490d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ElectromagneticForces">
+      <UniqueIdentifier>{9aec74f3-6b0f-4ef5-85f2-3f879b07541a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ElectromagneticForces\Public">
+      <UniqueIdentifier>{d5e33753-1877-4af5-9c3c-b894b944db3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ElectromagneticForces\Private">
+      <UniqueIdentifier>{bfbb864e-af0c-4f59-b3c1-3c131c37c791}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Point.h">
@@ -66,6 +75,9 @@
     <ClInclude Include="Source\Quaternion.h">
       <Filter>Constructions\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Light.h">
+      <Filter>ElectromagneticForces\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -101,6 +113,9 @@
     </ClCompile>
     <ClCompile Include="Source\Quaternion.cpp">
       <Filter>Constructions\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Light.cpp">
+      <Filter>ElectromagneticForces\Private</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

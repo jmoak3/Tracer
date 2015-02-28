@@ -1,9 +1,8 @@
 #ifndef NORMAL_H
 #define NORMAL_H
 
-#include <math.h>
-
 class Vector;
+#include <math.h>
 
 class Normal
 {
