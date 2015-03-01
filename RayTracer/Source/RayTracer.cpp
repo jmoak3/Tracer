@@ -3,6 +3,7 @@
 #include "Sphere.h"
 #include "Light.h"
 #include <vector>
+#include "Renderer.h"
 #include <fstream>
 #include <algorithm>
 
@@ -35,6 +36,8 @@ bool writeToTGA(RGB * pixels, int height, int width)
 	return true;
 }
 
+//ray -> sphere -> ray ->
+
 RGB computeColor(const Normal &normal, const Ray &ray, const Ray &reflRay, const Point &lightPos, const RGB & color, const float currHit) 
 {
 	float spec = 0.1f*std::max(0.f, Dot(reflRay.d, Vector(reflRay.o - Point(0.f, 0.f, 0.f))));
@@ -66,7 +69,7 @@ RGB computeColor(const Normal &normal, const Ray &ray, const Ray &reflRay, const
 	return pixelColor;
 }
 
-int main(int argc, char * argv[])
+void debugTrace()
 {
 	//Will be rewritten!!!!!!!!!! 
 	//NEED TRACING OBJECT!!!!
@@ -104,12 +107,8 @@ int main(int argc, char * argv[])
 		for (int x = 0; x < width; ++x)
 		{
 			RGB pixelColor = bg;
-			float wid2 = ((float)width / 2.f);
-			float hei2 = ((float)height / 2.f);
 			float x1 = (2.f*x/(float)width - 1.f);
 			float y1 = (2.f*-y/(float)height + 1.f);
-			//float x1 = (2.f * ((x + 0.5f) / width) - 1) * cam.Angle;
-			//float y1 = (1.f - 2.f * ((y + 0.5f) / height)) * cam.Angle;
 			float x2 = x1*width/2.f;
 			float y2 = y1*height/2.f;
 			Point p1 = Point(x1, y1, 0.f);
@@ -204,5 +203,42 @@ int main(int argc, char * argv[])
 	}
 
 	//assert(writeToTGA((RGB*)pixels, height, width));
+}
+
+int main(int argc, char * argv[])
+{	
+	std::vector<Shape*> shapeList;
+	std::vector<Light*> lightList;
+
+
+	RGB color; color.red = 255; color.green = 0.f; color.blue = 0;
+	RGB color2; color2.red = 0; color2.green = 255; color2.blue = 0;
+	RGB color4; color4.red = 255; color4.green = 255; color4.blue = 255;
+	RGB bg; bg.red = 166; bg.green = 166; bg.blue = 166;
+	Transform sph1T = Translate(Vector(100.f, 0.f, -500.f));
+	Transform sph1InvT = Translate(Vector(-100.f, 0.f, 500.f));
+	Transform sph2T = Translate(Vector(-100.f, 0.f, -500.f));
+	Transform sph2InvT = Translate(Vector(100.f, 0.f, 500.f));
+	Transform sph3T = Translate(Vector(0.f, 0.f, -500.f));
+	Transform sph3InvT = Translate(Vector(0.f, 0.f, 500.f));
+	Shape * sphere = new Sphere(&sph1T, &sph1InvT, color, false, 75.f);
+	Shape * sphere2 = new Sphere(&sph2T, &sph2InvT, color2, false, 75.f);
+	Shape * sphere3 = new Sphere(&sph3T, &sph3InvT, color4, false, 18.f);
+	
+	shapeList.push_back(sphere);
+	shapeList.push_back(sphere2);
+	shapeList.push_back(sphere3);
+
+	RGB color3; color3.red = 255; color3.green = 255; color3.blue = 255;
+	Light light1(Point(0.f, 100.f, 300.f), color3);
+	lightList.push_back(&light1);
+
+
+	Transform camTrans = Translate(Vector(0.f, 0.f, 0.f));
+	Camera camera(camTrans, 1000, 1000, 1000);
+	Renderer renderer(&shapeList, &lightList, camera);
+	renderer.Render();
+	//debugTrace();
 	return 0;
 }
+

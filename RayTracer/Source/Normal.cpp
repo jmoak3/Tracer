@@ -53,7 +53,7 @@ Normal& Normal::operator*=(const float f)
 
 Normal Normal::operator/(const float f) const
 {
-	assert(f != 0);
+	assert(f != 0.f);
 	float inv = 1.f / f;
 	return Normal(x * inv, y * inv, z * inv);
 }

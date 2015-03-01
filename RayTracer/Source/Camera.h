@@ -7,14 +7,15 @@
 class Camera
 {
 public:
-	Camera(const Transform &proj);
+	Camera() {};
+	Camera(const Transform &proj, const int width, const int height, const float focalDist);
 	~Camera() {};
 	
-	
-private:
-	Transform CameraToScreen, RasterToCamera;
-	Transform ScreenToRaster, RasterToScreen;
-	float Fov, NearPlane, FarPlane, AspectRatio;
+	Transform ScreenToWorld, WorldToScreen;
+	Transform RasterToScreen, RasterToWorld; 
+	Transform WorldToFarPlane;
+	int width, height, focalDist;
+
 };
 
 #endif

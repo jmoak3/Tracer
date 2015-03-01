@@ -20,7 +20,9 @@ public:
 	const Transform WorldToObject, ObjectToWorld;
 	bool Reflective;
 	RGB Color;
-	
+	int ShapeID;
+	static int currShapeID;
 };
+
 
 #endif

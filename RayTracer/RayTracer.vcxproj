@@ -20,6 +20,7 @@
     <ClInclude Include="Source\Point.h" />
     <ClInclude Include="Source\Quaternion.h" />
     <ClInclude Include="Source\Ray.h" />
+    <ClInclude Include="Source\Renderer.h" />
     <ClInclude Include="Source\Shape.h" />
     <ClInclude Include="Source\Sphere.h" />
     <ClInclude Include="Source\Transform.h" />
@@ -35,6 +36,7 @@
     <ClCompile Include="Source\Quaternion.cpp" />
     <ClCompile Include="Source\Ray.cpp" />
     <ClCompile Include="Source\RayTracer.cpp" />
+    <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\Shape.cpp" />
     <ClCompile Include="Source\Sphere.cpp" />
     <ClCompile Include="Source\Transform.cpp" />
