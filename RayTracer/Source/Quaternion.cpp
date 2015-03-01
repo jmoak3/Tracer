@@ -45,11 +45,12 @@ Quaternion Quaternion::operator*(const Quaternion& q) const
 		w * q.w - Dot(v, q.v));
 }
 
-Quaternion Quaternion::operator*=(const Quaternion& q)
+Quaternion& Quaternion::operator*=(const Quaternion& q)
 {
 	float ww = w;
 	w = ww * q.w - Dot(v, q.v);
 	v = Cross(v, q.v) + ww * q.v + q.w * v;
+	return *this;
 }
 
 Quaternion Quaternion::operator*(const float f) const

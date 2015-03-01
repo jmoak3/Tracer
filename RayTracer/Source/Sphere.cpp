@@ -38,7 +38,7 @@ bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon, Ray * rRa
 
 	*tHit = thit;
 	Point hitOnSphere = r.o + r.d*thit;
-	*normal = Normal((hitOnSphere-Point(0.f,0.f,0.f)));
+	*normal = Normal(hitOnSphere-Point(0.f, 0.f, 0.f));
 	*normal = Normalize(*normal);
 	
 	Vector dir = Normalize(r.d);
@@ -47,7 +47,7 @@ bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon, Ray * rRa
 	rRay->o = r.o + r.d*thit;
 
 	ObjectToWorld(*rRay, rRay);
-	WorldToObject(*normal, normal);
+	ObjectToWorld(*normal, normal);
 	*normal = Normalize(*normal);
 	rRay->d = Normalize(rRay->d);
 

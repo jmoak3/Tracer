@@ -46,6 +46,7 @@ bool Transform::HasScale()
 {
 	assert(false);
 	// NOT IMPLEMENTED/NECESSARY???
+	return false;
 }
 
 bool Transform::operator==(const Transform &t)

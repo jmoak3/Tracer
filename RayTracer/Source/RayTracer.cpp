@@ -44,14 +44,12 @@ RGB computeColor(const Normal &normal, const Ray &ray, const Ray &reflRay, const
 	specular.blue = spec;
 	
 	RGB pixelColor = color;
-
-	//Diffuse still broken
-
-	float diff = std::min(1.0f, std::max(0.f, Dot(Normalize(normal), Normalize(lightPos - (ray.o + currHit*ray.d)))));
+	Vector l = Normalize(lightPos - reflRay.o);
+	float diff = std::min(1.0f, std::max(0.f, Dot(Normalize(normal), l)));
 	RGB diffuse;
-	diffuse.red = pixelColor.red*diff;
-	diffuse.green = pixelColor.green*diff;
-	diffuse.blue = pixelColor.blue*diff;
+	diffuse.red = (int)((float)pixelColor.red*diff);
+	diffuse.green = (int)((float)pixelColor.green*diff);
+	diffuse.blue = (int)((float)pixelColor.blue*diff);
 
 	pixelColor.red  = diffuse.red;// + specular.red;
 	pixelColor.green= diffuse.green;// + specular.green;
@@ -61,9 +59,9 @@ RGB computeColor(const Normal &normal, const Ray &ray, const Ray &reflRay, const
 	pixelColor.green = std::min(pixelColor.green, 255);
 	pixelColor.blue = std::min(pixelColor.blue, 255);
 
-	pixelColor.red = std::max(pixelColor.red, 0);
-	pixelColor.green = std::max(pixelColor.green, 0);
-	pixelColor.blue = std::max(pixelColor.blue, 0);
+	pixelColor.red = std::max(pixelColor.red, 20);
+	pixelColor.green = std::max(pixelColor.green, 20);
+	pixelColor.blue = std::max(pixelColor.blue, 20);
 
 	return pixelColor;
 }
@@ -83,10 +81,10 @@ int main(int argc, char * argv[])
 	RGB color; color.red = 255; color.green = 0.f; color.blue = 0;
 	RGB color2; color2.red = 0; color2.green = 255; color2.blue = 0;
 	RGB bg; bg.red = 166; bg.green = 166; bg.blue = 166;
-	Transform sph1T = Translate(Vector(-100.f, 0.f, 500.f));
-	Transform sph1InvT = Translate(Vector(100.f, 0.f, -500.f));
-	Transform sph2T = Translate(Vector(100.f, 0.f, 500.f));
-	Transform sph2InvT = Translate(Vector(-100.f, 0.f, -500.f));
+	Transform sph1T = Translate(Vector(100.f, 0.f, -500.f));
+	Transform sph1InvT = Translate(Vector(-100.f, 0.f, 500.f));
+	Transform sph2T = Translate(Vector(-100.f, 0.f, -500.f));
+	Transform sph2InvT = Translate(Vector(100.f, 0.f, 500.f));
 	Shape * sphere = new Sphere(&sph1T, &sph1InvT, color, false, 75.f);
 	Shape * sphere2 = new Sphere(&sph2T, &sph2InvT, color2, false, 75.f);
 	
@@ -94,7 +92,7 @@ int main(int argc, char * argv[])
 	shapeList.push_back(sphere2);
 
 	RGB color3; color3.red = 255; color3.green = 255; color3.blue = 255;
-	Light light1(Point(0.f, 0.f, 500.f), color3);
+	Light light1(Point(0.f, 100.f, 300.f), color3);
 	lightList.push_back(&light1);
 	
 	//Camera cam;
@@ -105,7 +103,7 @@ int main(int argc, char * argv[])
 	{
 		for (int x = 0; x < width; ++x)
 		{
-			RGB pixelColor;
+			RGB pixelColor = bg;
 			float wid2 = ((float)width / 2.f);
 			float hei2 = ((float)height / 2.f);
 			float x1 = (2.f*x/(float)width - 1.f);
@@ -171,19 +169,19 @@ int main(int argc, char * argv[])
 			else if (hit)
 			{
 				minHit = INFINITY;
-				currHit = 0.f;
+				float dummyHit = 0.f;
 				hit = false;
 				for (iShape = shapeList.begin(); iShape!=shapeList.end(); ++iShape)
 				{
 					Ray rRay;
-					if ((*iShape)->Intersect(reflRay, &currHit, &eps, &rRay, &dummy) && currHit < minHit)
+					if ((*iShape)->Intersect(reflRay, &dummyHit, &eps, &rRay, &dummy) && currHit < minHit)
 					{
-						pixelColor = (*iShape)->GetColor();
+						/*pixelColor = (*iShape)->GetColor();
 						pixelColor.blue *= .2f;
 						pixelColor.green*= .2f;
 						pixelColor.red  *= .2f;
 						hit = true;
-						minHit = currHit;
+						minHit = dummyHit;*/
 					}
 				}
 				if (!hit)
@@ -194,11 +192,13 @@ int main(int argc, char * argv[])
 					}
 				}
 			}
-			else if (!hit)
+			else
 			{
 				pixelColor = bg;
 			}
 							
+			if (pixelColor.red == 0 || pixelColor.green == 0)
+				bool fsda = false;
 			printf("%c%c%c", pixelColor.red, pixelColor.green, pixelColor.blue);
 		}
 	}

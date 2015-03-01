@@ -17,7 +17,7 @@ struct RGB
 inline bool Quadratic(float A, float B, float C, float *t0, float *t1)
 {
 	float discrim = (B*B - 4.f * A*C);
-	if (discrim < 0.f) return false;
+	if (discrim <= 0.f) return false;
 	float rtDiscrim = sqrtf(discrim);
 
 	float q;
@@ -25,10 +25,10 @@ inline bool Quadratic(float A, float B, float C, float *t0, float *t1)
 	if (B < 0)
 		q = -0.5f*(B - rtDiscrim);
 	else
-		q = 0.5f*(B + rtDiscrim);
+		q = -0.5f*(B + rtDiscrim);
 	*t0 = q / A;
 	*t1 = C / q;
-	if (*t1 < *t0) std::swap(*t0, *t1);
+	if (*t1 <= *t0) std::swap(*t0, *t1);
 	return true;
 }
 
