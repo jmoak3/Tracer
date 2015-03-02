@@ -14,6 +14,8 @@ public:
 
 	Colors(const RGB &diff, const RGB &spec, const RGB &amb);
 	RGB Diffuse, Specular, Ambient;
+	static RGB bg;
+
 };
 
 #endif

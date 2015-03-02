@@ -1,6 +1,9 @@
 #include "Renderer.h"
 #include <math.h>
 
+#define MAX_COLOR 255
+#define MIN_COLOR 20
+
 Renderer::Renderer(std::vector<Shape*>* vshapes, std::vector<Light*>*vlights, const Camera &ccamera)
 {
 	camera = ccamera;
@@ -18,7 +21,6 @@ RGB Renderer::computeColor(const Normal &normal, const Ray &reflRay, const Color
 	{	
 		Point lightPos = (*iLight)->Position;
 		Vector l = Normalize(lightPos - reflRay.o);
-		Vector ll = Normalize(reflRay.o - lightPos);
 
 		//Test if this light is blocked!!!
 
@@ -47,7 +49,7 @@ RGB Renderer::computeColor(const Normal &normal, const Ray &reflRay, const Color
 		
 		Vector r = Vector(2.f*Dot(dir, normal)*normal) - dir;
 
-		float spec = pow(std::min(1.0f, std::max(0.f, Dot(r, v))),10.f);
+		float spec = pow(std::min(1.0f, std::max(0.f, Dot(r, v))),20.f);
 		
 		RGB specular;
 		specular.red = (int)(shapeColor.Specular.red*spec);
@@ -60,18 +62,24 @@ RGB Renderer::computeColor(const Normal &normal, const Ray &reflRay, const Color
 		diffuse.green = (int)((float)shapeColor.Diffuse.green*diff);
 		diffuse.blue = (int)((float)shapeColor.Diffuse.blue*diff);
 
+		RGB ambient;
+		ambient.red = shapeColor.Ambient.red;
+		ambient.green = shapeColor.Ambient.green;
+		ambient.blue = shapeColor.Ambient.blue;
+
+
 		RGB lightColor;
-		lightColor.red  = diffuse.red + specular.red;
-		lightColor.green= diffuse.green + specular.green;
-		lightColor.blue = diffuse.blue + specular.blue;
+		lightColor.red  = diffuse.red + specular.red + ambient.red;
+		lightColor.green= diffuse.green + specular.green + ambient.green;
+		lightColor.blue = diffuse.blue + specular.blue + ambient.blue;
 
-		lightColor.red = std::min(lightColor.red, 255);
-		lightColor.green = std::min(lightColor.green, 255);
-		lightColor.blue = std::min(lightColor.blue, 255);
+		lightColor.red = std::min(lightColor.red, MAX_COLOR);
+		lightColor.green = std::min(lightColor.green, MAX_COLOR);
+		lightColor.blue = std::min(lightColor.blue, MAX_COLOR);
 
-		lightColor.red = std::max(lightColor.red, 20); //(int)((float)shapeColor.red*0.3f));
-		lightColor.green = std::max(lightColor.green, 20); //(int)((float)shapeColor.green*0.2f));
-		lightColor.blue = std::max(lightColor.blue, 20); //(int)((float)shapeColor.blue*0.2f));
+		lightColor.red = std::max(lightColor.red, MIN_COLOR); //(int)((float)shapeColor.red*0.3f));
+		lightColor.green = std::max(lightColor.green, MIN_COLOR); //(int)((float)shapeColor.green*0.2f));
+		lightColor.blue = std::max(lightColor.blue, MIN_COLOR); //(int)((float)shapeColor.blue*0.2f));
 
 		finalColor.red += lightColor.red;
 		finalColor.green += lightColor.green;
@@ -96,14 +104,11 @@ void Renderer::Render()
 			Point destination = camera.WorldToFarPlane(origin);
 			Vector direction = destination - origin;
 			Ray ray(origin, direction, 0.f);
-			RGB bg; bg.red = 166; bg.green = 166; bg.blue = 166;
+			RGB bg; bg.red = 100; bg.green = 100; bg.blue = 166;
 			RGB pixelColor; pixelColor.red = 0; pixelColor.green = 0; pixelColor.blue = 0;
 			
 			//Begin tracing
 			int depth = Trace(ray, &pixelColor, -1);
-
-			if (depth > 1)
-				bool asds= false;
 
 			if (depth < 1)
 				pixelColor = bg;
@@ -115,10 +120,11 @@ void Renderer::Render()
 
 int Renderer::Trace(const Ray &reflRay, RGB * color, const int lastShape)
 {
-	if (reflRay.depth > 5)
+	if (reflRay.depth > 15)
 		return reflRay.depth;
 
-	std::vector<Shape*>::iterator iShape;
+		std::vector<Shape*>::iterator iShape;
+	RGB bg; bg.red = 166; bg.green = 166; bg.blue = 166;
 	float currHit = -1.f;
 	float minHit = INFINITY;
 	bool hit = false;
@@ -132,7 +138,7 @@ int Renderer::Trace(const Ray &reflRay, RGB * color, const int lastShape)
 	for (iShape = shapes->begin(); iShape!=shapes->end(); ++iShape)
 	{
 		int currID = (*iShape)->ShapeID;
-		if ((*iShape)->Intersect(reflRay, &currHit, &eps, &ray, &normal) && currHit < minHit && currID != lastShape)
+		if ((*iShape)->Intersect(reflRay, &currHit, &eps, &ray, &normal) && currID != lastShape && currHit < minHit)
 		{
 			minHit = currHit;
 			hitNormal = normal;
@@ -149,18 +155,19 @@ int Renderer::Trace(const Ray &reflRay, RGB * color, const int lastShape)
 		color->green += c.green;
 		color->blue += c.blue;
 
-		color->red = std::min(color->red, 255);
-		color->green = std::min(color->green, 255);
-		color->blue = std::min(color->blue, 255);
+		color->red = std::min(color->red, MAX_COLOR);
+		color->green = std::min(color->green, MAX_COLOR);
+		color->blue = std::min(color->blue, MAX_COLOR);
 
-		color->red = std::max(color->red, 20);
-		color->green = std::max(color->green, 20);
-		color->blue = std::max(color->blue, 20);
+		color->red = std::max(color->red, MIN_COLOR);
+		color->green = std::max(color->green, MIN_COLOR);
+		color->blue = std::max(color->blue, MIN_COLOR);
 
 		nextReflRay.depth = reflRay.depth + 1;
 
 		return Trace(nextReflRay, color, hitShapeID);
 	}
+
 	return reflRay.depth;
 }
 			
