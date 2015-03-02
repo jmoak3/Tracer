@@ -3,9 +3,10 @@
 #include "Ray.h"
 #include "Inlines.h"
 #include "Transform.h"
+#include "Color.h"
 
-Sphere::Sphere(const Transform *w2o, const Transform *o2w, const RGB &color, const bool &reflect, const float r)
-	: Shape(w2o, o2w, color, reflect)
+Sphere::Sphere(const Transform *w2o, const Colors &color, const bool &reflect, const float r)
+	: Shape(w2o, color, reflect)
 {
 	Radius = r;
 }
@@ -43,8 +44,8 @@ bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon, Ray * rRa
 	
 	Vector dir = Normalize(r.d);
 
-	rRay->d = Vector(2*(Dot(*normal, dir))*(*normal)) - dir;
-	rRay->o = r.o + r.d*thit;
+	rRay->d = dir - Vector(2.f*(Dot(dir, *normal))*(*normal));
+	rRay->o = hitOnSphere;
 
 	ObjectToWorld(*rRay, rRay);
 	ObjectToWorld(*normal, normal);
@@ -60,7 +61,7 @@ bool Sphere::CanIntersect(const Ray &ray) const
 	return GetBBox().Intersect(ray);
 }
 
-RGB Sphere::GetColor() const
+Colors Sphere::GetColor() const
 {
 	return Color;
 }

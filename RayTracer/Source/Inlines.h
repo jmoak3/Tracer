@@ -1,10 +1,7 @@
 #ifndef INLINES_H
 #define INLINES_H
 
-struct RGB
-{
-	int red, green, blue;
-};
+
 #include "Point.h"
 #include "Vector.h"
 #include "Normal.h"

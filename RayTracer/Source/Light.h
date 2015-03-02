@@ -1,14 +1,16 @@
 #ifndef LIGHT_H	
 #define LIGHT_H
 #include "Point.h"
-#include "Inlines.h"
+#include "Color.h"
 
 class Light
 {
 public:
-	Light(const Point &p, const RGB &color);
+	Light() {};
+	~Light() {};
+	Light(const Point &p, const Colors &color);
 	Point Position;
-	RGB Color;
+	Colors Color;
 };
 
 #endif

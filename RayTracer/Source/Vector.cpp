@@ -47,6 +47,12 @@ Vector& Vector::operator-=(const Vector &v)
 	return *this;
 }
 
+Vector Vector::operator-() const
+{
+	return Vector(-x, -y, -z);
+}
+
+
 Vector Vector::operator*(const float f) const
 {
 	return Vector(x * f, y * f, z * f);

@@ -3,8 +3,8 @@
 
 int Shape::currShapeID = 1;
 
-Shape::Shape(const Transform *w2o, const Transform *o2w, const RGB &color, const bool &reflect)
-	: WorldToObject(*w2o), ObjectToWorld(*o2w)
+Shape::Shape(const Transform *w2o, const Colors &color, const bool &reflect)
+	: WorldToObject(*w2o), ObjectToWorld(Inverse(*w2o))
 {
 	Color = color;
 	Reflective = reflect;
@@ -12,7 +12,7 @@ Shape::Shape(const Transform *w2o, const Transform *o2w, const RGB &color, const
 	++currShapeID;
 }
 
-RGB Shape::GetColor() const
+Colors Shape::GetColor() const
 {
 	return Color;
 }

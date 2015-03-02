@@ -81,6 +81,9 @@
     <ClInclude Include="Source\Renderer.h">
       <Filter>Medium\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Color.h">
+      <Filter>ElectromagneticForces\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -122,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="Source\Renderer.cpp">
       <Filter>Medium\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Color.cpp">
+      <Filter>ElectromagneticForces\Private</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
