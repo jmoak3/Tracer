@@ -1,6 +1,7 @@
 #include "Ray.h"
 #include "Point.h"
 #include "Vector.h"
+#include "Color.h"
 
 Ray::Ray()
 {

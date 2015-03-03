@@ -8,12 +8,12 @@
 class Sphere : public Shape
 {
 public:
-	Sphere(const Transform *w2o, const Colors &color, const bool &reflect, const float r);
+	Sphere(const Transform *w2o, const Material &material, const float r);
 	~Sphere() {};
-	bool Intersect(const Ray &ray, float * tHit, float *rayEpsilon, Ray * rRay, Normal * normal) const;
+	bool Intersect(const Ray &ray, Hit *hit) const;
 	bool CanIntersect(const Ray &ray) const;
 	BoundingBox GetBBox() const;
-	Colors GetColor() const;
+	Material GetMaterial() const;
 
 private:
 	float Radius;

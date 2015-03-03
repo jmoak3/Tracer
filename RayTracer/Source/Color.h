@@ -1,18 +1,23 @@
 #ifndef COLOR_H	
 #define COLOR_H
 
+class Ray;
+struct Hit;
+class Vector;
+
 struct RGB
 {
 	int red, green, blue;
 };
 
-class Colors
+class Material
 {
 public:
-	Colors() {};
-	~Colors() {};
-
-	Colors(const RGB &diff, const RGB &spec, const RGB &amb);
+	Material() {};
+	~Material() {};
+	Material(const RGB &diff, const RGB &spec, const RGB &amb);
+	
+	Ray ReflectRay(const Ray &ray, const Hit &hit, const Vector & jitter);
 	RGB Diffuse, Specular, Ambient;
 	static RGB bg;
 

@@ -5,13 +5,13 @@
 #include "Transform.h"
 #include "Color.h"
 
-Sphere::Sphere(const Transform *w2o, const Colors &color, const bool &reflect, const float r)
-	: Shape(w2o, color, reflect)
+Sphere::Sphere(const Transform *w2o, const Material &material, const float r)
+	: Shape(w2o, material)
 {
 	Radius = r;
 }
 
-bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon, Ray * rRay, Normal * normal) const
+bool Sphere::Intersect(const Ray &ray, Hit *hit) const
 {
 	//if (!CanIntersect(ray))
 	//	return false;
@@ -37,23 +37,18 @@ bool Sphere::Intersect(const Ray &ray, float *tHit, float *rayEpsilon, Ray * rRa
 			return false;
 	}
 
-	*tHit = thit;
 	Point hitOnSphere = r.o + r.d*thit;
 	
-	*normal = Normal(hitOnSphere-Point(0.f, 0.f, 0.f));
-	*normal = Normalize(*normal);
+	Normal normal(hitOnSphere-Point(0.f, 0.f, 0.f));
+	normal = Normalize(normal);
 	
-	Vector dir = Normalize(r.d);
+	ObjectToWorld(normal, &normal);
 
-	rRay->d = dir - Vector(2.f*(Dot(dir, *normal))*(*normal));
-	rRay->o = hitOnSphere;
-
-	ObjectToWorld(*rRay, rRay);
-	ObjectToWorld(*normal, normal);
-	*normal = Normalize(*normal);
-	rRay->d = Normalize(rRay->d);
-
-	*rayEpsilon = 5e-4 * *tHit;
+	hit->tHit = thit;
+	hit->normal = Normalize(normal);
+	hit->material = GetMaterial();
+	hit->shapeID = ShapeID;
+	hit->eps = 5e-4 * thit;
 	return true;
 }
 
@@ -62,9 +57,9 @@ bool Sphere::CanIntersect(const Ray &ray) const
 	return GetBBox().Intersect(ray);
 }
 
-Colors Sphere::GetColor() const
+Material Sphere::GetMaterial() const
 {
-	return Color;
+	return Mat;
 }
 
 BoundingBox Sphere::GetBBox() const

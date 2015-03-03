@@ -3,9 +3,20 @@
 
 class Vector;
 class Point;
+#include "Color.h"
 #include <math.h>
 #include "Point.h"
 #include "Vector.h"
+
+struct Hit
+{
+	Normal normal = Normal(1.f, 0.f, 0.f);
+	float tHit = INFINITY;
+	float eps;
+	Material material;
+	int shapeID = -1;
+};
+
 
 class Ray
 {

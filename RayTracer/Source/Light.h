@@ -8,9 +8,9 @@ class Light
 public:
 	Light() {};
 	~Light() {};
-	Light(const Point &p, const Colors &color);
+	Light(const Point &p, const Material &color);
 	Point Position;
-	Colors Color;
+	Material Color;
 };
 
 #endif

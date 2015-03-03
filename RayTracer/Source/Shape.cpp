@@ -3,17 +3,16 @@
 
 int Shape::currShapeID = 1;
 
-Shape::Shape(const Transform *w2o, const Colors &color, const bool &reflect)
+Shape::Shape(const Transform *w2o, const Material &material)
 	: WorldToObject(*w2o), ObjectToWorld(Inverse(*w2o))
 {
-	Color = color;
-	Reflective = reflect;
+	Mat = material;
 	ShapeID = currShapeID;
 	++currShapeID;
 }
 
-Colors Shape::GetColor() const
+Material Shape::GetMaterial() const
 {
-	return Color;
+	return Mat;
 }
 

@@ -12,7 +12,7 @@ public:
 	Renderer(std::vector<Shape*> *vshapes, std::vector<Light*>* vlights, const Camera &ccamera);
 	void Render();
 	int Trace(const Ray &reflRay, RGB * currColor, const int lastShape);
-	RGB computeColor(const Normal &normal, const Ray &reflRay, const Colors & color, const int lastShape);
+	RGB computeColor(const Ray &reflRay, const Hit & hit);
 
 private:
 	std::vector<Shape*> *shapes;

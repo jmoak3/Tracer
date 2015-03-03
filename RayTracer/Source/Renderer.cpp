@@ -1,8 +1,15 @@
 #include "Renderer.h"
 #include <math.h>
+#include "Ray.h"
+#include <time.h>
 
 #define MAX_COLOR 255
 #define MIN_COLOR 20
+
+inline float r(int f)
+{
+	return f*(float)rand()/(float)RAND_MAX;
+}
 
 Renderer::Renderer(std::vector<Shape*>* vshapes, std::vector<Light*>*vlights, const Camera &ccamera)
 {
@@ -11,8 +18,11 @@ Renderer::Renderer(std::vector<Shape*>* vshapes, std::vector<Light*>*vlights, co
 	lights = vlights; 
 }
 
-RGB Renderer::computeColor(const Normal &normal, const Ray &reflRay, const Colors & shapeColor, const int lastShape) 
+RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
 {
+	Normal normal = hit.normal;
+	Material shapeMaterial = hit.material;
+
 	RGB finalColor; finalColor.red = 0; finalColor.blue = 0; finalColor.green = 0;
 	std::vector<Light*>::iterator iLight;
 	std::vector<Shape*>::iterator iShape;
@@ -25,22 +35,18 @@ RGB Renderer::computeColor(const Normal &normal, const Ray &reflRay, const Color
 		//Test if this light is blocked!!!
 
 		Ray shadowRay(reflRay.o, l, 0.f);
-		Ray garbageRay;
-		float currHit = -1.f;
-		float minHit = INFINITY;
-		float eps;
-		Normal garbageNormal;
-		bool hit = false;
+		bool hitSphere = false;
+		Hit hitData;
+		int thisShapeID = hit.shapeID;
 		for (iShape = shapes->begin(); iShape!=shapes->end(); ++iShape)
 		{
-			int currID = (*iShape)->ShapeID;
-			if ((*iShape)->Intersect(shadowRay, &currHit, &eps, &garbageRay, &garbageNormal) && currHit < minHit && currID != lastShape)
+			if ((*iShape)->Intersect(shadowRay, &hitData) && hitData.shapeID != thisShapeID && hitData.tHit >= l.Length())
 			{
-				minHit = currHit;
-				hit = true;
+				hitSphere = true;
+				continue;
 			}
 		}
-		if (hit)
+		if (hitSphere)
 			continue;
 
 		Vector v = Normalize(camera.ScreenToWorld(Point(0.f, 0.f, 0.f))- reflRay.o);
@@ -50,22 +56,21 @@ RGB Renderer::computeColor(const Normal &normal, const Ray &reflRay, const Color
 		Vector r = Vector(2.f*Dot(dir, normal)*normal) - dir;
 
 		float spec = pow(std::min(1.0f, std::max(0.f, Dot(r, v))),20.f);
-		
 		RGB specular;
-		specular.red = (int)(shapeColor.Specular.red*spec);
-		specular.green = (int)(shapeColor.Specular.green*spec);
-		specular.blue = (int)(shapeColor.Specular.blue*spec);
+		specular.red = (int)(shapeMaterial.Specular.red*spec);
+		specular.green = (int)(shapeMaterial.Specular.green*spec);
+		specular.blue = (int)(shapeMaterial.Specular.blue*spec);
 
 		float diff = std::min(1.0f, std::max(0.f, Dot(normal, l)));
 		RGB diffuse;
-		diffuse.red = (int)((float)shapeColor.Diffuse.red*diff);
-		diffuse.green = (int)((float)shapeColor.Diffuse.green*diff);
-		diffuse.blue = (int)((float)shapeColor.Diffuse.blue*diff);
+		diffuse.red = (int)((float)shapeMaterial.Diffuse.red*diff);
+		diffuse.green = (int)((float)shapeMaterial.Diffuse.green*diff);
+		diffuse.blue = (int)((float)shapeMaterial.Diffuse.blue*diff);
 
 		RGB ambient;
-		ambient.red = shapeColor.Ambient.red;
-		ambient.green = shapeColor.Ambient.green;
-		ambient.blue = shapeColor.Ambient.blue;
+		ambient.red = shapeMaterial.Ambient.red;
+		ambient.green = shapeMaterial.Ambient.green;
+		ambient.blue = shapeMaterial.Ambient.blue;
 
 
 		RGB lightColor;
@@ -77,9 +82,9 @@ RGB Renderer::computeColor(const Normal &normal, const Ray &reflRay, const Color
 		lightColor.green = std::min(lightColor.green, MAX_COLOR);
 		lightColor.blue = std::min(lightColor.blue, MAX_COLOR);
 
-		lightColor.red = std::max(lightColor.red, MIN_COLOR); //(int)((float)shapeColor.red*0.3f));
-		lightColor.green = std::max(lightColor.green, MIN_COLOR); //(int)((float)shapeColor.green*0.2f));
-		lightColor.blue = std::max(lightColor.blue, MIN_COLOR); //(int)((float)shapeColor.blue*0.2f));
+		lightColor.red = std::max(lightColor.red, MIN_COLOR); //(int)((float)shapeMaterial.red*0.3f));
+		lightColor.green = std::max(lightColor.green, MIN_COLOR); //(int)((float)shapeMaterial.green*0.2f));
+		lightColor.blue = std::max(lightColor.blue, MIN_COLOR); //(int)((float)shapeMaterial.blue*0.2f));
 
 		finalColor.red += lightColor.red;
 		finalColor.green += lightColor.green;
@@ -90,6 +95,7 @@ RGB Renderer::computeColor(const Normal &normal, const Ray &reflRay, const Color
 
 void Renderer::Render()
 {
+	srand(time(0));
 	//Identify x and y using camera's specs, and make for loop
 	const int height = camera.height;
 	const int width = camera.width;
@@ -99,19 +105,43 @@ void Renderer::Render()
 	{
 		for (int x=0;x<width;++x)
 		{
-			//Transform from Raster To Screen and Screen to World
-			Point origin = camera.RasterToWorld(Point((float)x, (float)y, 0.f));
-			Point destination = camera.WorldToFarPlane(origin);
-			Vector direction = destination - origin;
-			Ray ray(origin, direction, 0.f);
-			RGB bg; bg.red = 100; bg.green = 100; bg.blue = 166;
-			RGB pixelColor; pixelColor.red = 0; pixelColor.green = 0; pixelColor.blue = 0;
+			float jit = (float)camera.height/250.f;
+			int samples = 1+camera.height/25.f;
 			
-			//Begin tracing
-			int depth = Trace(ray, &pixelColor, -1);
+			//Transform from Raster To Screen and Screen to World
+			RGB pixelColor; pixelColor.red = 0; pixelColor.green = 0; pixelColor.blue = 0;
+			for (int i=0;i<samples;++i)
+			{
+				Point origin = camera.RasterToWorld(Point((float)x, (float)y, 0.f));
+				Point destination = camera.WorldToFarPlane(origin);
+				Vector jitter = Vector(jit-r(jit/2.f), jit-r(jit/2.f), jit-r(jit/2.f));
+				Vector direction = (destination - origin)+jitter*(bool)i;
+				Ray ray(origin, direction, 0.f);
+				RGB bg; bg.red = 100; bg.green = 100; bg.blue = 166;
+			
+				//Begin tracing
+				RGB color; color.red = 0; color.green = 0; color.blue = 0;
+				int depth = Trace(ray, &color, -1);
+				pixelColor.red += color.red;
+				pixelColor.green += color.green;
+				pixelColor.blue += color.blue;
 
-			if (depth < 1)
-				pixelColor = bg;
+				
+				//if (depth < 1)
+				//	pixelColor = bg;
+			}
+
+			pixelColor.red /= samples;
+			pixelColor.green /= samples;
+			pixelColor.blue /= samples;
+			pixelColor.red = std::min(pixelColor.red, MAX_COLOR);
+			pixelColor.green = std::min(pixelColor.green, MAX_COLOR);
+			pixelColor.blue = std::min(pixelColor.blue, MAX_COLOR);
+
+			pixelColor.red = std::max(pixelColor.red, MIN_COLOR);
+			pixelColor.green = std::max(pixelColor.green, MIN_COLOR);
+			pixelColor.blue = std::max(pixelColor.blue, MIN_COLOR);
+
 
 			printf("%c%c%c", pixelColor.red, pixelColor.green, pixelColor.blue);
 		}
@@ -123,37 +153,30 @@ int Renderer::Trace(const Ray &reflRay, RGB * color, const int lastShape)
 	if (reflRay.depth > 15)
 		return reflRay.depth;
 
-		std::vector<Shape*>::iterator iShape;
+	std::vector<Shape*>::iterator iShape;
 	RGB bg; bg.red = 166; bg.green = 166; bg.blue = 166;
-	float currHit = -1.f;
-	float minHit = INFINITY;
 	bool hit = false;
-	float eps = 0.f;
-	Ray nextReflRay;
-	Normal hitNormal;
-	Normal normal;
-	Ray ray;
-	Colors shapeColor;
-	int hitShapeID = -1;
+	Hit bestHit;
+	Hit hitData;
+
 	for (iShape = shapes->begin(); iShape!=shapes->end(); ++iShape)
 	{
-		int currID = (*iShape)->ShapeID;
-		if ((*iShape)->Intersect(reflRay, &currHit, &eps, &ray, &normal) && currID != lastShape && currHit < minHit)
+		if ((*iShape)->Intersect(reflRay, &hitData), hitData.tHit < bestHit.tHit && hitData.shapeID != lastShape)
 		{
-			minHit = currHit;
-			hitNormal = normal;
-			nextReflRay = ray;
-			shapeColor = (*iShape)->GetColor();
+			bestHit = hitData;
 			hit = true;
-			hitShapeID = currID;
 		}
 	}
 	if (hit)
 	{
-		RGB c = computeColor(hitNormal, nextReflRay, shapeColor, hitShapeID);
-		color->red += c.red;
-		color->green += c.green;
-		color->blue += c.blue;
+		float jit = 1.f;
+		Vector jitter = Vector(jit-r(jit/2.f), jit-r(jit/2.f), jit-r(jit/2.f));
+		Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit, jitter);
+		RGB c = computeColor(nextReflRay, bestHit);
+		float falloff = (1.f/(float)(reflRay.depth*10.f+1));
+		color->red += (float)c.red*falloff;
+		color->green += (float)c.green*falloff;
+		color->blue += (float)c.blue*falloff;
 
 		color->red = std::min(color->red, MAX_COLOR);
 		color->green = std::min(color->green, MAX_COLOR);
@@ -165,7 +188,7 @@ int Renderer::Trace(const Ray &reflRay, RGB * color, const int lastShape)
 
 		nextReflRay.depth = reflRay.depth + 1;
 
-		return Trace(nextReflRay, color, hitShapeID);
+		return Trace(nextReflRay, color, bestHit.shapeID);
 	}
 
 	return reflRay.depth;
