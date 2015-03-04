@@ -106,7 +106,7 @@ int main(int argc, char * argv[])
 
 
 	Transform camTrans = Translate(Vector(0.f, 0.f, 0.f));
-	Camera camera(camTrans, 500, 500, 500);
+	Camera camera(camTrans, 2600, 2600, 2600);
 	Renderer renderer(&shapeList, &lightList, camera);
 	renderer.Render();
 	//debugTrace();
