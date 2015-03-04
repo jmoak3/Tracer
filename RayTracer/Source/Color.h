@@ -7,7 +7,46 @@ class Vector;
 
 struct RGB
 {
-	int red, green, blue;
+	int red=0, green=0, blue=0;
+	RGB operator*(const float f)
+	{
+		RGB c;
+		c.red = f * red;
+		c.blue = f * blue;
+		c.green = f * green;
+		return c;
+	}
+	RGB operator+(const RGB &col)
+	{
+		RGB c;
+		c.red = col.red + red;
+		c.blue = col.blue + blue;
+		c.green = col.green + green;
+		return c;
+	}
+	RGB operator-(const RGB &col)
+	{
+		RGB c;
+		c.red = red - col.red;
+		c.blue = blue - col.blue;
+		c.green = green - col.green;
+		return c;
+	}
+	RGB& operator*=(const float f)
+	{
+		*this = *this * f;
+		return *this;
+	}
+	RGB& operator+=(const RGB &col)
+	{
+		*this = *this + col;
+		return *this;
+	}
+	RGB& operator-=(const RGB &col)
+	{
+		*this = *this - col;
+		return *this;
+	}
 };
 
 class Material
@@ -17,7 +56,7 @@ public:
 	~Material() {};
 	Material(const RGB &diff, const RGB &spec, const RGB &amb);
 	
-	Ray ReflectRay(const Ray &ray, const Hit &hit, const Vector & jitter);
+	Ray ReflectRay(const Ray &ray, const Hit &hit);
 	RGB Diffuse, Specular, Ambient;
 	static RGB bg;
 

@@ -11,7 +11,7 @@ class Renderer
 public:
 	Renderer(std::vector<Shape*> *vshapes, std::vector<Light*>* vlights, const Camera &ccamera);
 	void Render();
-	int Trace(const Ray &reflRay, RGB * currColor, const int lastShape);
+	RGB Trace(const Ray &reflRay, const int lastShape);
 	RGB computeColor(const Ray &reflRay, const Hit & hit);
 
 private:
