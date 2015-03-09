@@ -54,10 +54,11 @@ class Material
 public:
 	Material() {};
 	~Material() {};
-	Material(const RGB &diff, const RGB &spec, const RGB &amb);
+	Material(const RGB &diff, const float spec, const float rough);
 	
 	Ray ReflectRay(const Ray &ray, const Hit &hit);
-	RGB Diffuse, Specular, Ambient;
+	RGB Diffuse;
+	float Specular, Rough;
 	static RGB bg;
 
 };

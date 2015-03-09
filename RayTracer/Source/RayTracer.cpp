@@ -43,23 +43,31 @@ int main(int argc, char * argv[])
 
 	Material color1;
 	color1.Diffuse.red = 255; color1.Diffuse.green = 0; color1.Diffuse.blue = 0;
-	color1.Specular.red = 0; color1.Specular.green = 255; color1.Specular.blue = 255;
-	color1.Ambient.red = 0; color1.Ambient.green = 0; color1.Ambient.blue = 0;
+	color1.Specular = 1.f;
+	color1.Rough = 0.f;
+	//color1.Specular.red = 0; color1.Specular.green = 255; color1.Specular.blue = 255;
+	//color1.Ambient.red = 0; color1.Ambient.green = 0; color1.Ambient.blue = 0;
 
 	Material color2;
 	color2.Diffuse.red = 0; color2.Diffuse.green = 255; color2.Diffuse.blue = 0;
-	color2.Specular.red = 255; color2.Specular.green = 0; color2.Specular.blue = 255;
-	color2.Ambient.red = 0; color2.Ambient.green = 0; color2.Ambient.blue = 0;
+	color2.Specular = 0.0f;
+	color2.Rough = 0.0f;
+	//color2.Specular.red = 255; color2.Specular.green = 0; color2.Specular.blue = 255;
+	//color2.Ambient.red = 0; color2.Ambient.green = 0; color2.Ambient.blue = 0;
 
 	Material color3;
 	color3.Diffuse.red = 200; color3.Diffuse.green = 200; color3.Diffuse.blue = 0;
-	color3.Specular.red = 55; color3.Specular.green = 55; color3.Specular.blue = 255;
-	color3.Ambient.red = 30; color3.Ambient.green = 30; color3.Ambient.blue = 30;
+	color3.Specular = 1.f;
+	color3.Rough = 0.f;
+	//color3.Specular.red = 55; color3.Specular.green = 55; color3.Specular.blue = 255;
+	//color3.Ambient.red = 30; color3.Ambient.green = 30; color3.Ambient.blue = 30;
 
 	Material color4;
 	color4.Diffuse.red = 255; color4.Diffuse.green = 0; color4.Diffuse.blue = 0;
-	color4.Specular.red = 0; color4.Specular.green = 255; color4.Specular.blue = 255;
-	color4.Ambient.red = 0; color4.Ambient.green = 0; color4.Ambient.blue = 0;
+	color4.Specular = 1.f;
+	color4.Rough = 0.f;
+	//color4.Specular.red = 0; color4.Specular.green = 255; color4.Specular.blue = 255;
+	//color4.Ambient.red = 0; color4.Ambient.green = 0; color4.Ambient.blue = 0;
 	
 	RGB bg; bg.red = 166; bg.green = 166; bg.blue = 166;
 	Transform sph1T = Translate(Vector(75.f, 0.f, -500.f));

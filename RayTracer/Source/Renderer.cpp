@@ -54,14 +54,14 @@ RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
 		Vector r = Vector(2.f*Dot(l, normal)*normal) - l;
 
 		float spec = pow(std::min(1.0f, std::max(0.f, Dot(r, v))),20.f);
-		RGB specular = shapeMaterial.Specular*spec;
+		RGB white; white.red = 255; white.blue = 255; white.green = 255;
+		RGB temp = (white - shapeMaterial.Diffuse);
+		RGB specular = temp*spec*shapeMaterial.Specular;
 
 		float diff = std::min(1.0f, std::max(0.f, Dot(normal, l)));
 		RGB diffuse = shapeMaterial.Diffuse*diff;
 
-		RGB ambient = shapeMaterial.Ambient;
-
-		RGB lightColor = diffuse + specular + ambient;
+		RGB lightColor = diffuse + specular;
 
 		lightColor.red = std::min(lightColor.red, MAX_COLOR);
 		lightColor.green = std::min(lightColor.green, MAX_COLOR);
@@ -149,9 +149,13 @@ RGB Renderer::Trace(const Ray &reflRay, const int lastShape)
 	{
 		Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit);
 		RGB c = computeColor(nextReflRay, bestHit);
-		float falloff = (1.f/(float)(reflRay.depth*10.f+1));
-		c *= falloff;
+		
 		nextReflRay.depth = reflRay.depth + 1;
+		nextReflRay.time += (bestHit.tHit)*(1.f-bestHit.material.Specular) + reflRay.time;
+		//glass should reflect brick, but brick shouldn't reflect glass
+		float invDistFunc = (4.0f*3.14159f*nextReflRay.time*nextReflRay.time)/1.f;
+		float falloff = (1.f/(float)(1.f + reflRay.depth * invDistFunc));
+		c *= falloff;
 
 		return c + Trace(nextReflRay, bestHit.shapeID);
 	}
