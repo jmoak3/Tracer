@@ -18,7 +18,6 @@ public:
 	virtual Material GetMaterial() const;
 
 	const Transform WorldToObject, ObjectToWorld;
-	bool Reflective;
 	Material Mat;
 	int ShapeID;
 	static int currShapeID;

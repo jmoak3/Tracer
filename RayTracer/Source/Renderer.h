@@ -18,6 +18,8 @@ private:
 	std::vector<Shape*> *shapes;
 	std::vector<Light*> *lights;
 	Camera camera;
+	int samples;
+	float invSamples;
 };
 
 #endif

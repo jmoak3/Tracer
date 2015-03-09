@@ -1,7 +1,17 @@
 #include "Light.h"
+#include "Shape.h"
 
-Light::Light(const Point &p, const Material &color)
+Light::Light(const Transform *w2o, const RGB &color,const float power)
+	: WorldToObject(*w2o), ObjectToWorld(Inverse(*w2o))
 {
-	Position = p;
 	Color = color;
+	Power = power;
+	LightID = Shape::currShapeID;
+	++Shape::currShapeID;
 }
+
+RGB Light::GetColor() const
+{
+	return Color;
+}
+

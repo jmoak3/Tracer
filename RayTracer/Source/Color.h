@@ -16,6 +16,14 @@ struct RGB
 		c.green = f * green;
 		return c;
 	}
+	RGB operator*(const RGB & f)
+	{
+		RGB c;
+		c.red = f.red * red;
+		c.blue = f.blue * blue;
+		c.green = f.green * green;
+		return c;
+	}
 	RGB operator+(const RGB &col)
 	{
 		RGB c;
@@ -57,7 +65,7 @@ public:
 	Material(const RGB &diff, const float spec, const float rough);
 	
 	Ray ReflectRay(const Ray &ray, const Hit &hit);
-	RGB Diffuse;
+	RGB Color;
 	float Specular, Rough;
 	static RGB bg;
 

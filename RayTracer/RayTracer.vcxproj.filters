@@ -84,6 +84,9 @@
     <ClInclude Include="Source\Color.h">
       <Filter>ElectromagneticForces\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SphereLight.h">
+      <Filter>ElectromagneticForces\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -127,6 +130,9 @@
       <Filter>Medium\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Color.cpp">
+      <Filter>ElectromagneticForces\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SphereLight.cpp">
       <Filter>ElectromagneticForces\Private</Filter>
     </ClCompile>
   </ItemGroup>
