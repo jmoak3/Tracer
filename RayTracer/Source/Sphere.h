@@ -8,14 +8,12 @@
 class Sphere : public Shape
 {
 public:
-	Sphere(const Transform *w2o, const Material &material, const float r);
-	~Sphere() {};
-	bool Intersect(const Ray &ray, Hit *hit) const;
-	bool CanIntersect(const Ray &ray) const;
-	BoundingBox GetBBox() const;
-	Material GetMaterial() const;
-
-private:
+	Sphere(const Transform *o2w, const Material &material, const float r);
+	virtual ~Sphere() {};
+	virtual bool Intersect(const Ray &ray, Hit *hit) const;
+	virtual bool CanIntersect(const Ray &ray) const;
+	virtual BoundingBox GetBBox() const;
+	virtual Material GetMaterial() const;
 	float Radius;
 };
 

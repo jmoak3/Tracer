@@ -3,6 +3,7 @@
 
 #include "Normal.h"
 #include <math.h>
+#include <algorithm>
 
 class Point;
 
@@ -12,7 +13,7 @@ public:
 	Vector();
 	Vector(float xx, float yy, float zz);
 	Vector(const Point &p1, const Point &p2);
-	explicit Vector(Normal &n);
+	explicit Vector(const Normal &n);
 	~Vector() {};
 
 	Vector operator+(const Vector &v) const;
@@ -71,6 +72,19 @@ inline void CoordinateSystem(Vector &v1, Vector &v2, Vector &v3)
 		v2 = Vector(0.f, v1.z * invLen, -v1.y * invLen);
 	}
 	v3 = Cross(v1, v2);
+}
+
+inline Vector Lerp(const Vector & v1, const Vector & v2, const float t)
+{
+	return v1 + t*(v2-v1);
+}
+
+inline Vector SLerp(const Vector & v1, const Vector & v2, const float t)
+{
+	float d = std::max(-1.f, std::min(1.f, Dot(v1, v2)));
+	float theta = acosf(d)*t;
+	Vector v3 = v2- v1*d;
+	return v1*cosf(theta) + v3*sinf(theta);
 }
 
 #endif

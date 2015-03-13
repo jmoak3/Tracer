@@ -15,16 +15,15 @@
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Inlines.h" />
-    <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\Matrix4x4.h" />
     <ClInclude Include="Source\Normal.h" />
     <ClInclude Include="Source\Point.h" />
+    <ClInclude Include="Source\Primitive.h" />
     <ClInclude Include="Source\Quaternion.h" />
     <ClInclude Include="Source\Ray.h" />
     <ClInclude Include="Source\Renderer.h" />
     <ClInclude Include="Source\Shape.h" />
     <ClInclude Include="Source\Sphere.h" />
-    <ClInclude Include="Source\SphereLight.h" />
     <ClInclude Include="Source\Transform.h" />
     <ClInclude Include="Source\Vector.h" />
   </ItemGroup>
@@ -32,17 +31,16 @@
     <ClCompile Include="Source\BoundingBox.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Color.cpp" />
-    <ClCompile Include="Source\Light.cpp" />
     <ClCompile Include="Source\Matrix4x4.cpp" />
     <ClCompile Include="Source\Normal.cpp" />
     <ClCompile Include="Source\Point.cpp" />
+    <ClCompile Include="Source\Primitive.cpp" />
     <ClCompile Include="Source\Quaternion.cpp" />
     <ClCompile Include="Source\Ray.cpp" />
     <ClCompile Include="Source\RayTracer.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\Shape.cpp" />
     <ClCompile Include="Source\Sphere.cpp" />
-    <ClCompile Include="Source\SphereLight.cpp" />
     <ClCompile Include="Source\Transform.cpp" />
     <ClCompile Include="Source\Vector.cpp" />
   </ItemGroup>
@@ -74,7 +72,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>

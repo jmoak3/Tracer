@@ -7,7 +7,7 @@ Ray::Ray()
 {
 	o = Point(0.f, 0.f, 0.f);
 	d = Vector(0.f, 0.f, 0.f);
-	mint = 0.f;
+	mint = 5e-4;
 	maxt = INFINITY;
 	time = 0.f;
 	depth = 0;

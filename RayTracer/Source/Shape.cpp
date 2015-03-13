@@ -3,8 +3,8 @@
 
 int Shape::currShapeID = 1;
 
-Shape::Shape(const Transform *w2o, const Material &material)
-	: WorldToObject(*w2o), ObjectToWorld(Inverse(*w2o))
+Shape::Shape(const Transform *o2w, const Material &material)
+	: Primitive(0), ObjectToWorld(*o2w), WorldToObject(Inverse(*o2w))
 {
 	Mat = material;
 	ShapeID = currShapeID;

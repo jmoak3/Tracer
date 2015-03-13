@@ -1,6 +1,5 @@
 #ifndef RENDERER_H	
 #define RENDERER_H
-#include "Light.h"
 #include "Shape.h"
 #include "Camera.h"
 
@@ -9,17 +8,22 @@
 class Renderer
 {
 public:
-	Renderer(std::vector<Shape*> *vshapes, std::vector<Light*>* vlights, const Camera &ccamera);
+	Renderer(std::vector<Primitive*>* scene, const Camera &ccamera);
 	void Render();
-	RGB Trace(const Ray &reflRay, const int lastShape);
+	RGB Trace(const Ray &reflRay);
 	RGB computeColor(const Ray &reflRay, const Hit & hit);
 
 private:
-	std::vector<Shape*> *shapes;
-	std::vector<Light*> *lights;
-	Camera camera;
-	int samples;
-	float invSamples;
+	bool FindClosest(const Ray &ray, Hit *hit); 
+	bool ShadowTest(const Ray &ray); 
+	std::vector<Primitive*> *Scene;
+	Camera Cam;
+	int Samples;
+	int LightSamples;
+	int DiffuseReflectiveSamples;
+	float InvSamples;
+	float InvLightSamples;
+	float InvDiffuseReflectiveSamples;
 };
 
 #endif

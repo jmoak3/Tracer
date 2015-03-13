@@ -1,24 +1,28 @@
 #include "Renderer.h"
 #include <math.h>
 #include "Ray.h"
-#include <time.h>
-#include "SphereLight.h"
+#include <ctime>
+#include "Sphere.h"
+#include <fstream>
 
-#define MAX_COLOR 255
-#define MIN_COLOR 20
+#define MAX_COLOR 0.999f
+#define MIN_COLOR 0.078f
 
 inline float r()
 {
 	return (float)((rand()/(float)RAND_MAX)-0.5f);
 }
 
-Renderer::Renderer(std::vector<Shape*>* vshapes, std::vector<Light*>*vlights, const Camera &ccamera)
+Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera)
 {
-	camera = ccamera;
-	shapes = vshapes;
-	lights = vlights; 
-	samples = 256;
-	invSamples = 1.f/(float)samples;
+	Cam = ccamera;
+	Scene = scene;
+	Samples = 4;
+	LightSamples = 64;
+	DiffuseReflectiveSamples = 256;
+	InvSamples = 1.f/(float)Samples;
+	InvLightSamples = 1.f/(float)LightSamples;
+	InvDiffuseReflectiveSamples = 1.f/(float)DiffuseReflectiveSamples;
 }
 
 RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
@@ -26,163 +30,187 @@ RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
 	Normal normal = hit.normal;
 	Material shapeMaterial = hit.material;
 
-	RGB finalColor; finalColor.red = 0; finalColor.blue = 0; finalColor.green = 0;
-	std::vector<Light*>::iterator iLight;
-	std::vector<Shape*>::iterator iShape;
+	Point hitPos = reflRay.o + hit.tHit*reflRay.d;
 
-	for (iLight = lights->begin(); iLight!=lights->end(); ++iLight)
-	{	
-		for (int i=0;i<samples;++i)
-		{
-			float radius = ((SphereLight*)(*iLight))->Radius;
-			float jit = 2.f*radius;
-			Point lightPos = (*iLight)->ObjectToWorld(Point(0.f, 0.f, 0.f));
-			Vector jitter = radius*Normalize(Vector(jit*r(), jit*r(), jit*r()));
-			
-			Vector l = ((lightPos+jitter) - reflRay.o);
+	Vector v = -reflRay.d;
 
-			float distToLight = l.Length();
-			l = Normalize(l);
-			//Test if this light is blocked!!!
-
-			Ray shadowRay(reflRay.o, l, 0.f);
-			bool hitSphere = false;
-			Hit hitData;
-			int thisShapeID = hit.shapeID;
-			/*for (iShape = shapes->begin(); iShape!=shapes->end(); ++iShape)
-			{
-				if ((*iShape)->Intersect(shadowRay, &hitData) && hitData.shapeID != thisShapeID && hitData.tHit < distToLight)
-				{
-					hitSphere = true;
-					continue;
-				}
-			}
-			if (hitSphere)
-				continue;*/
-
-			Vector v = Normalize(camera.ScreenToWorld(Point(0.f, 0.f, 0.f))- reflRay.o);
-
-			Vector r = Vector(2.f*Dot(l, normal)*normal) - l;
-
-			float spec = pow(std::min(1.0f, std::max(0.f, Dot(r, v))),20.f);
-			RGB white; white.red = 255; white.blue = 255; white.green = 255;
-			RGB temp = (white - shapeMaterial.Color);
-			RGB specular = temp*spec*shapeMaterial.Specular;
-
-			float diff = std::min(1.0f, std::max(0.f, Dot(normal, l)));
-			RGB diffuse = shapeMaterial.Color*diff;
-
-			RGB lightColor = diffuse + specular;
-
-			lightColor.red = std::min(lightColor.red, MAX_COLOR);
-			lightColor.green = std::min(lightColor.green, MAX_COLOR);
-			lightColor.blue = std::min(lightColor.blue, MAX_COLOR);
-
-			lightColor.red = std::max(lightColor.red, MIN_COLOR); //(int)((float)shapeMaterial.red*0.3f));
-			lightColor.green = std::max(lightColor.green, MIN_COLOR); //(int)((float)shapeMaterial.green*0.2f));
-			lightColor.blue = std::max(lightColor.blue, MIN_COLOR); //(int)((float)shapeMaterial.blue*0.2f));
-
-			finalColor += lightColor;
-		}
-		finalColor *= invSamples;		
+	RGB finalColor;
+	std::vector<Primitive*>::iterator iScene;
+	if (hit.type == 1) 
+	{
+		//float distFunc = hit.material.Emissive/(12.56637f*reflRay.time*reflRay.time);
+		//distFunc = std::min(1.0f, std::max(0.f, distFunc));
+		RGB c = hit.material.Color;
+		return c;
 	}
+
+	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
+	{	
+		if ((*iScene)->Type == 1) //IS LIGHT??
+		{
+			//FIX, SPHERE IS HARDCODED IN COLOR CALCS!!!
+			Material lightMaterial = ((Sphere*)(*iScene))->GetMaterial();
+			float radius = ((Sphere*)(*iScene))->Radius;
+			Point lightPos = ((Sphere*)(*iScene))->ObjectToWorld(Point(0.f, 0.f, 0.f));
+			
+			RGB sampleColor;
+			for (int i=0;i<LightSamples;++i)
+			{
+				Vector jitter = Vector(r(), r(), r());
+				jitter = radius*Normalize(jitter);
+
+				Vector shadowL = ((lightPos+jitter) - hitPos);
+				float distToLight = shadowL.Length();
+				shadowL = Normalize(shadowL);
+				Vector l = shadowL;//Normalize((lightPos) - hitPos);
+
+				if (ShadowTest(Ray(hitPos, shadowL, hit.eps, distToLight)))
+					continue;
+				
+				Vector r = Vector(2.f*Dot(l, normal)*normal) - l;
+
+				float spec = pow(std::min(1.0f, std::max(0.f, Dot(r, v))),20.f);
+				RGB specular = lightMaterial.Color*shapeMaterial.Specular*spec;
+
+				float diff = std::min(1.0f, std::max(0.f, Dot(normal, l)));
+				RGB diffuse = shapeMaterial.Color*diff*shapeMaterial.Diffuse*lightMaterial.Color;
+
+				sampleColor += diffuse + specular;
+			}
+			finalColor += sampleColor*InvLightSamples;
+		}
+	}
+
 	return finalColor;
 }
 
 void Renderer::Render()
 {
 	srand(time(0));
-	//Identify x and y using camera's specs, and make for loop
-	const int height = camera.height;
-	const int width = camera.width;
+	std::ofstream outFile;
+	outFile.open("file.ppm", std::ios::out);
 
-	printf("P6 %i %i 255 ", height, width);
+	//Identify x and y using camera's specs, and make for loop
+	const int height = Cam.height;
+	const int width = Cam.width;
+
+	outFile << "P6 " << height << " " << width << " 255 ";
+	printf("Tracing Rays...\n");
+
+	long double startTime = time(0);
+	long double lastTime = startTime;
+	int lastPercent = 0;
 	for (int y=0;y<height;++y)
 	{
 		for (int x=0;x<width;++x)
 		{
-			float jit = 0.f;//(float)camera.height/1000.f;
+			float jit = (float)Cam.height/500.f;
 			//Transform from Raster To Screen and Screen to World
 			RGB pixelColor; pixelColor.red = 0; pixelColor.green = 0; pixelColor.blue = 0;
-			for (int i=0;i<samples;++i)
+			for (int i=0;i<Samples;++i)
 			{
-				Point origin = camera.RasterToWorld(Point((float)x, (float)y, 0.f));
-				Point destination = camera.WorldToFarPlane(origin);
+				Point origin = Cam.ScreenToWorld(Point(0.f, 0.f, 0.f));
+				Point destination = Cam.WorldToFarPlane(Point((float)x, (float)y, 0.f));
 				Vector jitter = Vector(jit*r(), jit*r(), jit*r());
-				Vector direction = (destination - origin);//+jitter*(bool)i;
+				Vector direction = Normalize((destination - origin) + jitter*(bool)i);
 				Ray ray(origin, direction, 0.f);
-				RGB bg; bg.red = 100; bg.green = 100; bg.blue = 166;
 				
 				//Begin tracing
 				RGB color; color.red = 0; color.green = 0; color.blue = 0;
-				color = Trace(ray, -1);
+				color = Trace(ray);
 				pixelColor += color;
-				
-				//if (depth < 1)
-				//	pixelColor = bg;
 			}
-			pixelColor *= invSamples;
-			pixelColor.red = std::min(pixelColor.red, MAX_COLOR);
-			pixelColor.green = std::min(pixelColor.green, MAX_COLOR);
-			pixelColor.blue = std::min(pixelColor.blue, MAX_COLOR);
+			pixelColor *= InvSamples;
+			pixelColor.Bound(MIN_COLOR, MAX_COLOR);
 
-			pixelColor.red = std::max(pixelColor.red, MIN_COLOR);
-			pixelColor.green = std::max(pixelColor.green, MIN_COLOR);
-			pixelColor.blue = std::max(pixelColor.blue, MIN_COLOR);
-
-			printf("%c%c%c", pixelColor.red, pixelColor.green, pixelColor.blue);
+			pixelColor *= 255.f;
+			outFile << (char)pixelColor.red << (char)pixelColor.green << (char)pixelColor.blue;
+			
+		}
+		int percent = 100*(float)y/(float)height;
+		if (lastPercent != percent) 
+		{
+			long double currTime = time(0);
+			long double estimate = ((long double)(100-percent)*(currTime-startTime)/(long double)(percent));
+			printf("%i%% Complete, %0.01f Seconds Remaining\n", percent, estimate);
+			lastPercent = percent;
+			lastTime = currTime;
 		}
 	}
+	long double endTime = time(0)*1000.0;
+	startTime *= 1000.0;
+	printf("Run Time: %0.01f Milliseconds", (endTime - startTime));
+	outFile.close();
 }
 
-RGB Renderer::Trace(const Ray &reflRay, const int lastShape)
+RGB Renderer::Trace(const Ray &reflRay)
 {
-	if (reflRay.depth > 5)
+	if (reflRay.depth > 2)
 		return RGB();
 
-	std::vector<Shape*>::iterator iShape;
-	std::vector<Light*>::iterator iLight;
-	RGB bg; bg.red = 166; bg.green = 166; bg.blue = 166;
-	bool hit = false;
 	Hit bestHit;
-	Hit hitData;
-	bool hitLight = false;
-	for (iLight = lights->begin(); iLight!=lights->end(); ++iLight)
+	if (FindClosest(reflRay, &bestHit))
 	{
-		if ((*iLight)->Intersect(reflRay, &hitData), hitData.tHit < bestHit.tHit && hitData.shapeID != lastShape)
-		{
-			bestHit = hitData;
-			hit = true;
-			hitLight = true;
-		}
-	}
+		RGB diffuseSampleColor;
+		int DiffuseReflectiveSamplesToRun = 1;
 
-	for (iShape = shapes->begin(); iShape!=shapes->end(); ++iShape)
-	{	
-		if ((*iShape)->Intersect(reflRay, &hitData), hitData.tHit < bestHit.tHit && hitData.shapeID != lastShape)
-		{
-			bestHit = hitData;
-			hit = true;
-			hitLight = false;
-		}
-	}
-	if (hit)
-	{
-		RGB c;
-		Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit);
-		if (!hitLight) c = computeColor(nextReflRay, bestHit);
-		else c = bestHit.material.Color;
-		//glass should reflect brick, but brick shouldn't reflect glass
+		if (reflRay.depth == 0 && bestHit.material.DiffuseReflective > 0.01f) //Only primary rays should diffuse... it's very slow!
+			DiffuseReflectiveSamplesToRun = DiffuseReflectiveSamples;
 
-		nextReflRay.time = (bestHit.tHit)*(1.f-bestHit.material.Specular) + reflRay.time;
-		float invDistFunc = (4.0f*3.14159f*nextReflRay.time*nextReflRay.time)/1.f;
-		float falloff = (1.f/(float)(1.f + reflRay.depth*10* invDistFunc));
-		//c *= falloff;
-		
-		nextReflRay.depth = reflRay.depth + 1;
-		
-		return c;// * Trace(nextReflRay, bestHit.shapeID);
+		for (int i=0;i<DiffuseReflectiveSamplesToRun;++i)
+		{
+			RGB c;
+			c = computeColor(reflRay, bestHit);
+
+			Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit);
+
+			//nextReflRay.time = reflRay.time + bestHit.tHit*(2.f - 2.f*bestHit.material.Specular);
+			float refl = bestHit.material.Reflective;
+			diffuseSampleColor += c + c*Trace(nextReflRay)*refl;
+			//CalcColor + (CalcColor*NextColor*Reflectivity)
+		}
+
+		if (reflRay.depth == 0  && bestHit.material.DiffuseReflective > 0.01f) // If a primary ray we have done diffusion so average
+			diffuseSampleColor *= InvDiffuseReflectiveSamples;
+
+		return diffuseSampleColor;
 	}
 
 	return RGB();
 }
+
+bool Renderer::FindClosest(const Ray &ray, Hit *hit) 
+{
+	std::vector<Primitive*>::iterator iScene;
+	//if (currRay.mint > 0.f) currRay.o += Normalize(currRay.d)*currRay.mint;
+	Hit currHit, bestHit;
+	bool didWeHit = false;
+	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
+	{	
+		if ((*iScene)->Intersect(ray, &currHit), currHit.tHit < bestHit.tHit)
+		{
+			bestHit = currHit;
+			didWeHit = true;
+		}
+	}
+	*hit = bestHit;
+	return didWeHit;
+}
+
+bool Renderer::ShadowTest(const Ray &ray) 
+{
+	std::vector<Primitive*>::iterator iScene;
+	//if (currRay.mint > 0.f) currRay.o += Normalize(currRay.d)*currRay.mint;
+	Hit currHit;
+	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
+	{	
+		if ((*iScene)->Intersect(ray, &currHit) && currHit.type == 0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+

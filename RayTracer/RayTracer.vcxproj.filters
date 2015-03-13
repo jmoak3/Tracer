@@ -72,9 +72,6 @@
     <ClInclude Include="Source\Quaternion.h">
       <Filter>Constructions\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Light.h">
-      <Filter>ElectromagneticForces\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Camera.h">
       <Filter>Medium\Public</Filter>
     </ClInclude>
@@ -84,8 +81,8 @@
     <ClInclude Include="Source\Color.h">
       <Filter>ElectromagneticForces\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SphereLight.h">
-      <Filter>ElectromagneticForces\Public</Filter>
+    <ClInclude Include="Source\Primitive.h">
+      <Filter>Constructions\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,7 +101,6 @@
     <ClCompile Include="Source\Normal.cpp">
       <Filter>Constructions\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\RayTracer.cpp" />
     <ClCompile Include="Source\Sphere.cpp">
       <Filter>Shapes\Private</Filter>
     </ClCompile>
@@ -120,9 +116,6 @@
     <ClCompile Include="Source\Quaternion.cpp">
       <Filter>Constructions\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Light.cpp">
-      <Filter>ElectromagneticForces\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Camera.cpp">
       <Filter>Medium\Private</Filter>
     </ClCompile>
@@ -132,8 +125,9 @@
     <ClCompile Include="Source\Color.cpp">
       <Filter>ElectromagneticForces\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SphereLight.cpp">
-      <Filter>ElectromagneticForces\Private</Filter>
+    <ClCompile Include="Source\Primitive.cpp">
+      <Filter>Constructions\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\RayTracer.cpp" />
   </ItemGroup>
 </Project>

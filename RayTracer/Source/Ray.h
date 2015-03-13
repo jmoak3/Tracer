@@ -12,9 +12,10 @@ struct Hit
 {
 	Normal normal = Normal(1.f, 0.f, 0.f);
 	float tHit = INFINITY;
-	float eps;
+	float eps = 0.f;
 	Material material;
 	int shapeID = -1;
+	int type = -1;
 };
 
 

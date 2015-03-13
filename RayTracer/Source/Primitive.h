@@ -1,25 +1,26 @@
-#ifndef LIGHT_H	
-#define LIGHT_H
+#ifndef PRIMITIVE_H	
+#define PRIMITIVE_H
+
 #include "Point.h"
 #include "Color.h"
 #include "Transform.h"
 #include "BoundingBox.h"
 
-class Light
+//TYPE
+//0 -> Shape
+//1 -> Light
+
+class Primitive
 {
 public:
-	Light(const Transform *w2o, const RGB &material, const float power);
-	virtual ~Light() {};
+	Primitive(const int type) {Type = type;};
+	virtual ~Primitive() {};
 
 	virtual bool Intersect(const Ray &ray, Hit *hit) const = 0;
 	virtual bool CanIntersect(const Ray &ray) const = 0;
 	virtual BoundingBox GetBBox() const = 0;
-	virtual RGB GetColor() const;
-
-	const Transform WorldToObject, ObjectToWorld;
-	RGB Color;
-	float Power;
-	int LightID;
+	virtual Material GetMaterial() const = 0;
+	int Type;
 };
 
 #endif
