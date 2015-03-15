@@ -1,9 +1,10 @@
 #include "Renderer.h"
 #include <math.h>
 #include "Ray.h"
-#include <ctime>
+#include <time.h>
 #include "Sphere.h"
 #include <fstream>
+#include <sys/timeb.h>
 
 #define MAX_COLOR 0.999f
 #define MIN_COLOR 0.078f
@@ -13,72 +14,76 @@ inline float r()
 	return (float)((rand()/(float)RAND_MAX)-0.5f);
 }
 
+inline long double GetMS()
+{
+	timeb t;
+	ftime(&t);
+	return 1000.0*t.time+t.millitm;
+}
+
 Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera)
 {
 	Cam = ccamera;
 	Scene = scene;
+	Lights = new std::vector<Primitive*>();
+	std::vector<Primitive*>::iterator iScene;
+	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
+	{	
+		if ((*iScene)->Type == 1)
+			Lights->push_back((*iScene));
+	}
 	Samples = 4;
-	LightSamples = 64;
-	DiffuseReflectiveSamples = 256;
+	LightSamples = 16;
+	GlossyReflectiveSamples = 64;
 	InvSamples = 1.f/(float)Samples;
 	InvLightSamples = 1.f/(float)LightSamples;
-	InvDiffuseReflectiveSamples = 1.f/(float)DiffuseReflectiveSamples;
+	InvGlossyReflectiveSamples = 1.f/(float)GlossyReflectiveSamples;
 }
 
 RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
 {
 	Normal normal = hit.normal;
 	Material shapeMaterial = hit.material;
-
 	Point hitPos = reflRay.o + hit.tHit*reflRay.d;
-
 	Vector v = -reflRay.d;
 
 	RGB finalColor;
-	std::vector<Primitive*>::iterator iScene;
+	std::vector<Primitive*>::iterator iLight;
 	if (hit.type == 1) 
-	{
-		//float distFunc = hit.material.Emissive/(12.56637f*reflRay.time*reflRay.time);
-		//distFunc = std::min(1.0f, std::max(0.f, distFunc));
-		RGB c = hit.material.Color;
-		return c;
-	}
+		return hit.material.Color;
 
-	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
+	for (iLight = Lights->begin(); iLight!=Lights->end(); ++iLight)
 	{	
-		if ((*iScene)->Type == 1) //IS LIGHT??
-		{
-			//FIX, SPHERE IS HARDCODED IN COLOR CALCS!!!
-			Material lightMaterial = ((Sphere*)(*iScene))->GetMaterial();
-			float radius = ((Sphere*)(*iScene))->Radius;
-			Point lightPos = ((Sphere*)(*iScene))->ObjectToWorld(Point(0.f, 0.f, 0.f));
+		Sphere * currLight = dynamic_cast<Sphere*>(*iLight);
+		//FIX, SPHERE IS HARDCODED IN COLOR CALCS!!!
+		Material lightMaterial = currLight->GetMaterial();
+		float radius = currLight->Radius;
+		Point lightPos = currLight->ObjectToWorld(Point(0.f, 0.f, 0.f));
 			
-			RGB sampleColor;
-			for (int i=0;i<LightSamples;++i)
-			{
-				Vector jitter = Vector(r(), r(), r());
-				jitter = radius*Normalize(jitter);
+		RGB sampleColor;
+		for (int i=0;i<LightSamples;++i)
+		{
+			Vector jitter = Vector(r(), r(), r());
+			jitter = radius*Normalize(jitter);
 
-				Vector shadowL = ((lightPos+jitter) - hitPos);
-				float distToLight = shadowL.Length();
-				shadowL = Normalize(shadowL);
-				Vector l = shadowL;//Normalize((lightPos) - hitPos);
+			Vector l = ((lightPos+jitter) - hitPos);
+			float distToLight = l.Length();
+			l = Normalize(l);
+			if (ShadowTest(Ray(hitPos, l, hit.eps, distToLight)))
+				continue;
+			
+			//Vector r = static_cast<Vector>(2.f*Dot(l, normal)*normal) - l;
+			Vector r = Vector(2.f*Dot(l, normal)*normal) - l;
 
-				if (ShadowTest(Ray(hitPos, shadowL, hit.eps, distToLight)))
-					continue;
-				
-				Vector r = Vector(2.f*Dot(l, normal)*normal) - l;
+			float spec = pow(std::min(1.0f, std::max(0.f, Dot(r, v))),20.f);
+			RGB specular = lightMaterial.Color*shapeMaterial.Specular*spec;
 
-				float spec = pow(std::min(1.0f, std::max(0.f, Dot(r, v))),20.f);
-				RGB specular = lightMaterial.Color*shapeMaterial.Specular*spec;
+			float diff = std::min(1.0f, std::max(0.f, Dot(normal, l)));
+			RGB diffuse = shapeMaterial.Color*diff*shapeMaterial.Diffuse*lightMaterial.Color;
 
-				float diff = std::min(1.0f, std::max(0.f, Dot(normal, l)));
-				RGB diffuse = shapeMaterial.Color*diff*shapeMaterial.Diffuse*lightMaterial.Color;
-
-				sampleColor += diffuse + specular;
-			}
-			finalColor += sampleColor*InvLightSamples;
+			sampleColor += diffuse + specular;
 		}
+		finalColor += sampleColor*InvLightSamples;
 	}
 
 	return finalColor;
@@ -95,10 +100,9 @@ void Renderer::Render()
 	const int width = Cam.width;
 
 	outFile << "P6 " << height << " " << width << " 255 ";
-	printf("Tracing Rays...\n");
+	printf("%ix%i. %i AA Samples, %i LightSamples, %i GlossyReflectionSamples\n", width, height, Samples, LightSamples, GlossyReflectiveSamples);
 
-	long double startTime = time(0);
-	long double lastTime = startTime;
+	long double startTime = GetMS();
 	int lastPercent = 0;
 	for (int y=0;y<height;++y)
 	{
@@ -116,30 +120,23 @@ void Renderer::Render()
 				Ray ray(origin, direction, 0.f);
 				
 				//Begin tracing
-				RGB color; color.red = 0; color.green = 0; color.blue = 0;
-				color = Trace(ray);
-				pixelColor += color;
+				pixelColor += Trace(ray);
 			}
 			pixelColor *= InvSamples;
 			pixelColor.Bound(MIN_COLOR, MAX_COLOR);
 
 			pixelColor *= 255.f;
 			outFile << (char)pixelColor.red << (char)pixelColor.green << (char)pixelColor.blue;
-			
 		}
 		int percent = 100*(float)y/(float)height;
 		if (lastPercent != percent) 
 		{
-			long double currTime = time(0);
-			long double estimate = ((long double)(100-percent)*(currTime-startTime)/(long double)(percent));
-			printf("%i%% Complete, %0.01f Seconds Remaining\n", percent, estimate);
+			printf("%i%% Complete\n", percent);
 			lastPercent = percent;
-			lastTime = currTime;
 		}
 	}
-	long double endTime = time(0)*1000.0;
-	startTime *= 1000.0;
-	printf("Run Time: %0.01f Milliseconds", (endTime - startTime));
+	long double endTime = GetMS();
+	printf("Run Time: %0.01f Milliseconds", (long double)(endTime - startTime));
 	outFile.close();
 }
 
@@ -151,29 +148,29 @@ RGB Renderer::Trace(const Ray &reflRay)
 	Hit bestHit;
 	if (FindClosest(reflRay, &bestHit))
 	{
-		RGB diffuseSampleColor;
-		int DiffuseReflectiveSamplesToRun = 1;
+		RGB glossyReflectiveSampleColor;
+		int GlossyReflectiveSamplesToRun = 1;
+		bool isReflective = (reflRay.depth == 0 
+							&& bestHit.material.GlossyReflective > 0.001f
+							&& bestHit.material.Reflective > 0.001f);
 
-		if (reflRay.depth == 0 && bestHit.material.DiffuseReflective > 0.01f) //Only primary rays should diffuse... it's very slow!
-			DiffuseReflectiveSamplesToRun = DiffuseReflectiveSamples;
+		if (isReflective)  //Only primary rays should diffuse... it's very slow!
+			GlossyReflectiveSamplesToRun = GlossyReflectiveSamples;
 
-		for (int i=0;i<DiffuseReflectiveSamplesToRun;++i)
+		for (int i=0;i<GlossyReflectiveSamplesToRun;++i)
 		{
-			RGB c;
-			c = computeColor(reflRay, bestHit);
+			RGB c = computeColor(reflRay, bestHit);
 
 			Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit);
 
-			//nextReflRay.time = reflRay.time + bestHit.tHit*(2.f - 2.f*bestHit.material.Specular);
 			float refl = bestHit.material.Reflective;
-			diffuseSampleColor += c + c*Trace(nextReflRay)*refl;
-			//CalcColor + (CalcColor*NextColor*Reflectivity)
+			glossyReflectiveSampleColor += (refl<0.001f || c.IsBlack()) ? c : c + c*Trace(nextReflRay)*refl;
 		}
 
-		if (reflRay.depth == 0  && bestHit.material.DiffuseReflective > 0.01f) // If a primary ray we have done diffusion so average
-			diffuseSampleColor *= InvDiffuseReflectiveSamples;
+		if (isReflective) // If a primary ray we have done diffusion so average
+			glossyReflectiveSampleColor *= InvGlossyReflectiveSamples;
 
-		return diffuseSampleColor;
+		return glossyReflectiveSampleColor;
 	}
 
 	return RGB();
@@ -182,7 +179,6 @@ RGB Renderer::Trace(const Ray &reflRay)
 bool Renderer::FindClosest(const Ray &ray, Hit *hit) 
 {
 	std::vector<Primitive*>::iterator iScene;
-	//if (currRay.mint > 0.f) currRay.o += Normalize(currRay.d)*currRay.mint;
 	Hit currHit, bestHit;
 	bool didWeHit = false;
 	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
@@ -199,15 +195,14 @@ bool Renderer::FindClosest(const Ray &ray, Hit *hit)
 
 bool Renderer::ShadowTest(const Ray &ray) 
 {
+	assert(ray.maxt != INFINITY);
+
 	std::vector<Primitive*>::iterator iScene;
-	//if (currRay.mint > 0.f) currRay.o += Normalize(currRay.d)*currRay.mint;
 	Hit currHit;
 	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
 	{	
 		if ((*iScene)->Intersect(ray, &currHit) && currHit.type == 0)
-		{
 			return true;
-		}
 	}
 	return false;
 }

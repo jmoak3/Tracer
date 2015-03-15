@@ -9,6 +9,8 @@ class Renderer
 {
 public:
 	Renderer(std::vector<Primitive*>* scene, const Camera &ccamera);
+	~Renderer() {delete Lights;}
+
 	void Render();
 	RGB Trace(const Ray &reflRay);
 	RGB computeColor(const Ray &reflRay, const Hit & hit);
@@ -17,13 +19,14 @@ private:
 	bool FindClosest(const Ray &ray, Hit *hit); 
 	bool ShadowTest(const Ray &ray); 
 	std::vector<Primitive*> *Scene;
+	std::vector<Primitive*> *Lights; // for shadow tests (speed!)
 	Camera Cam;
 	int Samples;
 	int LightSamples;
-	int DiffuseReflectiveSamples;
+	int GlossyReflectiveSamples;
 	float InvSamples;
 	float InvLightSamples;
-	float InvDiffuseReflectiveSamples;
+	float InvGlossyReflectiveSamples;
 };
 
 #endif

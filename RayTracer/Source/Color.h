@@ -9,7 +9,7 @@ class Vector;
 struct RGB
 {
 	float red=0.f, green=0.f, blue=0.f;
-	RGB operator*(const float f)
+	RGB operator*(const float f) const
 	{
 		RGB c;
 		c.red = f * red;
@@ -17,7 +17,7 @@ struct RGB
 		c.green = f * green;
 		return c;
 	}
-	RGB operator*(const RGB & col)
+	RGB operator*(const RGB & col) const
 	{
 		RGB c;
 		c.red = col.red * red;
@@ -25,7 +25,7 @@ struct RGB
 		c.green = col.green * green;
 		return c;
 	}
-	RGB operator+(const RGB &col)
+	RGB operator+(const RGB &col) const
 	{
 		RGB c;
 		c.red = col.red + red;
@@ -33,7 +33,7 @@ struct RGB
 		c.green = col.green + green;
 		return c;
 	}
-	RGB operator-(const RGB &col)
+	RGB operator-(const RGB &col) const
 	{
 		RGB c;
 		c.red = red - col.red;
@@ -72,18 +72,24 @@ struct RGB
 		green = std::max(green, min);
 		blue = std::max(blue, min);
 	}
+
+	bool IsBlack() const
+	{
+		return (red < 0.001f && green < 0.001f && blue < 0.001f);
+	}
+
 };
 
 class Material
 {
 public:
-	Material() {Emissive = 0.f; Diffuse = 1.f; DiffuseReflective = 0.f;};
+	Material() {Emissive = 0.f; Diffuse = 1.f; GlossyReflective = 0.f;};
 	~Material() {};
-	Material(const RGB &col, const float spec, const float diffuse, const float emissive, const float Reflective, const float DiffuseReflective);
+	Material(const RGB &col, const float spec, const float diffuse, const float emissive, const float reflective, const float glossyReflective);
 	
-	Ray ReflectRay(const Ray &ray, const Hit &hit);
+	Ray ReflectRay(const Ray &ray, const Hit &hit) const;
 	RGB Color;
-	float Specular, Diffuse, Reflective, DiffuseReflective;
+	float Specular, Diffuse, Reflective, GlossyReflective;
 	float Emissive;
 	static RGB bg;
 
