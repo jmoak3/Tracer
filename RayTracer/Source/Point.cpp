@@ -41,14 +41,14 @@ Point& Point::operator-=(const Vector &v)
 	return *this;
 }
 
-Point Point::operator/(const float f) const
+Point Point::operator/(float f) const
 {
 	assert(f != 0);
 	float inv = 1.f / f;
 	return Point(x * inv, y * inv, z * inv);
 }
 
-Point& Point::operator/=(const float f)
+Point& Point::operator/=(float f)
 {
 	assert(f != 0);
 	float inv = 1.f / f;

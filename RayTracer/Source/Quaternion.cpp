@@ -53,25 +53,25 @@ Quaternion& Quaternion::operator*=(const Quaternion& q)
 	return *this;
 }
 
-Quaternion Quaternion::operator*(const float f) const
+Quaternion Quaternion::operator*(float f) const
 {
 	return Quaternion(v * f, w * f);
 }
 
-Quaternion& Quaternion::operator*=(const float f)
+Quaternion& Quaternion::operator*=(float f)
 {
 	v *= f;
 	w *= f;
 	return *this;
 }
 
-Quaternion Quaternion::operator/(const float f) const
+Quaternion Quaternion::operator/(float f) const
 {
 	float inv = 1.f / f;
 	return Quaternion(v * inv, f * inv);
 }
 
-Quaternion& Quaternion::operator/=(const float f)
+Quaternion& Quaternion::operator/=(float f)
 {
 	float inv = 1.f / f;
 	v *= inv;

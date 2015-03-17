@@ -9,49 +9,17 @@ inline float ra()
 	return (float)((rand()/(float)RAND_MAX))-0.5f;
 }
 
-Material::Material(const RGB &col, const float spec, const float diffuse, const float emissive, const float reflective, const float glossyReflective)
-{
-	assert(spec <= 1.0f && spec >= 0.f 
-		&& diffuse <= 1.0f && diffuse >= 0.f
-		&& reflective <= 1.0f && reflective >= 0.f 
-		&& glossyReflective <= 1.0f && glossyReflective >= 0.f);
-	Color = col;
-	Specular = spec;
-	Diffuse = diffuse;
-	Reflective = reflective;
-	GlossyReflective = glossyReflective;
-	Emissive = emissive;
-}
-
 Ray Material::ReflectRay(const Ray &ray, const Hit &hit) const
 {
-	Ray r(Point(), Vector(), ray.mint, ray.maxt, ray.time, ray.depth+1);
+	Ray r(Point(), Vector(), hit.eps, ray.maxt, ray.time, ray.depth+1, hit.material.Refractive);
 
 	//Save the trouble
 	if (Reflective < 0.001f || GlossyReflective < 0.001f || ray.depth != 0)
 	{
 		r.o = ray.o + ray.d*hit.tHit;
-		//r.d = Normalize(ray.d - static_cast<Vector>(hit.normal*Dot(ray.d, hit.normal)*2.f));
 		r.d = Normalize(ray.d - Vector(hit.normal*Dot(ray.d, hit.normal)*2.f));
 		return r;
 	}
-
-	/*Vector basis1 = Dot(hit.normal, r.d) < 0 ?
-							Vector(hit.normal) :
-							-1.f*Vector(hit.normal);
-	Vector basis2 = Cross(Vector(0.f, 1.f, 0.f), basis1).HasNans() ?
-							Cross(basis1, Vector(1.f, 0.f, 0.f)) :
-							Cross(basis1, Vector(0.f, 1.f, 0.f));
-	basis2 = Normalize(basis2);
-	Vector basis3 = Normalize(Cross(basis2, basis1));
-	float u = ra()*6.28319f;
-	float v = ra();
-	float w = sqrt(v);
-	Vector jitter = Normalize(basis2*cosf(u)*w + basis3*sinf(u)*w + basis1*(1-v));
-	r.o = ray.o + ray.d*hit.tHit;
-	Vector properReflection = Normalize(ray.d - Vector(2.f*(Dot(ray.d, hit.normal))*hit.normal));
-	r.d = Normalize(Lerp(properReflection, jitter, GlossyReflective));
-	*/
 
 	float dx = ra()*GlossyReflective;
 	float dy = ra()*GlossyReflective;
@@ -78,6 +46,30 @@ Ray Material::ReflectRay(const Ray &ray, const Hit &hit) const
 	r.d = Normalize(v1 + v2*dx + v3*dy*GlossyReflective);
 	r.o = ray.o + ray.d*hit.tHit;
 	
+	return r;
+}
+
+
+Ray Material::RefractRay(const Ray &ray, const Hit &hit, bool * isValid) const
+{
+	Ray r(Point(), Vector(), hit.eps, ray.maxt, ray.time, ray.depth+1, hit.material.Refractive);
+	float n = ray.refrIndex/r.refrIndex;
+	Normal N(hit.normal);
+	float cosInc = -Dot(N, ray.d);
+	if (cosInc < 0.f) 
+	{
+		N = -N;
+		cosInc = -Dot(N, ray.d);
+	}
+	float cosT2 = 1.f - n*n*(1.f - (cosInc*cosInc));
+	if (cosT2 < 0.f || !(*isValid))
+	{
+		*isValid = false;
+		return Ray();
+	}
+	*isValid = true;
+	r.o = ray.o + ray.d*hit.tHit;
+	r.d = Normalize(n*ray.d + Vector((n*cosInc - sqrt(cosT2))*N));
 	return r;
 }
 

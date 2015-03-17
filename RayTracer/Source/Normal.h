@@ -15,10 +15,10 @@ public:
 	Normal& operator+=(const Normal &v);
 	Normal operator-(const Normal &v) const;
 	Normal& operator-=(const Normal &v);
-	Normal operator*(const float f) const;
-	Normal& operator*=(const float f);
-	Normal operator/(const float f) const;
-	Normal& operator/=(const float f);
+	Normal operator*(float f) const;
+	Normal& operator*=(float f);
+	Normal operator/(float f) const;
+	Normal& operator/=(float f);
 	Normal operator-() const;
 	float operator[](int i) const;
 	float& operator[](int i);
@@ -45,7 +45,7 @@ inline Normal Cross(const Normal &n1, const Normal &n2)
 
 inline float Dot(const Normal &n1, const Normal &n2) { return (n1.x*n2.x + n1.y*n2.y + n1.z*n2.z); }
 
-inline Normal operator*(const float f, const Normal &n) { return n*f; }
+inline Normal operator*(float f, const Normal &n) { return n*f; }
 
 inline float AbsDot(const Normal &n1, const Normal &n2) { return fabsf(Dot(n1, n2)); }
 

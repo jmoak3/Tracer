@@ -9,7 +9,15 @@ class Vector;
 struct RGB
 {
 	float red=0.f, green=0.f, blue=0.f;
-	RGB operator*(const float f) const
+	RGB() {red = 0.f; green = 0.f; blue = 0.f;}
+	~RGB() {}
+	RGB(float r, float g, float b)
+	{
+		red = r;
+		green = g;
+		blue = b;
+	}
+	RGB operator*(float f) const
 	{
 		RGB c;
 		c.red = f * red;
@@ -41,7 +49,7 @@ struct RGB
 		c.green = green - col.green;
 		return c;
 	}
-	RGB& operator*=(const float f)
+	RGB& operator*=(float f)
 	{
 		*this = *this * f;
 		return *this;
@@ -77,22 +85,21 @@ struct RGB
 	{
 		return (red < 0.001f && green < 0.001f && blue < 0.001f);
 	}
-
 };
 
 class Material
 {
 public:
-	Material() {Emissive = 0.f; Diffuse = 1.f; GlossyReflective = 0.f;};
+	Material() {Specular = 1.f; Diffuse = 1.f; Reflective = 1.f; 
+	GlossyReflective = 0.0f; Emissive = 0.f; 
+	Refractive = 1.0f; RefrAbsorbance = 1.f;};
 	~Material() {};
-	Material(const RGB &col, const float spec, const float diffuse, const float emissive, const float reflective, const float glossyReflective);
 	
 	Ray ReflectRay(const Ray &ray, const Hit &hit) const;
+	Ray RefractRay(const Ray &ray, const Hit &hit, bool * isValid) const;
 	RGB Color;
-	float Specular, Diffuse, Reflective, GlossyReflective;
+	float Specular, Diffuse, Reflective, GlossyReflective, Refractive, RefrAbsorbance;
 	float Emissive;
-	static RGB bg;
-
 };
 
 #endif

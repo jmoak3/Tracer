@@ -61,7 +61,7 @@ inline Transform Translate(const Vector &v)
 	return Transform(mat, inv);
 }
 
-inline Transform Scale(const float x, const float y, const float z)
+inline Transform Scale(float x, float y, float z)
 {
 	Matrix4x4 mat(x, 0, 0, 0,
 		0, y, 0, 0,
@@ -76,7 +76,7 @@ inline Transform Scale(const float x, const float y, const float z)
 	return Transform(mat, inv);
 }
 
-inline Transform RotateX(const float angle)
+inline Transform RotateX(float angle)
 {
 	float sint = sinf((0.017453f*angle));
 	float cost = cosf((0.017453f*angle));
@@ -89,7 +89,7 @@ inline Transform RotateX(const float angle)
 	return Transform(mat, Transpose(mat));
 }
 
-inline Transform RotateY(const float angle)
+inline Transform RotateY(float angle)
 {
 	float sint = sinf((0.017453f*angle));
 	float cost = cosf((0.017453f*angle));
@@ -101,7 +101,7 @@ inline Transform RotateY(const float angle)
 	return Transform(mat, Transpose(mat));
 }
 
-inline Transform RotateZ(const float angle)
+inline Transform RotateZ(float angle)
 {
 	float sint = sinf((0.017453f*angle));
 	float cost = cosf((0.017453f*angle));
@@ -113,7 +113,7 @@ inline Transform RotateZ(const float angle)
 	return Transform(mat, Transpose(mat));
 }
 
-inline Transform Rotate(const float angle, const Vector &axis)
+inline Transform Rotate(float angle, const Vector &axis)
 {
 	Vector a = Normalize(axis);
 	float s = sinf(0.017453f*angle);

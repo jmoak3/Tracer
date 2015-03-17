@@ -33,8 +33,8 @@ Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera)
 			Lights->push_back((*iScene));
 	}
 	Samples = 4;
-	LightSamples = 16;
-	GlossyReflectiveSamples = 64;
+	LightSamples = 8;
+	GlossyReflectiveSamples = 1;
 	InvSamples = 1.f/(float)Samples;
 	InvLightSamples = 1.f/(float)LightSamples;
 	InvGlossyReflectiveSamples = 1.f/(float)GlossyReflectiveSamples;
@@ -142,35 +142,36 @@ void Renderer::Render()
 
 RGB Renderer::Trace(const Ray &reflRay)
 {
-	if (reflRay.depth > 2)
+	if (reflRay.depth > 4)
 		return RGB();
 
 	Hit bestHit;
 	if (FindClosest(reflRay, &bestHit))
 	{
-		RGB glossyReflectiveSampleColor;
+		RGB sampleColor;
 		int GlossyReflectiveSamplesToRun = 1;
-		bool isReflective = (reflRay.depth == 0 
+		bool isGlossyReflective = (reflRay.depth == 0 
 							&& bestHit.material.GlossyReflective > 0.001f
 							&& bestHit.material.Reflective > 0.001f);
 
-		if (isReflective)  //Only primary rays should diffuse... it's very slow!
+		if (isGlossyReflective)  //Only primary rays should diffuse... it's very slow!
 			GlossyReflectiveSamplesToRun = GlossyReflectiveSamples;
-
+		RGB absorb = bestHit.material.Color*bestHit.material.RefrAbsorbance*-bestHit.tHit;
+		RGB transparency = RGB(expf(absorb.red), expf(absorb.green), expf(absorb.blue));
 		for (int i=0;i<GlossyReflectiveSamplesToRun;++i)
 		{
 			RGB c = computeColor(reflRay, bestHit);
-
+			bool isRefr = (bestHit.material.RefrAbsorbance<1.f);
 			Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit);
-
+			Ray nextRefrRay = bestHit.material.RefractRay(reflRay, bestHit, &isRefr);
 			float refl = bestHit.material.Reflective;
-			glossyReflectiveSampleColor += (refl<0.001f || c.IsBlack()) ? c : c + c*Trace(nextReflRay)*refl;
+			sampleColor += c + c*Trace(nextReflRay)*refl + (isRefr ? transparency*Trace(nextRefrRay) : RGB());
 		}
 
-		if (isReflective) // If a primary ray we have done diffusion so average
-			glossyReflectiveSampleColor *= InvGlossyReflectiveSamples;
+		if (isGlossyReflective) // If a primary ray we have done diffusion so average
+			sampleColor *= InvGlossyReflectiveSamples;
 
-		return glossyReflectiveSampleColor;
+		return sampleColor;
 	}
 
 	return RGB();
@@ -201,7 +202,7 @@ bool Renderer::ShadowTest(const Ray &ray)
 	Hit currHit;
 	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
 	{	
-		if ((*iScene)->Intersect(ray, &currHit) && currHit.type == 0)
+		if ((*iScene)->Intersect(ray, &currHit) && currHit.type == 0 && currHit.material.RefrAbsorbance > 0.4f)
 			return true;
 	}
 	return false;

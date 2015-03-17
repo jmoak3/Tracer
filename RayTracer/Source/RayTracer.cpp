@@ -15,6 +15,8 @@ int main(int argc, char * argv[])
 	color1.Diffuse = 1.f;
 	color1.GlossyReflective = 1.f;
 	color1.Reflective = 1.f;
+	color1.Refractive = 1.f;
+	color1.RefrAbsorbance = 1.f;
 
 	Material color2;
 	color2.Color.red = 0.7f; color2.Color.green = 1.f; color2.Color.blue = 0.7f;
@@ -22,13 +24,26 @@ int main(int argc, char * argv[])
 	color2.Diffuse = 0.2f;
 	color2.GlossyReflective = 0.0f;
 	color2.Reflective = 1.f;
+	color2.Refractive = 1.f;
+	color2.RefrAbsorbance = 1.f;
 
 	Material color3;
-	color3.Color.red = 0.7f; color3.Color.green = 0.7f; color3.Color.blue = 1.0f;
+	color3.Color.red = 0.0f; color3.Color.green = 0.0f; color3.Color.blue = 0.0f;
 	color3.Specular = 1.0f;
-	color3.Diffuse = 0.2f;
+	color3.Diffuse = 0.f;
 	color3.GlossyReflective = 0.f;
-	color3.Reflective = 1.f;
+	color3.Reflective = 0.0f;
+	color3.Refractive = 1.1f;
+	color3.RefrAbsorbance = 0.0f;
+	
+	Material color4;
+	color4.Color.red = 0.f; color4.Color.green = 0.f; color4.Color.blue = 0.0f;
+	color4.Specular = 0.f;
+	color4.Diffuse = 0.f;
+	color4.GlossyReflective = 0.0f;
+	color4.Reflective = 0.0f;
+	color4.Refractive = 1.f;
+	color4.RefrAbsorbance = 0.f;
 
 	Material color6;
 	color6.Color.red = 1.f; color6.Color.green = 0.7f; color6.Color.blue = 0.7f;
@@ -36,27 +51,26 @@ int main(int argc, char * argv[])
 	color6.Diffuse = 0.2f;
 	color6.GlossyReflective = 0.f;
 	color6.Reflective = 1.f;
-
-	Material color4;
-	color4.Color.red = 0; color4.Color.green = 0; color4.Color.blue = 1.0f;
-	color4.Specular = 0.f;
-	color4.Diffuse = 1.f;
-	color4.GlossyReflective = 0.0f;
-	color4.Reflective = 1.f;
+	color6.Refractive = 1.f;
+	color6.RefrAbsorbance = 1.f;
 
 	Material color5;
 	color5.Color.red = 1.f; color5.Color.green = 1.f; color5.Color.blue = 1.0f;
 	color5.Specular = 1.f;
 	color5.Diffuse = 0.5f;
 	color5.GlossyReflective = 0.f;
-	color5.Reflective = 0.2f;
+	color5.Reflective = 0.15f;
+	color5.Refractive = 1.f;
+	color5.RefrAbsorbance = 1.f;
 
 	Material color7;
 	color7.Color.red = 1.0f; color7.Color.green = 1.f; color7.Color.blue = 0.0f;
 	color7.Specular = 1.f;
-	color7.Diffuse = 0.5f;
+	color7.Diffuse = 0.8f;
 	color7.GlossyReflective = 0.f;
-	color7.Reflective = 1.f;
+	color7.Reflective = 0.f;
+	color7.Refractive = 1.f;
+	color7.RefrAbsorbance = 1.f;
 
 	Transform sph1T = Translate(Vector(-1.6f, -0.4f, 4.f));
 	Transform sph2T = Translate(Vector(1.6f, -0.4f, 4.f));
@@ -66,8 +80,8 @@ int main(int argc, char * argv[])
 	Transform sph6T = Translate(Vector(0.f, 0.f, 157.5f));
 	Transform sph7T = Translate(Vector(-157.f, 0.f, 0.f));
 	Transform sph8T = Translate(Vector(157.f, 0.f, 0.f));
-	Transform sph9T = Translate(Vector(0.f, -0.4f, 4.f));
-	Transform sph10T = Translate(Vector(0.f, -.50f, 6.f));
+	Transform sph9T = Translate(Vector(0.f, -0.5f, 4.f));
+	Transform sph10T = Translate(Vector(0.f, -0.5f, 4.f));
 	Transform sph11T = Translate(Vector(.20f, -1.f, 6.f));
 
 	Shape * sphere =  new Sphere(&sph1T, color6, .6f);
@@ -79,7 +93,7 @@ int main(int argc, char * argv[])
 	Shape * sphere7 = new Sphere(&sph7T, color5, 151.f);
 	Shape * sphere8 = new Sphere(&sph8T, color5, 151.f);
 	Shape * sphere9 = new Sphere(&sph9T, color3, .6f);
-	Shape * sphere10 = new Sphere(&sph10T, color5, .20f);
+	Shape * sphere10 = new Sphere(&sph10T, color4, .5f);
 	Shape * sphere11 = new Sphere(&sph11T, color5, .20f);
 	
 	scene->push_back(sphere);
@@ -91,7 +105,7 @@ int main(int argc, char * argv[])
 	scene->push_back(sphere7);
 	scene->push_back(sphere8);
 	scene->push_back(sphere9);
-	//scene.push_back(sphere10);
+	//scene->push_back(sphere10);
 	//scene.push_back(sphere11);
 	
 	if (1)

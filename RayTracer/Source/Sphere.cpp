@@ -5,7 +5,7 @@
 #include "Transform.h"
 #include "Color.h"
 
-Sphere::Sphere(const Transform *o2w, const Material &material, const float r)
+Sphere::Sphere(const Transform *o2w, const Material &material, float r)
 	: Shape(o2w, material)
 {
 	Radius = r;
@@ -19,8 +19,7 @@ bool Sphere::Intersect(const Ray &ray, Hit *hit) const
 
 	Ray r;
 	WorldToObject(ray, &r);
-	r.maxt = ray.maxt;
-
+	r.d = Normalize(r.d);
 	float A = r.d.x*r.d.x + r.d.y*r.d.y + r.d.z*r.d.z;
 	float B = 2.f*(r.d.x*r.o.x + r.d.y*r.o.y + r.d.z*r.o.z);
 	float C = r.o.x*r.o.x + r.o.y*r.o.y + r.o.z*r.o.z - Radius*Radius;
@@ -38,9 +37,8 @@ bool Sphere::Intersect(const Ray &ray, Hit *hit) const
 		if (thit > r.maxt)
 			return false;
 	}
-	
 	Point hitOnSphere = r.o + r.d*thit;
-	
+
 	Normal normal(hitOnSphere-Point(0.f, 0.f, 0.f));
 	normal = Normalize(normal);
 	

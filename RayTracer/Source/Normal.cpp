@@ -40,30 +40,35 @@ Normal& Normal::operator-=(const Normal &n)
 	return *this;
 }
 
-Normal Normal::operator*(const float f) const
+Normal Normal::operator*(float f) const
 {
 	return Normal(x * f, y * f, z * f);
 }
 
-Normal& Normal::operator*=(const float f)
+Normal& Normal::operator*=(float f)
 {
 	x *= f; y *= f; z *= f;
 	return *this;
 }
 
-Normal Normal::operator/(const float f) const
+Normal Normal::operator/(float f) const
 {
 	assert(f != 0.f);
 	float inv = 1.f / f;
 	return Normal(x * inv, y * inv, z * inv);
 }
 
-Normal& Normal::operator/=(const float f)
+Normal& Normal::operator/=(float f)
 {
 	assert(f != 0);
 	float inv = 1.f / f;
 	x *= inv; y *= inv; z *= inv;
 	return *this;
+}
+
+Normal Normal::operator-() const
+{
+	return Normal(-x, -y, -z);
 }
 
 float Normal::operator[](int i) const

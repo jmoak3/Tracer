@@ -16,8 +16,8 @@ public:
 	Point operator-(const Vector &v) const;
 	Vector operator-(const Point &p) const;
 	Point& operator-=(const Vector &v);
-	Point operator/(const float f) const;
-	Point& operator/=(const float f);
+	Point operator/(float f) const;
+	Point& operator/=(float f);
 	float operator[](int i) const;
 	float& operator[](int i);
 	bool HasNans() const;

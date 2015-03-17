@@ -4,7 +4,7 @@
 #include "Transform.h"
 #include <assert.h>
 
-Camera::Camera(const Transform &proj, const int width, const int height, const float focalDist)
+Camera::Camera(const Transform &proj, const int width, const int height, float focalDist)
 	: width(width), height(height), focalDist(focalDist)
 {
 	assert(focalDist == height && width == height);

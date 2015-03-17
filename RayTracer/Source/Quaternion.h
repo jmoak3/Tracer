@@ -18,11 +18,11 @@ public:
 	Quaternion operator*(const Quaternion& q) const;
 	Quaternion& operator*=(const Quaternion& q);
 
-	Quaternion operator*(const float f) const;
-	Quaternion& operator*=(const float f);
+	Quaternion operator*(float f) const;
+	Quaternion& operator*=(float f);
 
-	Quaternion operator/(const float f) const;
-	Quaternion& operator/=(const float f);
+	Quaternion operator/(float f) const;
+	Quaternion& operator/=(float f);
 
 	Vector v;
 	float w;
@@ -32,7 +32,7 @@ inline float Dot(const Quaternion& q1, const Quaternion& q2) { return Dot(q1.v, 
 
 inline Quaternion Normalize(const Quaternion &q) { return q / sqrtf(Dot(q, q)); }
 
-inline Quaternion operator*(const float f, const Quaternion &q) { return q*f; }
+inline Quaternion operator*(float f, const Quaternion &q) { return q*f; }
 
 
 #endif

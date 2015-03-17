@@ -124,6 +124,11 @@ void Transform::operator()(const Ray &r, Ray *rTrans) const
 {
 	(*this)(r.o, &(rTrans->o));
 	(*this)(r.d, &(rTrans->d));
+	rTrans->maxt = r.maxt;
+	rTrans->mint = r.mint;
+	rTrans->depth = r.depth;
+	rTrans->refrIndex = r.refrIndex;
+	rTrans->time = r.time;
 }
 
 BoundingBox Transform::operator()(const BoundingBox &bbox) const

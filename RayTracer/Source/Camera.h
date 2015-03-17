@@ -8,7 +8,7 @@ class Camera
 {
 public:
 	Camera() {};
-	Camera(const Transform &proj, const int width, const int height, const float focalDist);
+	Camera(const Transform &proj, const int width, const int height, float focalDist);
 	~Camera() {};
 	
 	Transform ScreenToWorld, WorldToScreen;

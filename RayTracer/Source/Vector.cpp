@@ -53,25 +53,25 @@ Vector Vector::operator-() const
 }
 
 
-Vector Vector::operator*(const float f) const
+Vector Vector::operator*(float f) const
 {
 	return Vector(x * f, y * f, z * f);
 }
 
-Vector& Vector::operator*=(const float f)
+Vector& Vector::operator*=(float f)
 {
 	x *= f; y *= f; z *= f;
 	return *this;
 }
 
-Vector Vector::operator/(const float f) const
+Vector Vector::operator/(float f) const
 {
 	assert(f != 0);
 	float inv = 1.f / f;
 	return Vector(x * inv, y * inv, z * inv);
 }
 
-Vector& Vector::operator/=(const float f)
+Vector& Vector::operator/=(float f)
 {
 	assert(f != 0);
 	float inv = 1.f / f;

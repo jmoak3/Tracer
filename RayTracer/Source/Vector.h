@@ -20,10 +20,10 @@ public:
 	Vector& operator+=(const Vector &v);
 	Vector operator-(const Vector &v) const;
 	Vector& operator-=(const Vector &v);
-	Vector operator*(const float f) const;
-	Vector& operator*=(const float f);
-	Vector operator/(const float f) const;
-	Vector& operator/=(const float f);
+	Vector operator*(float f) const;
+	Vector& operator*=(float f);
+	Vector operator/(float f) const;
+	Vector& operator/=(float f);
 	Vector operator-() const;
 	float operator[](int i) const;
 	float& operator[](int i);
@@ -57,7 +57,7 @@ inline float Dot(const Vector &v1, const Vector &v2) { return (v1.x*v2.x + v1.y*
 
 inline float AbsDot(const Vector &v1, const Vector &v2) { return fabsf(Dot(v1, v2)); }
 
-inline Vector operator*(const float f, const Vector &v) { return v*f; }
+inline Vector operator*(float f, const Vector &v) { return v*f; }
 
 inline void CoordinateSystem(Vector &v1, Vector &v2, Vector &v3)
 {
@@ -74,12 +74,12 @@ inline void CoordinateSystem(Vector &v1, Vector &v2, Vector &v3)
 	v3 = Cross(v1, v2);
 }
 
-inline Vector Lerp(const Vector & v1, const Vector & v2, const float t)
+inline Vector Lerp(const Vector & v1, const Vector & v2, float t)
 {
 	return v1 + t*(v2-v1);
 }
 
-inline Vector SLerp(const Vector & v1, const Vector & v2, const float t)
+inline Vector SLerp(const Vector & v1, const Vector & v2, float t)
 {
 	float d = std::max(-1.f, std::min(1.f, Dot(v1, v2)));
 	float theta = acosf(d)*t;
