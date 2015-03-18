@@ -33,7 +33,7 @@ Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera)
 			Lights->push_back((*iScene));
 	}
 	Samples = 4;
-	LightSamples = 8;
+	LightSamples = 16;
 	GlossyReflectiveSamples = 1;
 	InvSamples = 1.f/(float)Samples;
 	InvLightSamples = 1.f/(float)LightSamples;
@@ -142,7 +142,7 @@ void Renderer::Render()
 
 RGB Renderer::Trace(const Ray &reflRay)
 {
-	if (reflRay.depth > 4)
+	if (reflRay.depth > 6)
 		return RGB();
 
 	Hit bestHit;
@@ -165,7 +165,9 @@ RGB Renderer::Trace(const Ray &reflRay)
 			Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit);
 			Ray nextRefrRay = bestHit.material.RefractRay(reflRay, bestHit, &isRefr);
 			float refl = bestHit.material.Reflective;
-			sampleColor += c + c*Trace(nextReflRay)*refl + (isRefr ? transparency*Trace(nextRefrRay) : RGB());
+			bool isRefl = refl > 0.f;
+			sampleColor += c + (isRefl ? c*Trace(nextReflRay)*refl : RGB()) + (isRefr ? transparency*Trace(nextRefrRay) : RGB());
+			//OPTIMIZE FURTHER!
 		}
 
 		if (isGlossyReflective) // If a primary ray we have done diffusion so average

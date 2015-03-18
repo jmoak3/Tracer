@@ -28,13 +28,13 @@ int main(int argc, char * argv[])
 	color2.RefrAbsorbance = 1.f;
 
 	Material color3;
-	color3.Color.red = 0.0f; color3.Color.green = 0.0f; color3.Color.blue = 0.0f;
+	color3.Color.red = 1.0f; color3.Color.green = 1.0f; color3.Color.blue = 1.0f;
 	color3.Specular = 1.0f;
-	color3.Diffuse = 0.f;
+	color3.Diffuse = 0.1f;
 	color3.GlossyReflective = 0.f;
-	color3.Reflective = 0.0f;
-	color3.Refractive = 1.1f;
-	color3.RefrAbsorbance = 0.0f;
+	color3.Reflective = 1.0f;
+	color3.Refractive = 1.05f;
+	color3.RefrAbsorbance = 0.15f;
 	
 	Material color4;
 	color4.Color.red = 0.f; color4.Color.green = 0.f; color4.Color.blue = 0.0f;
@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
 	color5.Specular = 1.f;
 	color5.Diffuse = 0.5f;
 	color5.GlossyReflective = 0.f;
-	color5.Reflective = 0.15f;
+	color5.Reflective = 0.1f;
 	color5.Refractive = 1.f;
 	color5.RefrAbsorbance = 1.f;
 
@@ -75,13 +75,13 @@ int main(int argc, char * argv[])
 	Transform sph1T = Translate(Vector(-1.6f, -0.4f, 4.f));
 	Transform sph2T = Translate(Vector(1.6f, -0.4f, 4.f));
 	Transform sph3T = Translate(Vector(0.f, -153.0f, 0.f));
-	Transform sph4T = Translate(Vector(0.f, 155.0f, 0.f));
+	Transform sph4T = Translate(Vector(0.f, 158.0f, 0.f));
 	Transform sph5T = Translate(Vector(0.f, 0.f, -157.f));
 	Transform sph6T = Translate(Vector(0.f, 0.f, 157.5f));
 	Transform sph7T = Translate(Vector(-157.f, 0.f, 0.f));
 	Transform sph8T = Translate(Vector(157.f, 0.f, 0.f));
-	Transform sph9T = Translate(Vector(0.f, -0.5f, 4.f));
-	Transform sph10T = Translate(Vector(0.f, -0.5f, 4.f));
+	Transform sph9T = Translate(Vector(0.f, -0.4f, 3.9f));
+	Transform sph10T = Translate(Vector(0.f, -0.4f, 3.9f));
 	Transform sph11T = Translate(Vector(.20f, -1.f, 6.f));
 
 	Shape * sphere =  new Sphere(&sph1T, color6, .6f);
@@ -93,7 +93,7 @@ int main(int argc, char * argv[])
 	Shape * sphere7 = new Sphere(&sph7T, color5, 151.f);
 	Shape * sphere8 = new Sphere(&sph8T, color5, 151.f);
 	Shape * sphere9 = new Sphere(&sph9T, color3, .6f);
-	Shape * sphere10 = new Sphere(&sph10T, color4, .5f);
+	Shape * sphere10 = new Sphere(&sph10T, color4, .6f);
 	Shape * sphere11 = new Sphere(&sph11T, color5, .20f);
 	
 	scene->push_back(sphere);

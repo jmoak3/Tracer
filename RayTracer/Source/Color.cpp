@@ -62,7 +62,7 @@ Ray Material::RefractRay(const Ray &ray, const Hit &hit, bool * isValid) const
 		cosInc = -Dot(N, ray.d);
 	}
 	float cosT2 = 1.f - n*n*(1.f - (cosInc*cosInc));
-	if (cosT2 < 0.f || !(*isValid))
+	if (cosT2 <= 0.f || !(*isValid))
 	{
 		*isValid = false;
 		return Ray();

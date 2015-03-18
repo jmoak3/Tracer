@@ -25,6 +25,7 @@
     <ClInclude Include="Source\Shape.h" />
     <ClInclude Include="Source\Sphere.h" />
     <ClInclude Include="Source\Transform.h" />
+    <ClInclude Include="Source\TriangleMesh.h" />
     <ClInclude Include="Source\Vector.h" />
   </ItemGroup>
   <ItemGroup>
@@ -42,6 +43,7 @@
     <ClCompile Include="Source\Shape.cpp" />
     <ClCompile Include="Source\Sphere.cpp" />
     <ClCompile Include="Source\Transform.cpp" />
+    <ClCompile Include="Source\TriangleMesh.cpp" />
     <ClCompile Include="Source\Vector.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

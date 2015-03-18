@@ -84,6 +84,9 @@
     <ClInclude Include="Source\Primitive.h">
       <Filter>Constructions\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\TriangleMesh.h">
+      <Filter>Shapes\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -129,5 +132,8 @@
       <Filter>Constructions\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\RayTracer.cpp" />
+    <ClCompile Include="Source\TriangleMesh.cpp">
+      <Filter>Shapes\Private</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
