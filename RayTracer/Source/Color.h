@@ -9,7 +9,12 @@ class Vector;
 struct RGB
 {
 	float red=0.f, green=0.f, blue=0.f;
-	RGB() {red = 0.f; green = 0.f; blue = 0.f;}
+	RGB() 
+	{
+		red = 0.f; 
+		green = 0.f; 
+		blue = 0.f;
+	}
 	~RGB() {}
 	RGB(float r, float g, float b)
 	{

@@ -32,9 +32,10 @@ Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera)
 		if ((*iScene)->Type == 1)
 			Lights->push_back((*iScene));
 	}
-	Samples = 4;
-	LightSamples = 16;
+	Samples = 1;
+	LightSamples = 8;
 	GlossyReflectiveSamples = 1;
+	Depth = 5;
 	InvSamples = 1.f/(float)Samples;
 	InvLightSamples = 1.f/(float)LightSamples;
 	InvGlossyReflectiveSamples = 1.f/(float)GlossyReflectiveSamples;
@@ -58,7 +59,7 @@ RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
 		//FIX, SPHERE IS HARDCODED IN COLOR CALCS!!!
 		Material lightMaterial = currLight->GetMaterial();
 		float radius = currLight->Radius;
-		Point lightPos = currLight->ObjectToWorld(Point(0.f, 0.f, 0.f));
+		Point lightPos = (*currLight->ObjectToWorld)(Point(0.f, 0.f, 0.f));
 			
 		RGB sampleColor;
 		for (int i=0;i<LightSamples;++i)
@@ -71,7 +72,6 @@ RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
 			l = Normalize(l);
 			if (ShadowTest(Ray(hitPos, l, hit.eps, distToLight)))
 				continue;
-			
 			//Vector r = static_cast<Vector>(2.f*Dot(l, normal)*normal) - l;
 			Vector r = Vector(2.f*Dot(l, normal)*normal) - l;
 
@@ -100,7 +100,7 @@ void Renderer::Render()
 	const int width = Cam.width;
 
 	outFile << "P6 " << height << " " << width << " 255 ";
-	printf("%ix%i. %i AA Samples, %i LightSamples, %i GlossyReflectionSamples\n", width, height, Samples, LightSamples, GlossyReflectiveSamples);
+	printf("%ix%i. %i AA Samples, %i LightSamples, %i GlossyReflectionSamples, %i Depth\n", width, height, Samples, LightSamples, GlossyReflectiveSamples, Depth);
 
 	long double startTime = GetMS();
 	int lastPercent = 0;
@@ -142,7 +142,7 @@ void Renderer::Render()
 
 RGB Renderer::Trace(const Ray &reflRay)
 {
-	if (reflRay.depth > 6)
+	if (reflRay.depth > Depth)
 		return RGB();
 
 	Hit bestHit;
@@ -166,7 +166,7 @@ RGB Renderer::Trace(const Ray &reflRay)
 			Ray nextRefrRay = bestHit.material.RefractRay(reflRay, bestHit, &isRefr);
 			float refl = bestHit.material.Reflective;
 			bool isRefl = refl > 0.f;
-			sampleColor += c + (isRefl ? c*Trace(nextReflRay)*refl : RGB()) + (isRefr ? transparency*Trace(nextRefrRay) : RGB());
+			sampleColor += c + (isRefl && !c.IsBlack() ? c*Trace(nextReflRay)*refl : RGB()) + (isRefr && !transparency.IsBlack() ? transparency*Trace(nextRefrRay) : RGB());
 			//OPTIMIZE FURTHER!
 		}
 

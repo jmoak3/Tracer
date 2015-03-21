@@ -37,6 +37,15 @@
     <Filter Include="ElectromagneticForces\Private">
       <UniqueIdentifier>{bfbb864e-af0c-4f59-b3c1-3c131c37c791}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Michelangelo">
+      <UniqueIdentifier>{b6485b28-e6ac-495d-a1bc-ecdb34690863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Michelangelo\Private">
+      <UniqueIdentifier>{a5034c4e-79fe-41fe-a0b7-b519e2dc5595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Michelangelo\Public">
+      <UniqueIdentifier>{a161dc86-dcf7-4b09-9b9f-a4bdd5d16c97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Point.h">
@@ -87,6 +96,9 @@
     <ClInclude Include="Source\TriangleMesh.h">
       <Filter>Shapes\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ObjLoader.h">
+      <Filter>Michelangelo\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -134,6 +146,9 @@
     <ClCompile Include="Source\RayTracer.cpp" />
     <ClCompile Include="Source\TriangleMesh.cpp">
       <Filter>Shapes\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ObjLoader.cpp">
+      <Filter>Michelangelo\Private</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

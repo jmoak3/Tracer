@@ -17,6 +17,7 @@
     <ClInclude Include="Source\Inlines.h" />
     <ClInclude Include="Source\Matrix4x4.h" />
     <ClInclude Include="Source\Normal.h" />
+    <ClInclude Include="Source\ObjLoader.h" />
     <ClInclude Include="Source\Point.h" />
     <ClInclude Include="Source\Primitive.h" />
     <ClInclude Include="Source\Quaternion.h" />
@@ -34,6 +35,7 @@
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Matrix4x4.cpp" />
     <ClCompile Include="Source\Normal.cpp" />
+    <ClCompile Include="Source\ObjLoader.cpp" />
     <ClCompile Include="Source\Point.cpp" />
     <ClCompile Include="Source\Primitive.cpp" />
     <ClCompile Include="Source\Quaternion.cpp" />

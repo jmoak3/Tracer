@@ -27,6 +27,7 @@ private:
 	float InvSamples;
 	float InvLightSamples;
 	float InvGlossyReflectiveSamples;
+	int Depth;
 };
 
 #endif
