@@ -8,15 +8,33 @@
 int main(int argc, char * argv[])
 {	
 	std::vector<Primitive*> *scene = new std::vector<Primitive*>();
+	
+	Material whiteWall;
+	whiteWall.Color.red = 1.f; whiteWall.Color.green = 1.f; whiteWall.Color.blue = 1.0f;
+	whiteWall.Specular = 1.f;
+	whiteWall.Diffuse = 0.5f;
+	whiteWall.GlossyReflective = 0.f;
+	whiteWall.Reflective = 0.1f;
+	whiteWall.Refractive = 1.f;
+	whiteWall.RefrAbsorbance = 1.f;
 
-	Material color1;
-	color1.Color.red = 1.0f; color1.Color.green = 0; color1.Color.blue = 0;
-	color1.Specular = 0.f;
-	color1.Diffuse = 1.f;
-	color1.GlossyReflective = 1.f;
-	color1.Reflective = 1.f;
-	color1.Refractive = 1.f;
-	color1.RefrAbsorbance = 1.f;
+	Material blueWall;
+	blueWall.Color.red = 0.4f; blueWall.Color.green = 0.4f; blueWall.Color.blue = 1.0f;
+	blueWall.Specular = 1.f;
+	blueWall.Diffuse = 0.5f;
+	blueWall.GlossyReflective = 0.f;
+	blueWall.Reflective = 0.05f;
+	blueWall.Refractive = 1.f;
+	blueWall.RefrAbsorbance = 1.f;
+
+	Material redWall;
+	redWall.Color.red = 1.f; redWall.Color.green = 0.4f; redWall.Color.blue = .4f;
+	redWall.Specular = 1.f;
+	redWall.Diffuse = 0.5f;
+	redWall.GlossyReflective = 0.f;
+	redWall.Reflective = 0.1f;
+	redWall.Refractive = 1.f;
+	redWall.RefrAbsorbance = 1.f;
 
 	Material color2;
 	color2.Color.red = 0.7f; color2.Color.green = 1.f; color2.Color.blue = 0.7f;
@@ -54,15 +72,6 @@ int main(int argc, char * argv[])
 	color6.Refractive = 1.f;
 	color6.RefrAbsorbance = 1.f;
 
-	Material color5;
-	color5.Color.red = 0.4f; color5.Color.green = 0.4f; color5.Color.blue = 1.0f;
-	color5.Specular = 1.f;
-	color5.Diffuse = 0.5f;
-	color5.GlossyReflective = 0.f;
-	color5.Reflective = 0.1f;
-	color5.Refractive = 1.f;
-	color5.RefrAbsorbance = 1.f;
-
 	Material color7;
 	color7.Color.red = 1.0f; color7.Color.green = 1.f; color7.Color.blue = 0.0f;
 	color7.Specular = 1.f;
@@ -97,15 +106,15 @@ int main(int argc, char * argv[])
 
 	Primitive * sphere =  new Sphere(&sph1T, &Invsph1T, color6, .6f);
 	Primitive * sphere2 = new Sphere(&sph2T, &Invsph2T, color2, .6f);
-	Primitive * sphere3 = new Sphere(&sph3T, &Invsph3T, color5, 151.f);
-	Primitive * sphere4 = new Sphere(&sph4T, &Invsph4T, color5, 151.f);
-	Primitive * sphere5 = new Sphere(&sph5T, &Invsph5T, color5, 151.f);
-	Primitive * sphere6 = new Sphere(&sph6T, &Invsph6T, color5, 151.f);
-	Primitive * sphere7 = new Sphere(&sph7T, &Invsph7T, color5, 151.f);
-	Primitive * sphere8 = new Sphere(&sph8T, &Invsph8T, color5, 151.f);
+	Primitive * sphere3 = new Sphere(&sph3T, &Invsph3T, whiteWall, 151.f);
+	Primitive * sphere4 = new Sphere(&sph4T, &Invsph4T, whiteWall, 151.f);
+	Primitive * sphere5 = new Sphere(&sph5T, &Invsph5T, blueWall, 151.f);
+	Primitive * sphere6 = new Sphere(&sph6T, &Invsph6T, blueWall, 151.f);
+	Primitive * sphere7 = new Sphere(&sph7T, &Invsph7T, redWall, 151.f);
+	Primitive * sphere8 = new Sphere(&sph8T, &Invsph8T, redWall, 151.f);
 	Primitive * sphere9 = new Sphere(&sph9T, &Invsph9T, color3, .6f);
 	Primitive * sphere10 = new Sphere(&sph10T, &Invsph10T, color4, .6f);
-	Primitive * sphere11 = new Sphere(&sph11T, &Invsph11T, color5, .20f);
+	Primitive * sphere11 = new Sphere(&sph11T, &Invsph11T, whiteWall, .20f);
 	
 	scene->push_back(sphere);
 	scene->push_back(sphere2);

@@ -32,8 +32,8 @@ Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera)
 		if ((*iScene)->Type == 1)
 			Lights->push_back((*iScene));
 	}
-	Samples = 1;
-	LightSamples = 8;
+	Samples = 8;
+	LightSamples = 64;
 	GlossyReflectiveSamples = 1;
 	Depth = 5;
 	InvSamples = 1.f/(float)Samples;
