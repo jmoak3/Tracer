@@ -10,6 +10,12 @@ Sphere::Sphere(const Transform *o2w, const Transform *w2o, const Material &mater
 {
 	Radius = r;
 	if (material.Emissive>0.f) Type = 1;
+	ObjectBounds = ObjectBound();
+}
+
+bool Sphere::CanIntersect() const
+{
+	return true;
 }
 
 bool Sphere::Intersect(const Ray &ray, Hit *hit) const
@@ -19,10 +25,9 @@ bool Sphere::Intersect(const Ray &ray, Hit *hit) const
 
 	Ray r;
 	(*WorldToObject)(ray, &r);
-	assert(r.d.Length() <1.001f);
 
-	//SLOWER WITH BOUNDING BOX!
-	//if (!GetBBox().Intersect(r))
+	//SLOWER WITH BOUNDING BOX?
+	//if (!ObjectBounds.Intersect(r))
 	//	return false;
 
 	float A = r.d.x*r.d.x + r.d.y*r.d.y + r.d.z*r.d.z;
@@ -55,6 +60,7 @@ bool Sphere::Intersect(const Ray &ray, Hit *hit) const
 	hit->shapeID = ShapeID;
 	hit->eps = 5e-4 * thit;
 	hit->type = Type;
+
 	return true;
 }
 
@@ -63,7 +69,12 @@ Material Sphere::GetMaterial() const
 	return Mat;
 }
 
-BoundingBox Sphere::GetBBox() const
+BoundingBox Sphere::ObjectBound() const
 {
 	return BoundingBox(Point(-Radius, -Radius, -Radius), Point(Radius, Radius, Radius));
+}
+
+BoundingBox Sphere::WorldBound() const
+{
+	return (*ObjectToWorld)(BoundingBox(Point(-Radius, -Radius, -Radius), Point(Radius, Radius, Radius)));
 }

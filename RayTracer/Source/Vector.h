@@ -14,6 +14,7 @@ public:
 	Vector(float xx, float yy, float zz);
 	Vector(const Point &p1, const Point &p2);
 	explicit Vector(const Normal &n);
+	Vector(const Vector &v, bool ignoreNaNs = false);
 	~Vector() {};
 
 	Vector operator+(const Vector &v) const;
@@ -79,12 +80,11 @@ inline Vector Lerp(const Vector & v1, const Vector & v2, float t)
 	return v1 + t*(v2-v1);
 }
 
-inline Vector SLerp(const Vector & v1, const Vector & v2, float t)
+inline Vector SLerpNormalized(const Vector & v1, const Vector & v2, float t)
 {
-	float d = std::max(-1.f, std::min(1.f, Dot(v1, v2)));
-	float theta = acosf(d)*t;
-	Vector v3 = v2- v1*d;
-	return v1*cosf(theta) + v3*sinf(theta);
+	float theta = acos(Dot(v1, v2));
+	float sinTheta = sin(theta);
+	return (sin((1.f-t)*theta)/sinTheta *v1 + sin(t*theta)/sinTheta *v2);
 }
 
 #endif

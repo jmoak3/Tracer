@@ -99,17 +99,17 @@ void Transform::operator()(const Vector &v, Vector *vTrans) const
 Normal Transform::operator()(const Normal &n) const
 {
 	float x = n.x; float y = n.y; float z = n.z;
-	return Normal(mInv.m[0][0]*x + mInv.m[0][1]*y + mInv.m[0][2]*z,
-				  mInv.m[1][0]*x + mInv.m[1][1]*y + mInv.m[1][2]*z,
-				  mInv.m[2][0]*x + mInv.m[2][1]*y + mInv.m[2][2]*z);
+	return Normal(mInv.m[0][0]*x + mInv.m[1][0]*y + mInv.m[2][0]*z,
+				  mInv.m[0][1]*x + mInv.m[1][1]*y + mInv.m[2][1]*z,
+				  mInv.m[0][2]*x + mInv.m[1][2]*y + mInv.m[2][2]*z);
 }
 
 void Transform::operator()(const Normal &n, Normal *nTrans) const
 {
 	float x = n.x; float y = n.y; float z = n.z;
-	nTrans->x =  mInv.m[0][0]*x + mInv.m[0][1]*y + mInv.m[0][2]*z;
-	nTrans->y =  mInv.m[1][0]*x + mInv.m[1][1]*y + mInv.m[1][2]*z;
-	nTrans->z =  mInv.m[2][0]*x + mInv.m[2][1]*y + mInv.m[2][2]*z;
+	nTrans->x =  mInv.m[0][0]*x + mInv.m[1][0]*y + mInv.m[2][0]*z;
+	nTrans->y =  mInv.m[0][1]*x + mInv.m[1][1]*y + mInv.m[2][1]*z;
+	nTrans->z =  mInv.m[0][2]*x + mInv.m[1][2]*y + mInv.m[2][2]*z;
 }
 
 Ray Transform::operator()(const Ray &r) const

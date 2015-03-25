@@ -25,6 +25,13 @@ Vector::Vector(const Normal &n)
 	x = n.x; y = n.y; z = n.z;
 }
 
+Vector::Vector(const Vector &v, bool ignoreNaNs)
+{
+	x = v.x; y = v.y; z = v.z;
+	if (!ignoreNaNs)
+		assert(!HasNans());
+}
+
 Vector Vector::operator+(const Vector &v) const
 {
 	return Vector(x + v.x, y + v.y, z + v.z);

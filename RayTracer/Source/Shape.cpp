@@ -21,7 +21,12 @@ bool Shape::CanIntersect() const
 	return true;
 }
 
-BoundingBox Shape::GetBBox() const
+BoundingBox Shape::ObjectBound() const
+{
+	return BoundingBox();
+}
+
+BoundingBox Shape::WorldBound() const
 {
 	return BoundingBox();
 }

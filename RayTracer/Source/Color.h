@@ -102,6 +102,8 @@ public:
 	
 	Ray ReflectRay(const Ray &ray, const Hit &hit) const;
 	Ray RefractRay(const Ray &ray, const Hit &hit, bool * isValid) const;
+	Ray CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit) const;
+	Ray CalcReflectApprox(const Ray &ray, Ray &r, const Hit &hit) const;
 	RGB Color;
 	float Specular, Diffuse, Reflective, GlossyReflective, Refractive, RefrAbsorbance;
 	float Emissive;

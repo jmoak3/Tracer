@@ -11,9 +11,12 @@ public:
 	Sphere(const Transform *o2w, const Transform *w2o, const Material &material, float r);
 	~Sphere() {};
 	bool Intersect(const Ray &ray, Hit *hit) const;
-	BoundingBox GetBBox() const;
+	bool CanIntersect() const;
+	BoundingBox ObjectBound() const;
+	BoundingBox WorldBound() const;
 	Material GetMaterial() const;
 	float Radius;
+	BoundingBox ObjectBounds;
 };
 
 #endif

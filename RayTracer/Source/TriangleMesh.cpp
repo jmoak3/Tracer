@@ -7,27 +7,75 @@ TriangleMesh::TriangleMesh(const Transform * o2w, const Transform * w2o, Materia
 {
 	NumTris = numTris;
 	NumVerts = numVerts;
-	VertIndices = new int[3 * NumVerts];
+	VertIndices = new int[3 * NumTris];
+	printf("NumTris: %i\n", NumTris);
 	memcpy(VertIndices, vertIndices, 3 * NumTris * sizeof(int));
+	printf("VertIndices successfully added\n");
 	
 	if (vertPoints != NULL)
 	{
+		VertPoints = new Point[NumVerts];
 		memcpy(VertPoints, vertPoints, NumVerts * sizeof(Point));
 		for (int i=0;i<NumVerts;++i)
 			VertPoints[i] = (*ObjectToWorld)(vertPoints[i]);
+		printf("VertPoints successfully added\n");
 	}
 
 	if (normals != NULL)
-		memcpy(Normals, normals, NumVerts * sizeof(Normals));
+	{
+		Normals = new Normal[NumTris];
+		memcpy(Normals, normals, NumTris * sizeof(Normal));
+		for (int i=0;i<NumTris;++i)
+			Normals[i] = Normalize((*ObjectToWorld)(normals[i]));
+		for (int i=0;i<NumTris;++i)
+			Normals[i];
+		printf("TriNormals successfully added\n");
+	}
 	else
 		CalculateNormals();
 
 	if (uv != NULL)
-		memcpy(UVs, uv, NumVerts * sizeof(int));
+	{
+		UVs = new float[NumVerts*2];
+		memcpy(UVs, uv, NumVerts* 2 * sizeof(float));
+		printf("UVs successfully added\n");
+	}
+
+	WorldBounds = WorldBound();//speed
+	printf("TriangleMesh Successfully added \n");
+
+	//PreCache all tris till kdtrees/triangle refine/subdivide algo is implemented
+	Triangles = new std::vector<Triangle>();
+	for (int i=0;i<NumTris;++i)
+	{
+		Triangle Tri(ObjectToWorld, WorldToObject, 
+					 Mat, this, i);
+		Triangles->push_back(Tri);
+	}
 }
 
 bool TriangleMesh::CanIntersect() const
 {
+	return true; //should be false; too slow
+}
+
+bool TriangleMesh::Intersect(const Ray & ray, Hit * hit) const
+{
+	//if (!CanIntersect())
+	//	return false;
+
+	if (!WorldBounds.Intersect(ray)) // BB
+		return false;//speed
+
+	for (int currTri=0;currTri<NumTris;++currTri)
+	{
+		//Triangle Tri(ObjectToWorld, WorldToObject, 
+		//			 Mat, this, currTri);
+		
+		if ((*Triangles)[currTri].Intersect(ray, hit))
+			return true;
+	}
+	
 	return false;
 }
 
@@ -55,11 +103,13 @@ void TriangleMesh::CalculateNormals()
 
 //TRIANGLES
 Triangle::Triangle(const Transform * o2w, const Transform * w2o,
-		Material material, TriangleMesh *mesh, int num)
+		Material material, const TriangleMesh *mesh, int num)
 		: Shape(o2w, w2o, material)
 {
 	Mesh = mesh;
 	Vert = &(Mesh->VertIndices[3*num]);
+	Num = num;
+	WorldBounds = WorldBound();//speed
 }
 
 bool Triangle::CanIntersect() const
@@ -90,59 +140,48 @@ BoundingBox Triangle::WorldBound() const
 
 bool Triangle::Intersect(const Ray & ray, Hit * hit) const
 {
-	if (!CanIntersect())
+	//if (!CanIntersect())
+	//	return false;
+	//if (!WorldBounds.Intersect(ray))
+	//	return false;
+	Ray r = ray;
+
+	Point a = Mesh->VertPoints[Vert[0]];
+	Point b = Mesh->VertPoints[Vert[1]];
+	Point c = Mesh->VertPoints[Vert[2]];
+	Vector e1 = b-a;
+	Vector e2 = c-a;
+	Vector s1 = Cross(r.d, e2);
+
+	float denominator = Dot(s1, e1);
+	if (denominator==0.f)
+		return false;
+	float invDenom = 1.f/denominator;
+	Vector s = r.o - a;
+	float b1 = Dot(s, s1)*invDenom;
+	if (b1 < 0 || b1 > 1.f)
 		return false;
 
-	Ray r;
-	(*WorldToObject)(ray, &r);
-
-	Point A = Mesh->VertPoints[Vert[0]];
-	Point B = Mesh->VertPoints[Vert[1]];
-	Point C = Mesh->VertPoints[Vert[2]];
-	Vector AC = C-A;
-	Vector AB = B-A;
-	Vector normal = Cross(AB, AC);
-	float t = -Dot(r.o-A, normal)/Dot(r.d, normal);
-	if (t < r.mint || t > r.maxt) return false;
-	int k=0;
-	if (fabsf(normal.x) > fabsf(normal.y))
-	{
-		if (fabsf(normal.x) > fabsf(normal.z))
-			k=0;
-		else
-			k=2;
-	}
-	else
-	{
-		if (fabsf(normal.y) > fabsf(normal.z))
-			k=1;
-		else 
-			k=2;
-	}
-	int u = (k+1)%3;
-	int v = (k+2)%3;
-	float H[3];
-	H[u] = r.o[u] + t*r.d[u];
-	H[v] = r.o[v] + t*r.d[v];
-
-	float denominator = 1.f/(AC[u]*AB[v] - AC[v]*AB[u]);
-	float b = (AC[u]*H[v] - AC[v]*H[u])*denominator;
-	if (b<0 || b>1) 
+	Vector s2 = Cross(s, e1);
+	float b2 = Dot(r.d, s2)*invDenom;
+	if (b2 < 0.f || b1+b2 > 1.f)
 		return false;
 
-	float c = (AB[v]*H[u] - AB[u]*H[v])*denominator;
-	if (c<0 || b+c>1)
+	float t = Dot(e2, s2)*invDenom;
+	if (t < r.mint || t > r.maxt)
 		return false;
-	
+
 	hit->tHit = t;
-	hit->eps = 5e-4*t;
+	hit->eps = 1e-3*t;
 	hit->shapeID = ShapeID;
 	hit->type = Type;
 	hit->material = Mat;
-	hit->normal = Normal(normal);
+	hit->normal = Mesh->Normals[Num];
+	return true;
 }
 
 Normal Triangle::GetNormal() const
 {
 	assert(false);
+	return Normal();
 }

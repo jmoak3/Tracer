@@ -18,7 +18,7 @@ BoundingBox::~BoundingBox()
 {
 }
 
-bool BoundingBox::Intersect(const Ray& ray)
+bool BoundingBox::Intersect(const Ray& ray) const
 {
 	float t0 = ray.mint;
 	float t1 = ray.maxt;

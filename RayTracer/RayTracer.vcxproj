@@ -20,6 +20,7 @@
     <ClInclude Include="Source\ObjLoader.h" />
     <ClInclude Include="Source\Point.h" />
     <ClInclude Include="Source\Primitive.h" />
+    <ClInclude Include="Source\QualityDesc.h" />
     <ClInclude Include="Source\Quaternion.h" />
     <ClInclude Include="Source\Ray.h" />
     <ClInclude Include="Source\Renderer.h" />

@@ -15,7 +15,8 @@ public:
 
 	virtual bool Intersect(const Ray &ray, Hit *hit) const;
 	virtual bool CanIntersect() const;
-	virtual BoundingBox GetBBox() const;
+	virtual BoundingBox ObjectBound() const;
+	virtual BoundingBox WorldBound() const;
 	virtual Material GetMaterial() const;
 
 	const Transform *WorldToObject, *ObjectToWorld;

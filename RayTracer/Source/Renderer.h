@@ -2,13 +2,14 @@
 #define RENDERER_H
 #include "Shape.h"
 #include "Camera.h"
+#include "QualityDesc.h"
 
 #include <vector>
 
 class Renderer
 {
 public:
-	Renderer(std::vector<Primitive*>* scene, const Camera &ccamera);
+	Renderer(std::vector<Primitive*>* scene, const Camera &ccamera, const QualityDesc &quality);
 	~Renderer() {delete Lights;}
 
 	void Render();

@@ -43,7 +43,10 @@ inline Normal Cross(const Normal &n1, const Normal &n2)
 		(n1.x * n2.y) - (n1.y * n2.x));
 }
 
-inline float Dot(const Normal &n1, const Normal &n2) { return (n1.x*n2.x + n1.y*n2.y + n1.z*n2.z); }
+inline float Dot(const Normal &n1, const Normal &n2) 
+{
+	return (n1.x*n2.x + n1.y*n2.y + n1.z*n2.z);
+}
 
 inline Normal operator*(float f, const Normal &n) { return n*f; }
 
