@@ -47,8 +47,8 @@ RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
 	Material shapeMaterial = hit.material;
 	Point hitPos = reflRay.o + hit.tHit*reflRay.d;
 	Vector v = -reflRay.d;
-	//if (Dot(normal, reflRay.d) > 0.f)
-	//	normal = -normal;
+	if (Dot(normal, reflRay.d) > 0.f && hit.material.RefrAbsorbance > 0.9f)
+		normal = -normal;
 
 	RGB finalColor;
 	std::vector<Primitive*>::iterator iLight;
@@ -142,6 +142,12 @@ void Renderer::Render()
 			printf("\r%i%% Complete; %0.01f Milliseconds Elapsed", percent, (long double)(GetMS() - startTime));
 			lastPercent = percent;
 		}
+	}
+	int percent = 100;
+	if (lastPercent != percent) 
+	{
+		printf("\r%i%% Complete; %0.01f Milliseconds Elapsed", percent, (long double)(GetMS() - startTime));
+		lastPercent = percent;
 	}
 	outFile.close();
 	printf("\n");

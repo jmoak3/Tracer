@@ -1,3 +1,5 @@
+#define NDEBUG
+
 #include "Inlines.h"
 #include "Shape.h"
 #include "Sphere.h"
@@ -91,7 +93,7 @@ int main(int argc, char * argv[])
 	dragonColor.Specular = 0.f;
 	dragonColor.Diffuse = 0.4f;
 	dragonColor.GlossyReflective = 0.08f;
-	dragonColor.Reflective = 0.f;
+	dragonColor.Reflective = 0.8f;
 	dragonColor.Refractive = 1.f;
 	dragonColor.RefrAbsorbance = 1.f;
 
@@ -105,9 +107,9 @@ int main(int argc, char * argv[])
 	Transform *sph8T = new Transform(Translate(Vector(154.5f, 0.f, 0.f)));
 	Transform *sph9T = new Transform(Translate(Vector(0.f, -0.4f, 3.9f)));
 	Transform *drag = new Transform((Translate(Vector(0.f, -2.f, 3.5f)))
-					 (RotateY(-45))
-					 (RotateX(-90))
-					 (Scale(0.6f, 0.6f, 0.6f)));
+									(RotateY(-45))
+									(RotateX(-90))
+									(Scale(0.6f, 0.6f, 0.6f)));
 
 	Transform* Invsph1T = new Transform(Inverse(*sph1T));
 	Transform* Invsph2T = new Transform(Inverse(*sph2T));
@@ -131,8 +133,8 @@ int main(int argc, char * argv[])
 	Primitive * sphere9 = new Sphere(sph9T, Invsph9T, color3, .6f);
 	
 	ObjLoader loader;
-	TriangleMesh mesh = loader.Construct("dragon.obj", drag, Invdrag, dragonColor);
-	Primitive * dragon = &mesh;
+	Primitive * dragon = new TriangleMesh(loader.Construct("dragon.obj", drag, Invdrag, dragonColor));
+	
 	scene->push_back(dragon);
 
 	//scene->push_back(sphere);
@@ -147,6 +149,7 @@ int main(int argc, char * argv[])
 	//scene->push_back(sphere10);
 	//scene.push_back(sphere11);
 	
+	std::vector<void*> smallSphereData;
 	if (0)
 	for (int i=0;i<8;++i)
 	{
@@ -156,6 +159,9 @@ int main(int argc, char * argv[])
 			Transform * InvT = new Transform(Inverse(*T));
 			Primitive * sp =  new Sphere(T, InvT, color7, 0.15f);
 			scene->push_back(sp);
+			smallSphereData.push_back(T);
+			smallSphereData.push_back(InvT);
+			smallSphereData.push_back(sp);
 		}
 	}
 
@@ -166,21 +172,15 @@ int main(int argc, char * argv[])
 	Material lightMat2; lightMat2.Color = white; 
 	lightMat2.Emissive = 37.f;
 	
-	Material lightMat3; lightMat3.Color = white; 
-	lightMat3.Emissive = 37.f;
-
-	Transform lightT1 = Translate(Vector(0.0f, 2.8f, -3.5f));
-	Transform lightT2 = Translate(Vector(-1.7f, -0.5f, -3.5f));
-	Transform lightT3 = Translate(Vector(1.4f, -0.7f, -.7f));
-	Transform InvlightT1 = Inverse(lightT1);
-	Transform InvlightT2 = Inverse(lightT2);
-	Transform InvlightT3 = Inverse(lightT2);
-	Primitive * light1 = new Sphere(&lightT1, &InvlightT1, lightMat, 0.15f);//0.6f);
-	Primitive * light2 = new Sphere(&lightT2, &InvlightT2, lightMat2, 0.15f);//0.6f);
-	Primitive * light3 = new Sphere(&lightT3, &InvlightT3, lightMat3, 0.6f);
+	Transform* lightT1 = new Transform(Translate(Vector(0.0f, 2.8f, -3.5f)));
+	Transform* lightT2 = new Transform(Translate(Vector(-1.7f, -0.5f, -3.5f)));
+	Transform* lightT3 = new Transform(Translate(Vector(1.4f, -0.7f, -.7f)));
+	Transform* InvlightT1 = new Transform(Inverse(*lightT1));
+	Transform* InvlightT2 = new Transform(Inverse(*lightT2));
+	Primitive * light1 = new Sphere(lightT1, InvlightT1, lightMat, 0.15f);//0.6f);
+	Primitive * light2 = new Sphere(lightT2, InvlightT2, lightMat2, 0.15f);//0.6f);
 	scene->push_back(light1);
 	scene->push_back(light2);
-	//scene->push_back(light3);
 
 	Transform camTrans = Translate(Vector(0.f, 0.7f, -4.f));
 	QualityDesc quality;
@@ -188,11 +188,21 @@ int main(int argc, char * argv[])
 	quality.LightSamples = 2;
 	quality.GlossyReflectiveSamples = 1;
 	quality.Depth = 1;
-	float dim = 10.f;
+	float dim = 1000.f;
 	Camera camera(camTrans, dim, dim, dim);
 	Renderer renderer(scene, camera, quality);
 	renderer.Render();
+
 	delete scene;
+	delete light1, light2;
+	delete lightT1, lightT2;
+	delete InvlightT1, InvlightT2;
 	delete sphere, sphere2, sphere3, sphere4, sphere5, sphere6, sphere7, sphere8, sphere9;
+	delete sph1T, sph2T, sph3T, sph4T, sph5T, sph6T, sph7T, sph8T, sph9T;
+	delete Invsph1T, Invsph2T, Invsph3T, Invsph4T, Invsph5T, Invsph6T, Invsph7T, Invsph8T, Invsph9T;
+	for (int i=0;i<smallSphereData.size();++i)
+	{
+		delete smallSphereData[i];
+	}
 	return 0;
 }
