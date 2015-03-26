@@ -13,7 +13,8 @@ public:
 	~Renderer() {delete Lights;}
 
 	void Render();
-	RGB Trace(const Ray &reflRay);
+	RGB RayTrace(const Ray &reflRay);
+	RGB PathTrace(const Ray &reflRay);
 	RGB computeColor(const Ray &reflRay, const Hit & hit);
 
 private:
@@ -25,6 +26,7 @@ private:
 	int Samples;
 	int LightSamples;
 	int GlossyReflectiveSamples;
+	bool Path;
 	float InvSamples;
 	float InvLightSamples;
 	float InvGlossyReflectiveSamples;

@@ -15,38 +15,53 @@ inline float ra()
 }
 
 
-Ray Material::ReflectRay(const Ray &ray, const Hit &hit) const
+Ray Material::ReflectRay(const Ray &ray, const Hit &hit, bool path) const
 {
 	Ray r(Point(), Vector(), hit.eps, ray.maxt, ray.time, ray.depth+1, hit.material.Refractive);
 
 	//Save the trouble
-	if (Reflective < 0.001f || GlossyReflective < 0.001f || ray.depth != 0)
+	if (!path && (Reflective < 0.001f || GlossyReflective < 0.001f || ray.depth != 0))
 	{
 		r.o = ray.o + ray.d*hit.tHit;
 		r.d = Normalize(ray.d - Vector(hit.normal*Dot(ray.d, hit.normal)*2.f));
 		return r;
 	}
-	return CalcReflectLerp(ray, r, hit);
+	return CalcReflectLerp(ray, r, hit, path);
 	//return CalcReflectApprox(ray, r, hit);
 }
 
-Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit) const
+Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path) const
 {
-	Vector basis1 = Dot(hit.normal, r.d) < 0 ?
-							Vector(hit.normal) :
-							-1.f*Vector(hit.normal);
-	Vector temp = Vector(Cross(basis1, Vector(0.f, 1.f, 0.f)), true);
-	Vector basis2 = temp.HasNans() ?
-							Cross(basis1, Vector(1.f, 0.f, 0.f)) :
-							temp;
-	Vector basis3 = Cross(basis2, basis1);
+	if (path && Specular > 0.001f)
+	{
+		r.o = ray.o + ray.d*hit.tHit;
+		Vector properReflection = Normalize(ray.d - Vector(2.f*(Dot(ray.d, hit.normal))*hit.normal));
+		Vector jitter = Vector(ra()*Specular, ra()*Specular, ra()*Specular);
+		r.d = Normalize(properReflection+jitter);
+		return r;
+	}
+
+	Vector basis1 = Dot(hit.normal, ray.d) < 0.f ?
+						Vector(hit.normal) :
+						-Vector(hit.normal);
+	
+	Vector basis2 = fabsf(basis1.x) > .1f ? 
+							Vector(0.f, 1.f, 0.f) :
+							Cross(Vector(1.f, 0.f, 0.f), basis1);
+	basis2 = Normalize(basis2);
+	Vector basis3 = Cross(basis1, basis2);
 	float u = ra1()*6.28319f;
 	float v = ra1();
 	float w = sqrt(v);
-	Vector jitter = Normalize(basis2*cosf(u)*w + basis3*sinf(u)*w + basis1*(1.f-v));
-	r.o = ray.o + ray.d*hit.tHit;
-	Vector properReflection = Normalize(ray.d - Vector(2.f*(Dot(ray.d, hit.normal))*hit.normal));
-	r.d = Normalize(Lerp(properReflection, jitter, GlossyReflective));
+	Vector jitter = Normalize(basis2*cos(u)*w + basis3*sin(u)*w + basis1*sqrt(1.f-v));
+	
+	if (!path)
+	{
+		Vector properReflection = Normalize(ray.d - Vector(2.f*(Dot(ray.d, hit.normal))*hit.normal));
+		r.d = Normalize(Lerp(properReflection, jitter, GlossyReflective));
+	}
+	else
+		r.d = jitter;
 	return r;
 }
 

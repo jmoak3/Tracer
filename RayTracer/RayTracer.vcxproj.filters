@@ -146,12 +146,12 @@
     <ClCompile Include="Source\Primitive.cpp">
       <Filter>Constructions\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Source\RayTracer.cpp" />
     <ClCompile Include="Source\TriangleMesh.cpp">
       <Filter>Shapes\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\ObjLoader.cpp">
       <Filter>Michelangelo\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Tracer.cpp" />
   </ItemGroup>
 </Project>

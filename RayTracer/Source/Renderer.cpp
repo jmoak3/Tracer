@@ -14,6 +14,11 @@ inline float r()
 	return (float)((rand()/(float)RAND_MAX)-0.5f);
 }
 
+inline float r1()
+{
+	return (float)((rand()/(float)RAND_MAX));
+}
+
 inline long double GetMS()
 {
 	timeb t;
@@ -32,13 +37,83 @@ Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera, const 
 		if ((*iScene)->Type == 1)
 			Lights->push_back((*iScene));
 	}
-	Samples = quality.AliasSamples;
+	Samples = quality.Samples;
 	LightSamples = quality.LightSamples;
 	GlossyReflectiveSamples = quality.GlossyReflectiveSamples;
 	Depth = quality.Depth;
+	Path = quality.Path;
 	InvSamples = 1.f/(float)Samples;
 	InvLightSamples = 1.f/(float)LightSamples;
 	InvGlossyReflectiveSamples = 1.f/(float)GlossyReflectiveSamples;
+}
+
+void Renderer::Render()
+{
+	srand(time(0));
+	std::ofstream outFile;
+	outFile.open("file.ppm", std::ios::out);
+	if (outFile.bad())
+		return;
+
+	//Identify x and y using camera's specs, and make for loop
+	const int height = Cam.height;
+	const int width = Cam.width;
+
+	outFile << "P6 " << height << " " << width << " 255 ";
+	if (Path)
+		printf("%ix%i Path %i Samples\n", width, height, Samples);
+	else
+		printf("%ix%i Ray %i AA Samples, %i LightSamples, %i GlossyReflectionSamples, %i Depth\n", width, height, Samples, LightSamples, GlossyReflectiveSamples, Depth);
+	
+
+	Point p1 = Cam.WorldToFarPlane(Point(0.f, 0.f, 0.f));
+	Point p2 = Cam.WorldToFarPlane(Point(1.f, 1.f, 0.f));
+	float jit = (p2.x - p1.x); // the movement between a pixel
+
+	long double startTime = GetMS();
+	int lastPercent = 0;
+	for (int y=0;y<height;++y)
+	{
+		for (int x=0;x<width;++x)
+		{
+			//Transform from Raster To Screen and Screen to World
+			RGB pixelColor; pixelColor.red = 0; pixelColor.green = 0; pixelColor.blue = 0;
+			for (int i=0;i<Samples;++i)
+			{
+				Point origin = Cam.ScreenToWorld(Point(0.f, 0.f, 0.f));
+				Point destination = Cam.WorldToFarPlane(Point((float)x, (float)y, 0.f));
+				//float isNotPath = (float)(!Path)*1.f;
+				Vector jitter = Vector(jit*r(), jit*r(), jit*r());//*isNotPath;
+				Vector direction = Normalize((destination - origin) + jitter*(bool)i);
+				Ray ray(origin, direction, 0.f);
+				
+				//Begin tracing
+				if (Path)
+					pixelColor += PathTrace(ray);
+				else 
+					pixelColor += RayTrace(ray);
+			}
+			pixelColor *= InvSamples;
+			pixelColor.Bound(MIN_COLOR, MAX_COLOR);
+
+			pixelColor *= 255.f;
+			outFile << (char)pixelColor.red << (char)pixelColor.green << (char)pixelColor.blue;
+		}
+		int percent = 100*(float)y/(float)height;
+		if (lastPercent != percent) 
+		{
+			printf("\r%i%% Complete; %0.01f Milliseconds Elapsed", percent, (long double)(GetMS() - startTime));
+			lastPercent = percent;
+		}
+	}
+	int percent = 100;
+	if (lastPercent != percent) 
+	{
+		printf("\r%i%% Complete; %0.01f Milliseconds Elapsed", percent, (long double)(GetMS() - startTime));
+		lastPercent = percent;
+	}
+	outFile.close();
+	printf("\n");
 }
 
 RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
@@ -67,23 +142,31 @@ RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
 		for (int i=0;i<LightSamples;++i)
 		{
 			Vector jitter = Vector(r(), r(), r());
-			jitter = radius*Normalize(jitter);
+			float shouldJitter = 
+				std::min(((float)LightSamples-1.f), 1.f);
+			jitter = radius*Normalize(jitter)*(shouldJitter);
 
 			Vector l = ((lightPos+jitter) - hitPos);
 			float distToLight = l.Length();
 			l = Normalize(l);
+
 			if (ShadowTest(Ray(hitPos, l, hit.eps, distToLight)))
 				continue;
 
 			Vector r = Vector(2.f*Dot(l, normal)*normal) - l;
-
+			
 			float spec = pow(std::min(1.0f, std::max(0.f, Dot(r, v))),20.f);
 			RGB specular = lightMaterial.Color*shapeMaterial.Specular*spec;
 
 			float diff = std::min(1.0f, std::max(0.f, Dot(normal, l)));
-			RGB diffuse = shapeMaterial.Color*diff*shapeMaterial.Diffuse*lightMaterial.Color;
+			RGB diffuse;
+			if (shapeMaterial.Diffuse < 0.f)
+				diffuse = shapeMaterial.Color;
+			else
+				diffuse = shapeMaterial.Color*diff*shapeMaterial.Diffuse*lightMaterial.Color;
 			
 			sampleColor += diffuse + specular;
+			sampleColor.Bound(MIN_COLOR, MAX_COLOR);
 		}
 		finalColor += sampleColor*InvLightSamples;
 	}
@@ -91,69 +174,7 @@ RGB Renderer::computeColor(const Ray &reflRay, const Hit &hit)
 	return finalColor;
 }
 
-void Renderer::Render()
-{
-	srand(time(0));
-	std::ofstream outFile;
-	outFile.open("file.ppm", std::ios::out);
-	if (outFile.bad())
-		return;
-
-	//Identify x and y using camera's specs, and make for loop
-	const int height = Cam.height;
-	const int width = Cam.width;
-
-	outFile << "P6 " << height << " " << width << " 255 ";
-	printf("%ix%i. %i AA Samples, %i LightSamples, %i GlossyReflectionSamples, %i Depth\n", width, height, Samples, LightSamples, GlossyReflectiveSamples, Depth);
-	
-
-	Point p1 = Cam.WorldToFarPlane(Point(0.f, 0.f, 0.f));
-	Point p2 = Cam.WorldToFarPlane(Point(1.f, 1.f, 0.f));
-	float jit = (p2.x - p1.x); // the movement between a pixel
-
-	long double startTime = GetMS();
-	int lastPercent = 0;
-	for (int y=0;y<height;++y)
-	{
-		for (int x=0;x<width;++x)
-		{
-			//Transform from Raster To Screen and Screen to World
-			RGB pixelColor; pixelColor.red = 0; pixelColor.green = 0; pixelColor.blue = 0;
-			for (int i=0;i<Samples;++i)
-			{
-				Point origin = Cam.ScreenToWorld(Point(0.f, 0.f, 0.f));
-				Point destination = Cam.WorldToFarPlane(Point((float)x, (float)y, 0.f));
-				Vector jitter = Vector(jit*r(), jit*r(), jit*r());
-				Vector direction = Normalize((destination - origin) + jitter*(bool)i);
-				Ray ray(origin, direction, 0.f);
-				
-				//Begin tracing
-				pixelColor += Trace(ray);
-			}
-			pixelColor *= InvSamples;
-			pixelColor.Bound(MIN_COLOR, MAX_COLOR);
-
-			pixelColor *= 255.f;
-			outFile << (char)pixelColor.red << (char)pixelColor.green << (char)pixelColor.blue;
-		}
-		int percent = 100*(float)y/(float)height;
-		if (lastPercent != percent) 
-		{
-			printf("\r%i%% Complete; %0.01f Milliseconds Elapsed", percent, (long double)(GetMS() - startTime));
-			lastPercent = percent;
-		}
-	}
-	int percent = 100;
-	if (lastPercent != percent) 
-	{
-		printf("\r%i%% Complete; %0.01f Milliseconds Elapsed", percent, (long double)(GetMS() - startTime));
-		lastPercent = percent;
-	}
-	outFile.close();
-	printf("\n");
-}
-
-RGB Renderer::Trace(const Ray &reflRay)
+RGB Renderer::RayTrace(const Ray &reflRay)
 {
 	if (reflRay.depth > Depth)
 		return RGB();
@@ -175,7 +196,7 @@ RGB Renderer::Trace(const Ray &reflRay)
 		for (int i=0;i<GlossyReflectiveSamplesToRun;++i)
 		{
 			RGB c = computeColor(reflRay, bestHit);
-
+			
 			//Early out before calcing the refr and refl!
 			if (reflRay.depth+1 <= Depth) 
 			{
@@ -186,8 +207,8 @@ RGB Renderer::Trace(const Ray &reflRay)
 				bool canRefl = refl > 0.f && !c.IsBlack();
 				bool canRefr = isRefr && !transparency.IsBlack();
 				sampleColor += c + 
-					(canRefl ? 	c*Trace(nextReflRay)*refl : RGB()) 
-					+ (canRefr ? transparency*Trace(nextRefrRay) : RGB());
+					(canRefl ? 	c*RayTrace(nextReflRay)*refl : RGB()) 
+					+ (canRefr ? transparency*RayTrace(nextRefrRay) : RGB());
 				//OPTIMIZE FURTHER!
 			}
 			else
@@ -202,6 +223,34 @@ RGB Renderer::Trace(const Ray &reflRay)
 
 	return RGB();
 }
+
+RGB Renderer::PathTrace(const Ray &reflRay)
+{
+	Hit bestHit;
+	if (FindClosest(reflRay, &bestHit))
+	{
+		if (bestHit.type == 1) 
+			return (*Lights)[0]->GetMaterial().Color*(*Lights)[0]->GetMaterial().Emissive;
+		RGB c = bestHit.material.Color;
+
+		Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit, Path);
+		
+		float p = c.red>c.green && c.red>c.blue ? c.red : c.green>c.blue ? c.green : c.blue;
+		
+		if (nextReflRay.depth>5){
+			if (r1() < p*0.999f) 
+				c *= (0.999f/p);
+			else 
+				return (*Lights)[0]->GetMaterial().Color*(*Lights)[0]->GetMaterial().Emissive;
+		
+		}
+
+		return c*PathTrace(nextReflRay);
+	}
+	else 
+		return RGB();
+}
+
 
 bool Renderer::FindClosest(const Ray &ray, Hit *hit) 
 {
