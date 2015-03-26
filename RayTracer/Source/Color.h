@@ -16,21 +16,6 @@ struct RGB
 		blue = 0.f;
 	}
 	~RGB() {}
-	RGB(bool white)
-	{
-		if (white)
-		{
-			red = 1.f;
-			green = 1.f;
-			blue = 1.f;
-		}
-		else
-		{
-			red = 0.f;
-			blue = 0.f;
-			green = 0.f;
-		}
-	}
 	RGB(float r, float g, float b)
 	{
 		red = r;

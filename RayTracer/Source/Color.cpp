@@ -32,31 +32,21 @@ Ray Material::ReflectRay(const Ray &ray, const Hit &hit) const
 
 Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit) const
 {
-	Vector basis1 = Dot(hit.normal, ray.d) < 0 ?
+	Vector basis1 = Dot(hit.normal, r.d) < 0 ?
 							Vector(hit.normal) :
 							-1.f*Vector(hit.normal);
-	/*Vector temp = Vector(Cross(Vector(0.f, 1.f, 0.f), basis1), true);
+	Vector temp = Vector(Cross(basis1, Vector(0.f, 1.f, 0.f)), true);
 	Vector basis2 = temp.HasNans() ?
-							Cross(Vector(1.f, 0.f, 0.f), basis1) :
-							temp;*/
-	Vector basis2 = fabsf(basis1.x) > .1f ? 
-							Vector(0.f, 1.f, 0.f) :
-							Cross(Vector(1.f, 0.f, 0.f), basis1);
-	basis2 = Normalize(basis2);
+							Cross(basis1, Vector(1.f, 0.f, 0.f)) :
+							temp;
 	Vector basis3 = Cross(basis2, basis1);
 	float u = ra1()*6.28319f;
 	float v = ra1();
-	float w = sqrtf(v);
-	Vector jitter = Normalize(basis2*cosf(u)*w + basis3*sinf(u)*w + basis1*sqrtf(1.f-v));
+	float w = sqrt(v);
+	Vector jitter = Normalize(basis2*cosf(u)*w + basis3*sinf(u)*w + basis1*(1.f-v));
 	r.o = ray.o + ray.d*hit.tHit;
-	if (GlossyReflective == 1.f)
-		r.d = jitter;
-	else
-	{
-		Vector properReflection = Normalize(ray.d - Vector(2.f*(Dot(ray.d, hit.normal))*hit.normal));
-		r.d = Normalize(Lerp(properReflection, jitter, GlossyReflective));
-	}
-	
+	Vector properReflection = Normalize(ray.d - Vector(2.f*(Dot(ray.d, hit.normal))*hit.normal));
+	r.d = Normalize(Lerp(properReflection, jitter, GlossyReflective));
 	return r;
 }
 

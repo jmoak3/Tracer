@@ -19,27 +19,27 @@ int main(int argc, char * argv[])
 	Material whiteWall;
 	whiteWall.Color.red = 1.f; whiteWall.Color.green = 1.f; whiteWall.Color.blue = 1.0f;
 	whiteWall.Specular = 0.0f;
-	whiteWall.Diffuse = .4f;
-	whiteWall.GlossyReflective = .8f;
-	whiteWall.Reflective = 1.0f;
+	whiteWall.Diffuse = 0.3f;
+	whiteWall.GlossyReflective = 0.23f;
+	whiteWall.Reflective = 0.6f;
 	whiteWall.Refractive = 1.f;
 	whiteWall.RefrAbsorbance = 1.f;
 
 	Material blueWall;
 	blueWall.Color.red = 0.4f; blueWall.Color.green = 0.4f; blueWall.Color.blue = 1.0f;
 	blueWall.Specular = 0.0f;
-	blueWall.Diffuse = .6f;
-	blueWall.GlossyReflective = 1.f;
-	blueWall.Reflective = 1.0f;
+	blueWall.Diffuse = 0.6f;
+	blueWall.GlossyReflective = 0.f;
+	blueWall.Reflective = 0.0f;
 	blueWall.Refractive = 1.f;
 	blueWall.RefrAbsorbance = 1.f;
 
 	Material redWall;
 	redWall.Color.red = 1.f; redWall.Color.green = 0.4f; redWall.Color.blue = .4f;
 	redWall.Specular = 0.0f;
-	redWall.Diffuse = .6f;
-	redWall.GlossyReflective = 1.f;
-	redWall.Reflective = 1.0f;
+	redWall.Diffuse = 0.5f;
+	redWall.GlossyReflective = 0.f;
+	redWall.Reflective = 0.0f;
 	redWall.Refractive = 1.f;
 	redWall.RefrAbsorbance = 1.f;
 
@@ -91,9 +91,9 @@ int main(int argc, char * argv[])
 	Material dragonColor;
 	dragonColor.Color.red = 1.f; dragonColor.Color.green = 1.f; dragonColor.Color.blue = 1.0f;
 	dragonColor.Specular = 0.f;
-	dragonColor.Diffuse = 0.3f;
-	dragonColor.GlossyReflective = 0.8f;
-	dragonColor.Reflective = 0.7f;
+	dragonColor.Diffuse = 0.4f;
+	dragonColor.GlossyReflective = 0.08f;
+	dragonColor.Reflective = 0.8f;
 	dragonColor.Refractive = 1.f;
 	dragonColor.RefrAbsorbance = 1.f;
 
@@ -135,7 +135,7 @@ int main(int argc, char * argv[])
 	ObjLoader loader;
 	Primitive * dragon = new TriangleMesh(loader.Construct("dragon.obj", drag, Invdrag, dragonColor));
 	
-	//scene->push_back(dragon);
+	scene->push_back(dragon);
 
 	//scene->push_back(sphere);
 	//scene->push_back(sphere2);
@@ -150,7 +150,7 @@ int main(int argc, char * argv[])
 	//scene.push_back(sphere11);
 	
 	std::vector<void*> smallSphereData;
-	if (1)
+	if (0)
 	for (int i=0;i<8;++i)
 	{
 		for (int j=0;j<8;++j)
@@ -158,7 +158,7 @@ int main(int argc, char * argv[])
 			Transform * T = new Transform(Translate(Vector((j-3.5f)*0.5f, (i-3.5f)*0.5f, 5.7f)));
 			Transform * InvT = new Transform(Inverse(*T));
 			Primitive * sp =  new Sphere(T, InvT, color7, 0.15f);
-			//scene->push_back(sp);
+			scene->push_back(sp);
 			smallSphereData.push_back(T);
 			smallSphereData.push_back(InvT);
 			smallSphereData.push_back(sp);
@@ -185,8 +185,8 @@ int main(int argc, char * argv[])
 	Transform camTrans = Translate(Vector(0.f, 0.7f, -4.f));
 	QualityDesc quality;
 	quality.AliasSamples = 4;
-	quality.LightSamples = 4;
-	quality.GlossyReflectiveSamples = 4;
+	quality.LightSamples = 2;
+	quality.GlossyReflectiveSamples = 1;
 	quality.Depth = 1;
 	float dim = 1000.f;
 	Camera camera(camTrans, dim, dim, dim);
