@@ -156,7 +156,7 @@ void Renderer::Render()
 RGB Renderer::Trace(const Ray &reflRay)
 {
 	if (reflRay.depth > Depth)
-		return RGB();
+		return RGB(true);
 
 	Hit bestHit;
 	if (FindClosest(reflRay, &bestHit))
@@ -184,7 +184,7 @@ RGB Renderer::Trace(const Ray &reflRay)
 				Ray nextRefrRay = bestHit.material.RefractRay(reflRay, bestHit, &isRefr);
 				float refl = bestHit.material.Reflective;
 				bool canRefl = refl > 0.f && !c.IsBlack();
-				bool canRefr = isRefr && !transparency.IsBlack();
+				bool canRefr = isRefr && !transparency.IsBlack() && bestHit.material.RefrAbsorbance < 1.0f;
 				sampleColor += c + 
 					(canRefl ? 	c*Trace(nextReflRay)*refl : RGB()) 
 					+ (canRefr ? transparency*Trace(nextRefrRay) : RGB());
