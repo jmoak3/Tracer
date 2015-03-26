@@ -1,11 +1,10 @@
-#define NDEBUG
-
 #include "Inlines.h"
 #include "Shape.h"
 #include "Sphere.h"
 #include "TriangleMesh.h"
 #include <vector>
-#include "Renderer.h"
+#include "PathRenderer.h"
+#include "RayRenderer.h"
 #include <algorithm>
 #include "ObjLoader.h"
 #include "QualityDesc.h"
@@ -16,7 +15,7 @@ int main(int argc, char * argv[])
 	printf("\n\n");
 	std::vector<Primitive*> *scene = new std::vector<Primitive*>();
 	
-	RGB white; white.red = 1.f; white.green = 1.f; white.blue = 1.f;
+	RGB white; white.red = 0.9f; white.green = 0.9f; white.blue = 0.9f;
 	
 	float dominant = 0.85f;
 	float sub = 0.4f;
@@ -77,8 +76,8 @@ int main(int argc, char * argv[])
 	color4.RefrAbsorbance = 0.f;
 
 	Material color6;
-	color6.Color.red = 1.f; color6.Color.green = 1.f; color6.Color.blue = 1.f;
-	color6.Specular = 1.0f;
+	color6.Color.red = sub; color6.Color.green = dominant; color6.Color.blue = sub;
+	color6.Specular = 0.8f;
 	color6.Diffuse = 0.2f;
 	color6.GlossyReflective = 0.f;
 	color6.Reflective = 1.f;
@@ -103,14 +102,14 @@ int main(int argc, char * argv[])
 	dragonColor.Refractive = 1.f;
 	dragonColor.RefrAbsorbance = 1.f;
 
-	Transform *sph1T = new Transform(Translate(Vector(-1.6f, 2.7f, 3.f)));
+	Transform *sph1T = new Transform(Translate(Vector(0.f, 0.f, 1.f)));
 	Transform *sph2T = new Transform(Translate(Vector(1.7f, 1.3f, 4.f)));
-	Transform *sph3T = new Transform(Translate(Vector(0.f, -153.0f, 0.f)));
-	Transform *sph4T = new Transform(Translate(Vector(0.f, 156.0f, 0.f)));
-	Transform *sph5T = new Transform(Translate(Vector(0.f, 0.f, -157.f)));
-	Transform *sph6T = new Transform(Translate(Vector(0.f, 0.f, 157.5f)));
-	Transform *sph7T = new Transform(Translate(Vector(-153.0f, 0.f, 0.f)));
-	Transform *sph8T = new Transform(Translate(Vector(153.f, 0.f, 0.f)));
+	Transform *sph3T = new Transform(Translate(Vector(0.f, -163.f, 0.f)));
+	Transform *sph4T = new Transform(Translate(Vector(0.f, 163.f, 0.f)));
+	Transform *sph5T = new Transform(Translate(Vector(0.f, 0.f, -170.f)));
+	Transform *sph6T = new Transform(Translate(Vector(0.f, 0.f, 163.f)));
+	Transform *sph7T = new Transform(Translate(Vector(-163.f, 0.f, 0.f)));
+	Transform *sph8T = new Transform(Translate(Vector(163.f, 0.f, 0.f)));
 	Transform *sph9T = new Transform(Translate(Vector(0.f, -0.4f, 3.9f)));
 	Transform *drag = new Transform((Translate(Vector(0.f, -2.f, 3.5f)))
 									(RotateY(-45))
@@ -128,14 +127,14 @@ int main(int argc, char * argv[])
 	Transform* Invsph9T = new Transform(Inverse(*sph9T));
 	Transform* Invdrag = new Transform(Inverse(*drag));
 
-	Primitive * sphere =  new Sphere(sph1T, Invsph1T, color6, .6f);
+	Primitive * sphere =  new Sphere(sph1T, Invsph1T, color6, 1.3f);
 	Primitive * sphere2 = new Sphere(sph2T, Invsph2T, dragonColor, .6f);
-	Primitive * sphere3 = new Sphere(sph3T, Invsph3T, whiteWall, 151.f);
-	Primitive * sphere4 = new Sphere(sph4T, Invsph4T, whiteWall, 151.f);
-	Primitive * sphere5 = new Sphere(sph5T, Invsph5T, whiteWall, 151.f);
-	Primitive * sphere6 = new Sphere(sph6T, Invsph6T, whiteWall, 151.f);
-	Primitive * sphere7 = new Sphere(sph7T, Invsph7T, blueWall, 151.f);
-	Primitive * sphere8 = new Sphere(sph8T, Invsph8T, redWall, 151.f);
+	Primitive * sphere3 = new Sphere(sph3T, Invsph3T, whiteWall, 160.f);
+	Primitive * sphere4 = new Sphere(sph4T, Invsph4T, whiteWall, 160.f);
+	Primitive * sphere5 = new Sphere(sph5T, Invsph5T, whiteWall, 160.f);
+	Primitive * sphere6 = new Sphere(sph6T, Invsph6T, whiteWall, 160.f);
+	Primitive * sphere7 = new Sphere(sph7T, Invsph7T, blueWall, 160.f);
+	Primitive * sphere8 = new Sphere(sph8T, Invsph8T, redWall, 160.f);
 	Primitive * sphere9 = new Sphere(sph9T, Invsph9T, color3, .6f);
 	
 	ObjLoader loader;
@@ -146,7 +145,7 @@ int main(int argc, char * argv[])
 	scene->push_back(sphere);
 	//scene->push_back(sphere2);
 	scene->push_back(sphere3);
-	//scene->push_back(sphere4);
+	//scene->push_back(sphere4);//+Y
 	scene->push_back(sphere5);
 	scene->push_back(sphere6); //+Z
 	scene->push_back(sphere7);
@@ -173,33 +172,29 @@ int main(int argc, char * argv[])
 
 	white *= 1.f;
 	Material lightMat; lightMat.Color = white; 
-	lightMat.Emissive = 4.f;
+	lightMat.Emissive = 2.2f;
 
 	Material lightMat2; lightMat2.Color = white; 
 	lightMat2.Emissive = 1.f;
 	
-	Transform* lightT1 = new Transform((Translate(Vector(0.0f, 156.f, 0.f))));
+	Transform* lightT1 = new Transform((Translate(Vector(0.0f, 163.f, 0.f))));
 	Transform* lightT2 = new Transform(Translate(Vector(-1.7f, -0.5f, -3.5f)));
 	Transform* lightT3 = new Transform(Translate(Vector(1.4f, -0.7f, -.7f)));
 	Transform* InvlightT1 = new Transform(Inverse(*lightT1));
 	Transform* InvlightT2 = new Transform(Inverse(*lightT2));
-	Primitive * light1 = new Sphere(lightT1, InvlightT1, lightMat, 151.f);;//0.6f);
+	Primitive * light1 = new Sphere(lightT1, InvlightT1, lightMat, 160.f);//0.6f);
 	Primitive * light2 = new Sphere(lightT2, InvlightT2, lightMat2, 0.15f);//0.6f);
 	scene->push_back(light1);
 	//scene->push_back(light2);
 
-	Transform camTrans = (Translate(Vector(0.f, -1.0f, -2.f)));
+	Transform camTrans = (Translate(Vector(0.f, -1.0f, -8.f)));
 						 //(RotateX(5));
 	QualityDesc quality;
-	quality.Samples = 512;
-	quality.LightSamples = 8;
-	quality.GlossyReflectiveSamples = 1;
-	quality.Depth = 5;
-	quality.Path = true;
+	quality.Samples = 256;
 	float dim = 1000.f;
 	Camera camera(camTrans, dim, dim, dim);
-	Renderer renderer(scene, camera, quality);
-	renderer.Render();
+	Renderer* renderer = new PathRenderer(scene, camera, quality);
+	renderer->Render();
 
 	delete scene;
 	delete light1, light2;

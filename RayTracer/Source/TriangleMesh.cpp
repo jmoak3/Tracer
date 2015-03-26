@@ -8,9 +8,8 @@ TriangleMesh::TriangleMesh(const Transform * o2w, const Transform * w2o, Materia
 	NumTris = numTris;
 	NumVerts = numVerts;
 	VertIndices = new int[3 * NumTris];
-	printf("NumTris: %i\n", NumTris);
+	printf("Loaded Mesh W/ NumTris: %i\n", NumTris);
 	memcpy(VertIndices, vertIndices, 3 * NumTris * sizeof(int));
-	printf("VertIndices successfully added\n");
 	
 	if (vertPoints != NULL)
 	{
@@ -18,7 +17,6 @@ TriangleMesh::TriangleMesh(const Transform * o2w, const Transform * w2o, Materia
 		memcpy(VertPoints, vertPoints, NumVerts * sizeof(Point));
 		for (int i=0;i<NumVerts;++i)
 			VertPoints[i] = (*ObjectToWorld)(vertPoints[i]);
-		printf("VertPoints successfully added\n");
 	}
 
 	if (normals != NULL)
@@ -29,7 +27,6 @@ TriangleMesh::TriangleMesh(const Transform * o2w, const Transform * w2o, Materia
 			Normals[i] = Normalize((*ObjectToWorld)(normals[i]));
 		for (int i=0;i<NumTris;++i)
 			Normals[i];
-		printf("TriNormals successfully added\n");
 	}
 	else
 		CalculateNormals();
@@ -38,11 +35,9 @@ TriangleMesh::TriangleMesh(const Transform * o2w, const Transform * w2o, Materia
 	{
 		UVs = new float[NumVerts*2];
 		memcpy(UVs, uv, NumVerts* 2 * sizeof(float));
-		printf("UVs successfully added\n");
 	}
 
 	WorldBounds = WorldBound();//speed
-	printf("TriangleMesh Successfully added \n");
 
 	//PreCache all tris till kdtrees/triangle refine/subdivide algo is implemented
 	Triangles = new std::vector<Triangle>();

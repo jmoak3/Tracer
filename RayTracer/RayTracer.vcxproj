@@ -18,11 +18,13 @@
     <ClInclude Include="Source\Matrix4x4.h" />
     <ClInclude Include="Source\Normal.h" />
     <ClInclude Include="Source\ObjLoader.h" />
+    <ClInclude Include="Source\PathRenderer.h" />
     <ClInclude Include="Source\Point.h" />
     <ClInclude Include="Source\Primitive.h" />
     <ClInclude Include="Source\QualityDesc.h" />
     <ClInclude Include="Source\Quaternion.h" />
     <ClInclude Include="Source\Ray.h" />
+    <ClInclude Include="Source\RayRenderer.h" />
     <ClInclude Include="Source\Renderer.h" />
     <ClInclude Include="Source\Shape.h" />
     <ClInclude Include="Source\Sphere.h" />
@@ -37,10 +39,12 @@
     <ClCompile Include="Source\Matrix4x4.cpp" />
     <ClCompile Include="Source\Normal.cpp" />
     <ClCompile Include="Source\ObjLoader.cpp" />
+    <ClCompile Include="Source\PathRenderer.cpp" />
     <ClCompile Include="Source\Point.cpp" />
     <ClCompile Include="Source\Primitive.cpp" />
     <ClCompile Include="Source\Quaternion.cpp" />
     <ClCompile Include="Source\Ray.cpp" />
+    <ClCompile Include="Source\RayRenderer.cpp" />
     <ClCompile Include="Source\Tracer.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\Shape.cpp" />

@@ -102,6 +102,12 @@
     <ClInclude Include="Source\QualityDesc.h">
       <Filter>Medium\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\PathRenderer.h">
+      <Filter>Medium\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RayRenderer.h">
+      <Filter>Medium\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -153,5 +159,11 @@
       <Filter>Michelangelo\Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\Tracer.cpp" />
+    <ClCompile Include="Source\PathRenderer.cpp">
+      <Filter>Medium\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RayRenderer.cpp">
+      <Filter>Medium\Private</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
