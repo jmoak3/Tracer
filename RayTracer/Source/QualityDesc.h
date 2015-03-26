@@ -3,11 +3,10 @@
 
 struct QualityDesc
 {
-	int Samples = 1;
+	int AliasSamples = 1;
 	int LightSamples = 1;
 	int GlossyReflectiveSamples = 1;
 	int Depth = 1;
-	bool Path = false;
 };
 
 #endif

@@ -14,9 +14,8 @@ Camera::Camera(const Transform &proj, const int width, const int height, float f
 	Transform RasterToScreenScale = Scale(2.f/(float)width, -2.f/(float)height, 0.f);
 	RasterToScreen = RasterToScreenTranslation(RasterToScreenScale);
 	RasterToWorld = ScreenToWorld(RasterToScreen);
-	WorldToFarPlane = (ScreenToWorld)
-					(Translate(Vector(0.f, 0.f,focalDist)))
-							(Scale(width/2.f,height/2.f, 0.f))
-								(Translate(Vector(-1.f,1.f, 0.f)))
-									(Scale(2.f/(float)width, -2.f/(float)height, 0.f));
+	WorldToFarPlane = Translate(Vector(0.f, 0.f,focalDist))
+							(Scale(width/2.f,height/2.f, 0.f)
+								(Translate(Vector(-1.f,1.f, 0.f))
+									(Scale(2.f/(float)width, -2.f/(float)height, 0.f))));
 }

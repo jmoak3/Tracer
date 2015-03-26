@@ -22,21 +22,6 @@ struct RGB
 		green = g;
 		blue = b;
 	}
-	RGB(bool white)
-	{
-		if (white)
-		{
-			red = 1.f;
-			green = 1.f;
-			blue = 1.f;
-		}
-		else
-		{
-			red = 0.f;
-			green = 0.f;
-			blue = 0.f;
-		}
-	}
 	RGB operator*(float f) const
 	{
 		RGB c;
@@ -115,9 +100,9 @@ public:
 	Refractive = 1.0f; RefrAbsorbance = 1.f;};
 	~Material() {};
 	
-	Ray ReflectRay(const Ray &ray, const Hit &hit, bool path = false) const;
+	Ray ReflectRay(const Ray &ray, const Hit &hit) const;
 	Ray RefractRay(const Ray &ray, const Hit &hit, bool * isValid) const;
-	Ray CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path = false) const;
+	Ray CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit) const;
 	Ray CalcReflectApprox(const Ray &ray, Ray &r, const Hit &hit) const;
 	RGB Color;
 	float Specular, Diffuse, Reflective, GlossyReflective, Refractive, RefrAbsorbance;
