@@ -13,7 +13,9 @@
 class Primitive
 {
 public:
-	Primitive(const int type) {Type = type;};
+	Primitive(const int type, const Transform *o2w, const Transform *w2o) 
+		:ObjectToWorld(o2w), WorldToObject(w2o)
+	{Type = type;};
 	virtual ~Primitive() {};
 
 	virtual bool Intersect(const Ray &ray, Hit *hit) const = 0;
@@ -21,6 +23,7 @@ public:
 	virtual BoundingBox ObjectBound() const = 0;
 	virtual BoundingBox WorldBound() const = 0;
 	virtual Material GetMaterial() const = 0;
+	const Transform *WorldToObject, *ObjectToWorld;
 	int Type;
 };
 

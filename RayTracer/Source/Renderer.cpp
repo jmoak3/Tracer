@@ -45,7 +45,7 @@ void Renderer::Render()
 	//Identify x and y using camera's specs, and make for loop
 	const int height = Cam.height;
 	const int width = Cam.width;
-
+	
 	outFile << "P6 " << height << " " << width << " 255 ";
 	
 	Point p1 = Cam.WorldToFarPlane(Point(0.f, 0.f, 0.f));
@@ -115,5 +115,3 @@ bool Renderer::FindClosest(const Ray &ray, Hit *hit)
 	*hit = bestHit;
 	return didWeHit;
 }
-
-

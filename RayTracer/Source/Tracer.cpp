@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
 	Material color2;
 	color2.Color.red = 0.7f; color2.Color.green = 1.f; color2.Color.blue = 0.7f;
 	color2.Specular = 1.0f;
-	color2.Diffuse = 0.2f;
+	color2.Diffuse = 0.8f;
 	color2.GlossyReflective = 0.0f;
 	color2.Reflective = 1.f;
 	color2.Refractive = 1.f;
@@ -86,7 +86,7 @@ int main(int argc, char * argv[])
 
 	Material color7;
 	color7.Color.red = 1.0f; color7.Color.green = 1.f; color7.Color.blue = 0.0f;
-	color7.Specular = 1.f;
+	color7.Specular = .0f;
 	color7.Diffuse = 0.8f;
 	color7.GlossyReflective = 0.f;
 	color7.Reflective = 0.f;
@@ -102,7 +102,7 @@ int main(int argc, char * argv[])
 	dragonColor.Refractive = 1.f;
 	dragonColor.RefrAbsorbance = 1.f;
 
-	Transform *sph1T = new Transform(Translate(Vector(0.f, 0.f, 1.f)));
+	Transform *sph1T = new Transform(Translate(Vector(0.f, 0.f, 0.6f)));
 	Transform *sph2T = new Transform(Translate(Vector(1.7f, 1.3f, 4.f)));
 	Transform *sph3T = new Transform(Translate(Vector(0.f, -163.f, 0.f)));
 	Transform *sph4T = new Transform(Translate(Vector(0.f, 163.f, 0.f)));
@@ -142,7 +142,7 @@ int main(int argc, char * argv[])
 	
 	//scene->push_back(dragon);
 
-	scene->push_back(sphere);
+	//scene->push_back(sphere);
 	//scene->push_back(sphere2);
 	scene->push_back(sphere3);
 	//scene->push_back(sphere4);//+Y
@@ -160,10 +160,10 @@ int main(int argc, char * argv[])
 	{
 		for (int j=0;j<8;++j)
 		{
-			Transform * T = new Transform(Translate(Vector((j-3.5f)*0.5f, (i-3.5f)*0.5f, 5.7f)));
+			Transform * T = new Transform(Translate(Vector((j-3.5f)*0.5f, (i-3.5f)*0.5f, 2.9f)));
 			Transform * InvT = new Transform(Inverse(*T));
-			Primitive * sp =  new Sphere(T, InvT, color7, 0.15f);
-			//scene->push_back(sp);
+			Primitive * sp =  new Sphere(T, InvT, color7, 0.25f);
+			scene->push_back(sp);
 			smallSphereData.push_back(T);
 			smallSphereData.push_back(InvT);
 			smallSphereData.push_back(sp);
@@ -190,7 +190,7 @@ int main(int argc, char * argv[])
 	Transform camTrans = (Translate(Vector(0.f, -1.0f, -8.f)));
 						 //(RotateX(5));
 	QualityDesc quality;
-	quality.Samples = 256;
+	quality.Samples = 300;
 	float dim = 1000.f;
 	Camera camera(camTrans, dim, dim, dim);
 	Renderer* renderer = new PathRenderer(scene, camera, quality);

@@ -13,8 +13,9 @@ public:
 	BoundingBox(const Point& min, const Point& max);
 	~BoundingBox();
 
+	Point GetCenter() const;
 	bool Intersect(const Ray& ray) const;
-
+	bool Contains(const Point &p) const;
 	Point Min, Max;
 };
 

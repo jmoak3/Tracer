@@ -9,7 +9,10 @@ Sphere::Sphere(const Transform *o2w, const Transform *w2o, const Material &mater
 	: Shape(o2w, w2o, material)
 {
 	Radius = r;
+
+	//This is not ok, fix this ASAP
 	if (material.Emissive>0.f) Type = 1;
+
 	ObjectBounds = ObjectBound();
 }
 

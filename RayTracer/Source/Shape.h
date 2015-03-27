@@ -19,7 +19,6 @@ public:
 	virtual BoundingBox WorldBound() const;
 	virtual Material GetMaterial() const;
 
-	const Transform *WorldToObject, *ObjectToWorld;
 	Material Mat;
 	int ShapeID;
 	static int currShapeID;

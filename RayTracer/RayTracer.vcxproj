@@ -15,6 +15,7 @@
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Inlines.h" />
+    <ClInclude Include="Source\SpaceDivision.h" />
     <ClInclude Include="Source\Matrix4x4.h" />
     <ClInclude Include="Source\Normal.h" />
     <ClInclude Include="Source\ObjLoader.h" />
@@ -36,6 +37,7 @@
     <ClCompile Include="Source\BoundingBox.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Color.cpp" />
+    <ClCompile Include="Source\SpaceDivision.cpp" />
     <ClCompile Include="Source\Matrix4x4.cpp" />
     <ClCompile Include="Source\Normal.cpp" />
     <ClCompile Include="Source\ObjLoader.cpp" />

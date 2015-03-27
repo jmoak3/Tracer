@@ -108,6 +108,9 @@
     <ClInclude Include="Source\RayRenderer.h">
       <Filter>Medium\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SpaceDivision.h">
+      <Filter>Constructions\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -164,6 +167,9 @@
     </ClCompile>
     <ClCompile Include="Source\RayRenderer.cpp">
       <Filter>Medium\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpaceDivision.cpp">
+      <Filter>Constructions\Public</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

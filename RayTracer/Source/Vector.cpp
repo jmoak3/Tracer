@@ -73,7 +73,9 @@ Vector& Vector::operator*=(float f)
 
 Vector Vector::operator/(float f) const
 {
-	assert(f != 0);
+	if (f==0.f)
+		bool dsa = false;
+	assert(f != 0.f);
 	float inv = 1.f / f;
 	return Vector(x * inv, y * inv, z * inv);
 }

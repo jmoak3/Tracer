@@ -4,7 +4,7 @@
 int Shape::currShapeID = 1;
 
 Shape::Shape(const Transform *o2w, const Transform *w2o, const Material &material)
-	: Primitive(0), ObjectToWorld(o2w), WorldToObject(w2o)
+	: Primitive(0, o2w, w2o)
 {
 	Mat = material;
 	ShapeID = currShapeID;

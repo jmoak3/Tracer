@@ -14,6 +14,11 @@ Point::Point(float xx, float yy, float zz)
 	assert(!HasNans());
 }
 
+Point::Point(const Vector & v) 
+{
+	x = v.x; y = v.y; z = v.z; 
+}
+
 Point Point::operator+(const Vector &v) const
 {
 	return Point(x + v.x, y + v.y, z + v.z);
