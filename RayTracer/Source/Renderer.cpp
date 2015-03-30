@@ -32,6 +32,7 @@ Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera, const 
 	Scene = scene;
 	Samples = quality.Samples;
 	InvSamples = 1.f/(float)Samples;
+	SetupSpaceDivisions();
 }
 
 void Renderer::Render()
@@ -99,8 +100,56 @@ RGB Renderer::Trace(const Ray & ray)
 	return RGB();
 }
 
+bool Renderer::SetupSpaceDivisions()
+{
+	Space = new std::vector<SpaceDivision>();
+	SpaceDivision initial(Scene);
+	Space->push_back(initial);
+
+	while (SpaceDivisionsTooFull())
+	{
+		std::vector<SpaceDivision>::iterator iSpace;
+		for (iSpace = Space->begin(); iSpace != Space->end(); ++iSpace)
+		{
+			if (iSpace->ShouldSplit())
+			{
+				SpaceDivision * newSplit = iSpace->GetSplit();
+				for (int i=0;i<7;++i)
+					Space->push_back(newSplit[i]);
+				iSpace = Space->erase(iSpace);
+				--iSpace; // counteract for-loop.
+			}
+		}
+	}
+	bool foundCam = false;
+	Point camPoint = Cam.ScreenToWorld(Point(0.f,0.f,0.f));
+	std::vector<SpaceDivision>::iterator iSpace;
+	for (iSpace = Space->begin(); iSpace != Space->end(); ++iSpace)
+	{
+		if (iSpace->Bounds.Contains(camPoint))
+		{
+			currSpaceDiv = *iSpace;
+			foundCam = true;
+		}
+	}
+	return foundCam;
+}
+
+bool Renderer::SpaceDivisionsTooFull()
+{
+	std::vector<SpaceDivision>::iterator iSpace;
+	for (iSpace = Space->begin(); iSpace != Space->end(); ++iSpace)
+	{
+		if (iSpace->ShouldSplit())
+			return true;
+	}
+	return false;
+}
+
 bool Renderer::FindClosest(const Ray &ray, Hit *hit) 
 {
+	///currSpaceDiv = *GetNextDivision(ray); //intersect among adjacent
+
 	std::vector<Primitive*>::iterator iScene;
 	Hit currHit, bestHit;
 	bool didWeHit = false;
@@ -114,4 +163,23 @@ bool Renderer::FindClosest(const Ray &ray, Hit *hit)
 	}
 	*hit = bestHit;
 	return didWeHit;
+}
+
+
+SpaceDivision* Renderer::GetNextDivision(const Ray &ray) 
+{
+	// How to find adjacent ones, fast?
+	// No intersect! Use value of x,y,z in dir and set accordingly.
+	// Have references to up, forward, right, and others cached in setup!!
+	
+
+	//Change division reference to index?
+	//Plug in index get reference from vector
+	
+	//Move to SpaceDivision, and get index from there?
+	//PRECACHE Adjacent list through GetSplit's SpaceDivision custom constructor
+
+
+	SpaceDivision * next;
+	return next;
 }

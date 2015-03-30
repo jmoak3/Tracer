@@ -21,6 +21,7 @@ BoundingBox::~BoundingBox()
 Point BoundingBox::GetCenter() const
 {
 	Point center = Point((Max-Min)/2.f);
+	return center;
 }
 
 bool BoundingBox::Intersect(const Ray& ray) const

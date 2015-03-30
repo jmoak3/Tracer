@@ -1,9 +1,9 @@
 #include "SpaceDivision.h"
 
-SpaceDivision::SpaceDivision(const BoundingBox & bbox, std::vector<Primitive*> * scene)
+SpaceDivision::SpaceDivision(std::vector<Primitive*> * scene)
 {
 	//Find objects inside our BB from Scene
-	Bounds = bbox;
+	Bounds = GetSceneBounds(scene);
 	std::vector<Primitive*>::iterator iScene;
 	for (iScene = scene->begin(); iScene != scene->end(); ++iScene)
 	{
@@ -13,9 +13,35 @@ SpaceDivision::SpaceDivision(const BoundingBox & bbox, std::vector<Primitive*> *
 	}
 }
 
+SpaceDivision::SpaceDivision(const BoundingBox &box, std::vector<Primitive*> * scene)
+{
+	//Find objects inside our BB from Scene
+	Bounds = box;
+	std::vector<Primitive*>::iterator iScene;
+	for (iScene = scene->begin(); iScene != scene->end(); ++iScene)
+	{
+		Point p = (*((*iScene)->ObjectToWorld))(Point(0.0f,0.f,0.f));
+		if (Bounds.Contains(p))
+			Objects.push_back(*(iScene));
+	}
+}
+
+
+BoundingBox SpaceDivision::GetSceneBounds(std::vector<Primitive*> * scene)
+{
+	BoundingBox bounds;
+	std::vector<Primitive*>::iterator iScene;
+	for (iScene = scene->begin(); iScene != scene->end(); ++iScene)
+	{
+		bounds = Union(bounds, (*iScene)->WorldBound());
+	}
+	return bounds;
+}
+
+
 bool SpaceDivision::ShouldSplit() const
 {
-	return Objects.size() & ~15; // So proud
+	return Objects.size() & ~15; // #realProgrammer
 }
 
 //return 8 space divisions thru pointer!
