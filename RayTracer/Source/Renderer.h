@@ -19,10 +19,9 @@ protected:
 	virtual RGB Trace(const Ray &reflRay);
 	bool SetupSpaceDivisions();
 	bool SpaceDivisionsTooFull();
-	SpaceDivision* GetNextDivision(const Ray &ray);
 	std::vector<Primitive*> *Scene;
 	Camera Cam;
-	SpaceDivision currSpaceDiv;
+	SpaceDivision* currSpaceDiv;
 	int Samples;
 	float InvSamples;
 	std::vector<SpaceDivision> *Space; 

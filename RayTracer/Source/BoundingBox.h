@@ -11,12 +11,16 @@ public:
 	BoundingBox() {};
 	BoundingBox(const Point& p);
 	BoundingBox(const Point& min, const Point& max);
+	BoundingBox(const BoundingBox & box, bool canIntersect = true);
 	~BoundingBox();
 
 	Point GetCenter() const;
+	bool CanIntersect() const;
 	bool Intersect(const Ray& ray) const;
+	bool Intersect(const Ray& ray, Hit * hit) const;
 	bool Contains(const Point &p) const;
 	Point Min, Max;
+	bool Intersectable;
 };
 
 inline BoundingBox Union(const BoundingBox &b1, const BoundingBox &b2)

@@ -128,7 +128,7 @@ bool Renderer::SetupSpaceDivisions()
 	{
 		if (iSpace->Bounds.Contains(camPoint))
 		{
-			currSpaceDiv = *iSpace;
+			currSpaceDiv = &(*iSpace);
 			foundCam = true;
 		}
 	}
@@ -148,7 +148,7 @@ bool Renderer::SpaceDivisionsTooFull()
 
 bool Renderer::FindClosest(const Ray &ray, Hit *hit) 
 {
-	///currSpaceDiv = *GetNextDivision(ray); //intersect among adjacent
+	currSpaceDiv = currSpaceDiv->GetNextDivision(ray); //intersect among adjacent
 
 	std::vector<Primitive*>::iterator iScene;
 	Hit currHit, bestHit;
@@ -163,23 +163,4 @@ bool Renderer::FindClosest(const Ray &ray, Hit *hit)
 	}
 	*hit = bestHit;
 	return didWeHit;
-}
-
-
-SpaceDivision* Renderer::GetNextDivision(const Ray &ray) 
-{
-	// How to find adjacent ones, fast?
-	// No intersect! Use value of x,y,z in dir and set accordingly.
-	// Have references to up, forward, right, and others cached in setup!!
-	
-
-	//Change division reference to index?
-	//Plug in index get reference from vector
-	
-	//Move to SpaceDivision, and get index from there?
-	//PRECACHE Adjacent list through GetSplit's SpaceDivision custom constructor
-
-
-	SpaceDivision * next;
-	return next;
 }
