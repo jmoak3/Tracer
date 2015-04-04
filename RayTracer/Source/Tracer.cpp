@@ -138,8 +138,14 @@ int main(int argc, char * argv[])
 	Primitive * sphere9 = new Sphere(sph9T, Invsph9T, color3, .6f);
 	
 	ObjLoader loader;
-	Primitive * dragon = new TriangleMesh(loader.Construct("dragon.obj", drag, Invdrag, dragonColor));
-	
+	TriangleMesh * dragon = new TriangleMesh(loader.Construct("dragon.obj", drag, Invdrag, dragonColor));
+	/*for (int i=0;i<dragon->NumTris;++i)
+	{
+		Primitive *Tri = new Triangle(
+			dragon->ObjectToWorld, dragon->WorldToObject, 
+			dragon->Mat, dragon, i);
+		scene->push_back(Tri);
+	}*/
 	//scene->push_back(dragon);
 
 	//scene->push_back(sphere);
@@ -190,7 +196,7 @@ int main(int argc, char * argv[])
 	Transform camTrans = (Translate(Vector(0.f, -1.0f, -8.f)));
 						 //(RotateX(5));
 	QualityDesc quality;
-	quality.Samples = 300;
+	quality.Samples = 1;
 	float dim = 1000.f;
 	Camera camera(camTrans, dim, dim, dim);
 	Renderer* renderer = new PathRenderer(scene, camera, quality);

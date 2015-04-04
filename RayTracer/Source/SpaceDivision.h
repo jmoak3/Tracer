@@ -6,18 +6,20 @@
 class SpaceDivision
 {
 public:
-	SpaceDivision() {Bounds = BoundingBox();}
+	SpaceDivision();
 	SpaceDivision(std::vector<Primitive*> *scene);
-	SpaceDivision(const BoundingBox & box, std::vector<Primitive*> *scene, SpaceDivision* adj);
+	SpaceDivision(const BoundingBox & box, std::vector<Primitive*> *scene, SpaceDivision** adj);
 	~SpaceDivision() {};
 	
 	SpaceDivision* GetNextDivision(const Ray &ray);
 	BoundingBox GetSceneBounds(std::vector<Primitive*> *scene);
 	bool ShouldSplit() const;
-	SpaceDivision * GetSplit();
+	SpaceDivision * GetSplitA();
+	SpaceDivision * GetSplitB();
 
 	//Yolo I guess
-	SpaceDivision* Adjacent;
+	//std::vector<SpaceDivision> Adjacent;
+	SpaceDivision** Adjacent;
 
 	BoundingBox Bounds;
 	std::vector<Primitive*> Objects;

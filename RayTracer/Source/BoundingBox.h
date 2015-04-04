@@ -9,6 +9,7 @@ class BoundingBox
 {
 public:
 	BoundingBox() {};
+	BoundingBox(bool canInstersect) {Intersectable = canInstersect;};
 	BoundingBox(const Point& p);
 	BoundingBox(const Point& min, const Point& max);
 	BoundingBox(const BoundingBox & box, bool canIntersect = true);

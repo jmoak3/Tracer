@@ -29,6 +29,13 @@ public:
 
 inline float Distance(const Point &p1, const Point &p2) { return (p1 - p2).Length(); }
 
+inline Point Average(const Point &p1, const Point &p2) 
+{
+	Point p((p1.x+p2.x)*0.5f, (p1.y+p2.y)*0.5f, (p1.z+p2.z)*0.5f);
+
+	return p; 
+}
+
 inline float DistanceSquared(const Point &p1, const Point &p2) { return Vector(p1 - p2).LengthSquared(); }
 
 #endif

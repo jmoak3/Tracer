@@ -21,7 +21,8 @@ protected:
 	bool SpaceDivisionsTooFull();
 	std::vector<Primitive*> *Scene;
 	Camera Cam;
-	SpaceDivision* currSpaceDiv;
+	SpaceDivision* CurrSpaceDiv;
+	SpaceDivision* CameraDiv;
 	int Samples;
 	float InvSamples;
 	std::vector<SpaceDivision> *Space; 

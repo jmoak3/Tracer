@@ -32,7 +32,8 @@ Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera, const 
 	Scene = scene;
 	Samples = quality.Samples;
 	InvSamples = 1.f/(float)Samples;
-	SetupSpaceDivisions();
+	bool ready = SetupSpaceDivisions();
+	assert(ready);
 }
 
 void Renderer::Render()
@@ -67,7 +68,7 @@ void Renderer::Render()
 				Point destination = Cam.WorldToFarPlane(Point((float)x, (float)y, 0.f));
 				Vector jitter = Vector(jit*r(), jit*r(), jit*r());
 				Vector direction = Normalize((destination - origin) + jitter*(bool)i);
-				Ray ray(origin, direction, 0.f);
+				Ray ray(origin, direction, 0.1f);
 				
 				//Begin tracing
 				pixelColor += Trace(ray);
@@ -77,6 +78,7 @@ void Renderer::Render()
 
 			pixelColor *= 255.f;
 			outFile << (char)pixelColor.red << (char)pixelColor.green << (char)pixelColor.blue;
+			//printf("Finished Pixel\n");
 		}
 		int percent = 100*(float)y/(float)height;
 		if (lastPercent != percent) 
@@ -105,31 +107,51 @@ bool Renderer::SetupSpaceDivisions()
 	Space = new std::vector<SpaceDivision>();
 	SpaceDivision initial(Scene);
 	Space->push_back(initial);
-
+	int size = Scene->size();
+	int num = 1;
 	while (SpaceDivisionsTooFull())
 	{
 		std::vector<SpaceDivision>::iterator iSpace;
-		for (iSpace = Space->begin(); iSpace != Space->end(); ++iSpace)
+		std::vector<SpaceDivision> queue;
+		for (iSpace=Space->begin(); iSpace!=Space->end();)
 		{
 			if (iSpace->ShouldSplit())
 			{
-				SpaceDivision * newSplit = iSpace->GetSplit();
-				for (int i=0;i<7;++i)
-					Space->push_back(newSplit[i]);
+				SpaceDivision * newSplit = iSpace->GetSplitB();
+				for (int i=0;i<8;++i)
+					queue.push_back(newSplit[i]);
 				iSpace = Space->erase(iSpace);
-				--iSpace; // counteract for-loop.
+				++num;
 			}
+			else
+				++iSpace;
+		}
+		for (iSpace=queue.begin(); iSpace!=queue.end();++iSpace)
+		{
+			Space->push_back(*iSpace);
 		}
 	}
+
+	std::vector<SpaceDivision>::iterator iSpace;
+	int curr=0;
+	for (iSpace=Space->begin(); iSpace!=Space->end();++iSpace)
+	{
+		printf("Div %i: %i\n", curr, iSpace->Objects.size());
+		++curr;
+	}
+	printf("NumDivs: %i\n", Space->size());
+
+	printf("Space Created!\n");
 	bool foundCam = false;
 	Point camPoint = Cam.ScreenToWorld(Point(0.f,0.f,0.f));
-	std::vector<SpaceDivision>::iterator iSpace;
 	for (iSpace = Space->begin(); iSpace != Space->end(); ++iSpace)
 	{
 		if (iSpace->Bounds.Contains(camPoint))
 		{
-			currSpaceDiv = &(*iSpace);
+			CameraDiv = &(*iSpace);
+			CurrSpaceDiv = CameraDiv;
 			foundCam = true;
+			return true;
 		}
 	}
 	return foundCam;
@@ -148,19 +170,31 @@ bool Renderer::SpaceDivisionsTooFull()
 
 bool Renderer::FindClosest(const Ray &ray, Hit *hit) 
 {
-	currSpaceDiv = currSpaceDiv->GetNextDivision(ray); //intersect among adjacent
-
-	std::vector<Primitive*>::iterator iScene;
-	Hit currHit, bestHit;
 	bool didWeHit = false;
-	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
-	{	
-		if ((*iScene)->Intersect(ray, &currHit), currHit.tHit < bestHit.tHit)
-		{
-			bestHit = currHit;
-			didWeHit = true;
+	CurrSpaceDiv = CameraDiv;
+
+	//Infinite loop because going backwards!
+	while (!didWeHit)
+	{
+		//printf("Finding intersection!\n");
+		//for each prim in currSpaceDiv, intersect with it.
+		if (CurrSpaceDiv->Adjacent == NULL)
+			return false;
+
+		std::vector<Primitive*>::iterator iScene;
+		Hit currHit, bestHit;
+		std::vector<Primitive*>::iterator end = CurrSpaceDiv->Objects.end();
+
+		for (iScene = CurrSpaceDiv->Objects.begin(); iScene!=end; ++iScene)
+		{	
+			if ((*iScene)->Intersect(ray, &currHit), currHit.tHit < bestHit.tHit)
+			{
+				bestHit = currHit;
+				didWeHit = true;
+			}
 		}
+		*hit = bestHit;
+		CurrSpaceDiv = CurrSpaceDiv->GetNextDivision(ray); //intersect among adjacent
 	}
-	*hit = bestHit;
 	return didWeHit;
 }

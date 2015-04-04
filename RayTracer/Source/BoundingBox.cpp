@@ -33,7 +33,7 @@ bool BoundingBox::CanIntersect() const
 
 Point BoundingBox::GetCenter() const
 {
-	Point center = Point((Max-Min)/2.f);
+	Point center = Average(Min, Max);
 	return center;
 }
 
@@ -52,14 +52,19 @@ bool BoundingBox::Intersect(const Ray& ray) const
 		t1 = tFar < t1 ? tFar : t1;
 		if (t0 > t1) return false;
 	}
-
+	
+	if (t0 < ray.mint || t0 > ray.maxt)
+		return false;
 	return true;
 }
 
+
+
+//TRY ANOTHER INTERSECTION ALGO!!
 bool BoundingBox::Intersect(const Ray& ray, Hit * hit) const
 {
-	float t0 = ray.mint;
-	float t1 = ray.maxt;
+	float t0 = 0.0f;
+	float t1 = INFINITY;
 	for (int i = 0; i < 3; ++i)
 	{
 		float invRayDir = 1.f / ray.d[i];
@@ -71,6 +76,8 @@ bool BoundingBox::Intersect(const Ray& ray, Hit * hit) const
 		t1 = tFar < t1 ? tFar : t1;
 		if (t0 > t1) return false;
 	}
+	if (t0 < ray.mint || t0 > ray.maxt)
+		return false;
 	hit->tHit = t0;
 	hit->eps = 5e-4*t0;
 	return true;
@@ -78,8 +85,8 @@ bool BoundingBox::Intersect(const Ray& ray, Hit * hit) const
 
 bool BoundingBox::Contains(const Point& p) const
 {
-	bool in = p.x > Min.x && p.x < Max.x;
-	in = in && p.y > Min.y && p.y < Max.y;
-	in = in && p.z > Min.z && p.z < Max.z;
-	return true;
+	bool in =  p.x >= Min.x && p.x <= Max.x;
+	in = in && p.y >= Min.y && p.y <= Max.y;
+	in = in && p.z >= Min.z && p.z <= Max.z;
+	return in;
 }
