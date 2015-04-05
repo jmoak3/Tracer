@@ -111,6 +111,9 @@
     <ClInclude Include="Source\SpaceDivision.h">
       <Filter>Constructions\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Source\KDTree.h">
+      <Filter>Constructions\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -170,6 +173,9 @@
     </ClCompile>
     <ClCompile Include="Source\SpaceDivision.cpp">
       <Filter>Constructions\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\KDTree.cpp">
+      <Filter>Constructions\Private</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

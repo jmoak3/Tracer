@@ -39,7 +39,7 @@ TriangleMesh::TriangleMesh(const Transform * o2w, const Transform * w2o, Materia
 
 	WorldBounds = WorldBound();//speed
 
-	//PreCache all tris till kdtrees/triangle refine/subdivide algo is implemented
+	//PreCache all tris till KDNodes/triangle refine/subdivide algo is implemented
 	Triangles = new std::vector<Triangle>();
 	for (int i=0;i<NumTris;++i)
 	{
@@ -105,6 +105,7 @@ Triangle::Triangle(const Transform * o2w, const Transform * w2o,
 	Vert = &(Mesh->VertIndices[3*num]);
 	Num = num;
 	WorldBounds = WorldBound();//speed
+	Type = 2;
 }
 
 bool Triangle::CanIntersect() const
@@ -137,7 +138,7 @@ bool Triangle::Intersect(const Ray & ray, Hit * hit) const
 {
 	//if (!CanIntersect())
 	//	return false;
-	if (!WorldBounds.Intersect(ray))
+	if (!WorldBounds.IntersectFast(ray))
 		return false;
 	Ray r = ray;
 

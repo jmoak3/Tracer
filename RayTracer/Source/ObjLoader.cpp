@@ -128,6 +128,8 @@ bool ObjLoader::LoadMesh(char* file,
 				}
 				int bummy = atoi(tri);
 				n = atoi(norm);
+				//printf("%s %i\n", norm, n);
+				assert(n!=0);
 				//printf(" %i", bummy);
 				assert(bummy-1>-1);
 				assert(bummy<points->size());

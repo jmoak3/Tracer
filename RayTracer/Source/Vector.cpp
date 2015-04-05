@@ -114,3 +114,4 @@ bool Vector::HasNans() const
 {
 	return isnan(x) || isnan(y) || isnan(z);
 }
+

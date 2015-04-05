@@ -1,9 +1,13 @@
 #include "SpaceDivision.h"
 #include <assert.h>
 
+int SpaceDivision::CurrDiv = 1;
+
 SpaceDivision::SpaceDivision() 
 {
 	Bounds = BoundingBox(false);
+	DivID = CurrDiv;
+	++CurrDiv;
 }
 
 SpaceDivision::SpaceDivision(std::vector<Primitive*> * scene)
@@ -27,6 +31,8 @@ SpaceDivision::SpaceDivision(std::vector<Primitive*> * scene)
 	Adjacent[4] = new SpaceDivision();
 	Adjacent[5] = new SpaceDivision();
 	//printf("Objects in me: %i\n", Objects.size());
+	DivID = CurrDiv;
+	++CurrDiv;
 }
 
 SpaceDivision::SpaceDivision(const BoundingBox &box, std::vector<Primitive*> * scene, SpaceDivision** adj)
@@ -44,6 +50,8 @@ SpaceDivision::SpaceDivision(const BoundingBox &box, std::vector<Primitive*> * s
 	//Bounds = BoundingBox(GetSceneBounds(&Objects));
 
 	Adjacent = adj;
+	DivID = CurrDiv;
+	++CurrDiv;
 }
 
 BoundingBox SpaceDivision::GetSceneBounds(std::vector<Primitive*> * scene)
@@ -61,7 +69,7 @@ BoundingBox SpaceDivision::GetSceneBounds(std::vector<Primitive*> * scene)
 bool SpaceDivision::ShouldSplit() const
 {
 	//return Objects.size() & ~15; // #realProgrammer
-	return Objects.size() > 75; // #realProgrammer
+	return Objects.size() > 16; // #realProgrammer
 }
 
 //return space divisions thru pointer!
@@ -173,8 +181,6 @@ SpaceDivision *SpaceDivision::GetSplitB()
 
 	//NO COPIES, COPIES ARE EVIL AND SLOW AND BAD
 
-
-
 	//FIX! SOMEHOW ADJACENCIES ARE LOST 
 	//Make 8 spacedivs
 	SpaceDivision** adj1 = &adjacent[0];
@@ -252,7 +258,7 @@ SpaceDivision *SpaceDivision::GetSplitB()
 	return divisions;
 }
 
-SpaceDivision* SpaceDivision::GetNextDivision(const Ray &ray) 
+SpaceDivision* SpaceDivision::GetNextDivision(const Ray &ray, std::set<int> * visited) 
 {
 	// How to find adjacent ones, fast?
 	// Have references to up, forward, right, and others cached in setup!!
@@ -266,14 +272,16 @@ SpaceDivision* SpaceDivision::GetNextDivision(const Ray &ray)
 	{
 		if (Adjacent != NULL && Adjacent[i]->Bounds.Intersectable)
 		{
-			if (Adjacent[i]->Bounds.Intersect(ray, &currHit))
+			if (Adjacent[i]->Bounds.Intersect(ray, &currHit) && visited->find(Adjacent[i]->DivID) == visited->end())
 			{
 				bestHit = currHit;
 				bestHitIndex = i;
-				break;
+				
 			}
 		}
 	}
+	if (bestHitIndex > 5)
+		return next;
 	next = Adjacent[bestHitIndex];
 	return next;
 	/*Vector Down(0.f, -1.f, 0.f);

@@ -129,6 +129,7 @@ void Transform::operator()(const Ray &r, Ray *rTrans) const
 	rTrans->depth = r.depth;
 	rTrans->refrIndex = r.refrIndex;
 	rTrans->time = r.time;
+	rTrans->UpdateInverse();
 }
 
 BoundingBox Transform::operator()(const BoundingBox &bbox) const

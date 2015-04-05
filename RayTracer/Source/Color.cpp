@@ -42,6 +42,7 @@ Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path)
 			Vector properRefl = Normalize(ray.d - Vector(2.f*(Dot(ray.d, hit.normal))*hit.normal));
 			Vector jitter = Vector(ra()*Specular, ra()*Specular, ra()*Specular);
 			r.d = Normalize(properRefl+jitter);
+			r.UpdateInverse();
 			/*Vector basis1 = Dot(hit.normal, ray.d) < 0.f ?
 						Vector(hit.normal) :
 						-Vector(hit.normal);
@@ -66,7 +67,7 @@ Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path)
 						Vector(hit.normal) :
 						-Vector(hit.normal);
 		Vector temp = Vector(0.f, 1.f, 0.f);
-		Vector basis2 = Dot(temp, Vector(hit.normal)) == 1.f ? 
+		Vector basis2 = fabsf(Dot(temp, Vector(hit.normal))) == 1.f ? 
 								Cross(Vector(1.f, 0.f, 0.f), basis1) :
 								Cross(temp, basis1);
 		basis2 = Normalize(basis2);
@@ -75,6 +76,7 @@ Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path)
 		float v = ra1();
 		float w = sqrt(v);
 		r.d = Normalize(basis2*cos(u)*w + basis3*sin(u)*w + basis1*sqrt(1.f-v));
+		r.UpdateInverse();
 		return r;
 	}
 	else
@@ -96,6 +98,7 @@ Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path)
 		
 		Vector properReflection = Normalize(ray.d - Vector(2.f*(Dot(ray.d, hit.normal))*hit.normal));
 		r.d = Normalize(Lerp(properReflection, jitter, GlossyReflective));
+		r.UpdateInverse();
 	
 		return r;
 	}
@@ -154,6 +157,7 @@ Ray Material::RefractRay(const Ray &ray, const Hit &hit, bool * isValid) const
 	*isValid = true;
 	r.o = ray.o + ray.d*hit.tHit;
 	r.d = Normalize(n*ray.d + Vector((n*cosInc - sqrt(cosT2))*N));
+	r.UpdateInverse();
 	return r;
 }
 

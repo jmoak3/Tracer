@@ -15,12 +15,16 @@ public:
 	BoundingBox(const BoundingBox & box, bool canIntersect = true);
 	~BoundingBox();
 
+	Point operator[](int i) const;
+
 	Point GetCenter() const;
 	bool CanIntersect() const;
 	bool Intersect(const Ray& ray) const;
+	bool IntersectFast(const Ray& ray) const;
 	bool Intersect(const Ray& ray, Hit * hit) const;
 	bool Contains(const Point &p) const;
-	Point Min, Max;
+	bool Touches(const BoundingBox &box) const;
+	Point Min, Max; // indexable thru array!
 	bool Intersectable;
 };
 

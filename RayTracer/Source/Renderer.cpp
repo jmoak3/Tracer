@@ -29,11 +29,22 @@ inline long double GetMS()
 Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera, const QualityDesc & quality)
 {
 	Cam = ccamera;
-	Scene = scene;
+	Scene = new std::vector<Primitive*>();
 	Samples = quality.Samples;
 	InvSamples = 1.f/(float)Samples;
-	bool ready = SetupSpaceDivisions();
-	assert(ready);
+
+	std::vector<Triangle*> *Tris = new std::vector<Triangle*>();
+	std::vector<Primitive*>::iterator iScene;
+	for (iScene = scene->begin(); iScene!=scene->end();++iScene)
+	{	
+		if ((*iScene)->Type == 2)
+		{
+			Tris->push_back((Triangle*)(*iScene));
+		}
+		else
+			Scene->push_back((*iScene));
+	}
+	Root = KDNode::Build(Tris);
 }
 
 void Renderer::Render()
@@ -67,7 +78,8 @@ void Renderer::Render()
 				Point origin = Cam.ScreenToWorld(Point(0.f, 0.f, 0.f));
 				Point destination = Cam.WorldToFarPlane(Point((float)x, (float)y, 0.f));
 				Vector jitter = Vector(jit*r(), jit*r(), jit*r());
-				Vector direction = Normalize((destination - origin) + jitter*(bool)i);
+				int j = i>0;
+				Vector direction = Normalize((destination - origin) + jitter*j);
 				Ray ray(origin, direction, 0.1f);
 				
 				//Begin tracing
@@ -170,16 +182,41 @@ bool Renderer::SpaceDivisionsTooFull()
 
 bool Renderer::FindClosest(const Ray &ray, Hit *hit) 
 {
+	Hit triHit;
+	bool didWeHit = Root->Intersect(ray, &triHit);
+	//else do primitives:
+	
+	std::vector<Primitive*>::iterator iScene;
+	Hit currHit, bestHit;
+	for (iScene = Scene->begin(); iScene!=Scene->end(); ++iScene)
+	{	
+		if ((*iScene)->Intersect(ray, &currHit) && currHit.tHit < bestHit.tHit)
+		{
+			bestHit = currHit;
+			didWeHit = true;
+		}
+	}
+	*hit = triHit.tHit < bestHit.tHit ? triHit : bestHit;
+	return didWeHit;
+}
+
+bool Renderer::FindClosestSD(const Ray &ray, Hit *hit) 
+{
 	bool didWeHit = false;
 	CurrSpaceDiv = CameraDiv;
+	std::set<int> * visited = new std::set<int>();
 
+	int iter = 0;
 	//Infinite loop because going backwards!
 	while (!didWeHit)
 	{
+		++iter;
 		//printf("Finding intersection!\n");
 		//for each prim in currSpaceDiv, intersect with it.
-		if (CurrSpaceDiv->Adjacent == NULL)
+		if (CurrSpaceDiv == NULL || CurrSpaceDiv->Adjacent == NULL)
 			return false;
+
+		visited->insert(CurrSpaceDiv->DivID);
 
 		std::vector<Primitive*>::iterator iScene;
 		Hit currHit, bestHit;
@@ -194,7 +231,8 @@ bool Renderer::FindClosest(const Ray &ray, Hit *hit)
 			}
 		}
 		*hit = bestHit;
-		CurrSpaceDiv = CurrSpaceDiv->GetNextDivision(ray); //intersect among adjacent
+		CurrSpaceDiv = CurrSpaceDiv->GetNextDivision(ray, visited); //intersect among adjacent
+		//printf("%i\n", iter);
 	}
 	return didWeHit;
 }

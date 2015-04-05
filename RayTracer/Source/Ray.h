@@ -27,13 +27,16 @@ public:
 	Ray(const Point &oo, const Vector &dd, const Ray &parent, float start, float end);
 	~Ray() {};
 
+	void UpdateInverse();
 	Point o;
 	Vector d;
 	float refrIndex;
 
 	mutable float mint, maxt;
 	float time;
+	int sign[3];
 	int depth;
+	Vector invd;
 };
 
 #endif

@@ -15,7 +15,7 @@ class Primitive
 public:
 	Primitive(const int type, const Transform *o2w, const Transform *w2o) 
 		:ObjectToWorld(o2w), WorldToObject(w2o)
-	{Type = type;};
+	{Type = type; ShapeID = currShapeID; ++currShapeID;};
 	virtual ~Primitive() {};
 
 	virtual bool Intersect(const Ray &ray, Hit *hit) const = 0;
@@ -25,6 +25,8 @@ public:
 	virtual Material GetMaterial() const = 0;
 	const Transform *WorldToObject, *ObjectToWorld;
 	int Type;
+	int ShapeID;
+	static int currShapeID;
 };
 
 #endif

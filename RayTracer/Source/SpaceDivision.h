@@ -2,6 +2,7 @@
 #define SPACEDIVISION_H
 #include "Primitive.h"
 #include <vector>
+#include <set>
 
 class SpaceDivision
 {
@@ -11,7 +12,7 @@ public:
 	SpaceDivision(const BoundingBox & box, std::vector<Primitive*> *scene, SpaceDivision** adj);
 	~SpaceDivision() {};
 	
-	SpaceDivision* GetNextDivision(const Ray &ray);
+	SpaceDivision* GetNextDivision(const Ray &ray, std::set<int> * visited);
 	BoundingBox GetSceneBounds(std::vector<Primitive*> *scene);
 	bool ShouldSplit() const;
 	SpaceDivision * GetSplitA();
@@ -23,6 +24,9 @@ public:
 
 	BoundingBox Bounds;
 	std::vector<Primitive*> Objects;
+
+	int DivID;
+	static int CurrDiv;
 };
 
 

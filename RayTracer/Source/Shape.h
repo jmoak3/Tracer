@@ -20,8 +20,6 @@ public:
 	virtual Material GetMaterial() const;
 
 	Material Mat;
-	int ShapeID;
-	static int currShapeID;
 };
 
 

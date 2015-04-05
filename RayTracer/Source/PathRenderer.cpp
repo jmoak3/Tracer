@@ -45,7 +45,6 @@ RGB PathRenderer::Trace(const Ray &reflRay)
 				c *= (0.9f*maxRefl);
 			else 
 				return RGB(true);
-		
 		}
 
 		return c*Trace(nextReflRay);

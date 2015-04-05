@@ -35,6 +35,7 @@ public:
 	bool HasNans() const;
 
 	float x, y, z;
+	int filler;
 };
 
 inline Vector Normalize(const Vector &v)
