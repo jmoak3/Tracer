@@ -38,7 +38,7 @@ KDNode* KDNode::Build(std::vector<Triangle*>* scene, int depth)
 		return node;
 	}
 	int total = scene->size();
-	if (depth > 25 || total < 8)
+	if (depth > 10 || total < 6)
 	{
 		BoundingBox bounds = (*scene->begin())->WorldBound();
 		std::vector<Triangle*>::iterator iScene;
@@ -118,22 +118,24 @@ KDNode* KDNode::Build(std::vector<Triangle*>* scene, int depth)
 
 bool KDNode::Intersect(const Ray & ray, Hit * hit)
 {
-	if (Bounds.IntersectFast(ray))
+	if (Bounds.Intersect(ray))
 	{
+		Hit left, right;
+		Hit currHit, bestHit;
+		bool l = false;
+		bool r = false;
+		bool didWeHit = false;
+		std::vector<Triangle*>::iterator iScene;
 		if (!Leaf)
 		{
 			Hit left, right;
-			bool l = Left->Intersect(ray, &left);
-			bool r = Right->Intersect(ray, &right);
+			l = Left->Intersect(ray, &left);
+			r = Right->Intersect(ray, &right);
 			*hit = left.tHit < right.tHit ? left : right;
 			return l || r;
 		}
 		else
 		{
-			bool didWeHit = false;
-			std::vector<Triangle*>::iterator iScene;
-			Hit currHit, bestHit;
-
 			//printf("%i num\n", Objects.size());
 			for (iScene = Objects.begin(); iScene!=Objects.end(); ++iScene)
 			{	

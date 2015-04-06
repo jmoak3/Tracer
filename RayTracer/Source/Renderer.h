@@ -29,6 +29,7 @@ protected:
 	float InvSamples;
 	std::vector<SpaceDivision> *Space; 
 	KDNode *Root; 
+	QualityDesc Quality;
 };
 
 

@@ -156,5 +156,5 @@ bool RayRenderer::ShadowTest(const Ray &ray)
 		if ((*iScene)->Intersect(ray, &currHit) && currHit.type == 0 && currHit.material.RefrAbsorbance > 0.4f)
 			return true;
 	}
-	return false;
+	return Root->Intersect(ray, &currHit);
 }

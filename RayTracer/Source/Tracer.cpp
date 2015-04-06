@@ -61,20 +61,31 @@ int main(int argc, char * argv[])
 	printf("\n\n");
 	std::vector<Primitive*> *scene = new std::vector<Primitive*>();
 	
-	RGB white; white.red = 0.9f; white.green = 0.9f; white.blue = 0.9f;
+	RGB white; white.red = 1.f; white.green = 1.f; white.blue = 1.f;
+	RGB grey; grey.red = 0.6f; grey.green = 0.6f; grey.blue = 0.6f;
 	
 	float dominant = 0.85f;
 	float sub = 0.4f;
 
 	Material whiteWall;
-	whiteWall.Color = white;
-	//whiteWall.Color.red = dominant; whiteWall.Color.green = dominant; whiteWall.Color.blue = dominant;
+	//whiteWall.Color = white;
+	whiteWall.Color.red = dominant; whiteWall.Color.green = dominant; whiteWall.Color.blue = dominant;
 	whiteWall.Specular = 0.0f;
 	whiteWall.Diffuse = 1.f;
 	whiteWall.GlossyReflective = 1.f;
 	whiteWall.Reflective = 1.f;
 	whiteWall.Refractive = 1.f;
 	whiteWall.RefrAbsorbance = 1.f;
+
+	Material greyWall;
+	greyWall.Color = grey;
+	//greyWall.Color.red = dominant; greyWall.Color.green = dominant; greyWall.Color.blue = dominant;
+	greyWall.Specular = 0.0f;
+	greyWall.Diffuse = 1.f;
+	greyWall.GlossyReflective = 1.f;
+	greyWall.Reflective = 1.f;
+	greyWall.Refractive = 1.f;
+	greyWall.RefrAbsorbance = 1.f;
 
 	Material blueWall;
 	blueWall.Color.red = sub; blueWall.Color.green = sub; blueWall.Color.blue = dominant;
@@ -133,7 +144,7 @@ int main(int argc, char * argv[])
 	Material color7;
 	color7.Color.red = 1.0f; color7.Color.green = 1.f; color7.Color.blue = 0.0f;
 	color7.Specular = .0f;
-	color7.Diffuse = 0.8f;
+	color7.Diffuse = 1.f;
 	color7.GlossyReflective = 0.f;
 	color7.Reflective = 0.f;
 	color7.Refractive = 1.f;
@@ -148,12 +159,14 @@ int main(int argc, char * argv[])
 	dragonColor.Refractive = 1.f;
 	dragonColor.RefrAbsorbance = 1.f;
 
+	addSphere(scene, whiteWall, 160.f, 0.f, 163.f, 0.f);// Y = 6 units
 	addSphere(scene, whiteWall, 160.f, 0.f, -163.f, 0.f);// Y = 6 units
 	addSphere(scene, whiteWall, 160.f, 0.f, 0.f, -170.f);// Z = 13 units
 	addSphere(scene, whiteWall, 160.f, 0.f, 0.f, 163.f); // X = 6 units
 	addSphere(scene, blueWall, 160.f, -163.f, 0.f, 0.f);
 	addSphere(scene, redWall, 160.f, 163.f, 0.f, 0.f);
 
+	addSphere(scene, whiteWall, 0.8f, 1.0f, -2.2f, -2.f);
 	std::vector<void*> smallSphereData;
 	if (1)
 	for (int i=0;i<8;++i)
@@ -164,24 +177,30 @@ int main(int argc, char * argv[])
 		}
 	}
 	
-	Transform *drag = new Transform((Translate(Vector(0.f, -2.f, 3.5f)))
+	Transform *drag = new Transform((Translate(Vector(0.f, -2.8f, 2.f)))
 									(RotateY(-45))
 									(RotateX(-90))
 									(Scale(0.6f, 0.6f, 0.6f)));	
 	
-	addDrag(scene, dragonColor, drag);
+	//addDrag(scene, dragonColor, drag);
 
 	white *= 1.f;
 	Material lightMat; lightMat.Color = white; 
-	lightMat.Emissive = 2.2f;
+	lightMat.Emissive = 3.f;
 
-	addSphere(scene, lightMat, 160.f, 0.0f, 163.f, 0.f);
+	addSphere(scene, lightMat, 1.f, 0.f, 1.9f, 1.f);
+	//addSphere(scene, lightMat, 0.15f, -1.0f, -1.f, -8.f);
 
 	Transform camTrans = (Translate(Vector(0.f, -1.0f, -8.f)));
 						 //(RotateX(5));
 	QualityDesc quality;
-	quality.Samples = 4;
-	float dim = 1000.f;
+	quality.Samples = 100;
+	quality.LightSamples = 1;
+	quality.GlossyReflectiveSamples = 1;
+	quality.Depth = 1;
+	quality.PathEnableDirectLighting = true;
+	quality.PathEnableIndirectIllum = true;
+	float dim = 512;
 	Camera camera(camTrans, dim, dim, dim);
 	Renderer* renderer = new PathRenderer(scene, camera, quality);
 	renderer->Render();

@@ -138,8 +138,8 @@ bool Triangle::Intersect(const Ray & ray, Hit * hit) const
 {
 	//if (!CanIntersect())
 	//	return false;
-	if (!WorldBounds.IntersectFast(ray))
-		return false;
+	//if (!WorldBounds.Intersect(ray))
+	//	return false;
 	Ray r = ray;
 
 	Point a = Mesh->VertPoints[Vert[0]];

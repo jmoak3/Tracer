@@ -42,14 +42,13 @@ Point BoundingBox::GetCenter() const
 	return center;
 }
 
-bool BoundingBox::IntersectFast(const Ray& ray) const
+bool BoundingBox::Intersect(const Ray& ray) const
 {
 	float tmin, tmax, tymin, tymax, tzmin, tzmax;
 	tmin =  ((&Min)[1*ray.sign[0]].x	   - ray.o.x) * ray.invd.x;
-	tmax =  ((&Min)[1 - 1*ray.sign[0]].x - ray.o.x) * ray.invd.x;
+	tmax =  ((&Min)[1 - 1*ray.sign[0]].x   - ray.o.x) * ray.invd.x;
 	tymin = ((&Min)[1*ray.sign[1]].y	   - ray.o.y) * ray.invd.y;
-	tymax = ((&Min)[1-1*ray.sign[1]].y - ray.o.y) * ray.invd.y;
-	//printf("%f %f %f %f %i\n", (&Min)[1 - 1*ray.sign[0]].x, Min.x, Min.y, Max.x, ray.sign[0]); 
+	tymax = ((&Min)[1-1*ray.sign[1]].y     - ray.o.y) * ray.invd.y;
 	if ((tmin > tymax) || (tymin > tmax))
 		return false;
 	if (tymin > tmin)
@@ -60,12 +59,12 @@ bool BoundingBox::IntersectFast(const Ray& ray) const
 	tzmax = ((&Min)[1-1*ray.sign[2]].z - ray.o.z) * ray.invd.z;
 	if ((tmin > tzmax) || (tzmin > tmax))
 		return false;
-	//if (tmin > ray.tmin) ray.mint = tmin;
-	//if (tmax < ray.tmax) ray.ma = tmax;
+	if (tmax > ray.maxt || tmin < ray.mint)
+		return false;
 	return true;
 }
 
-bool BoundingBox::Intersect(const Ray& ray) const
+bool BoundingBox::IntersectFast(const Ray& ray) const
 {
 	float t0 = ray.mint;
 	float t1 = ray.maxt;

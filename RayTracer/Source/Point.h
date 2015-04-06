@@ -24,6 +24,7 @@ public:
 	bool HasNans() const;
 
 	float x, y, z;
+	int filler;
 };
 
 

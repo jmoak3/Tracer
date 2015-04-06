@@ -32,6 +32,7 @@ Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera, const 
 	Scene = new std::vector<Primitive*>();
 	Samples = quality.Samples;
 	InvSamples = 1.f/(float)Samples;
+	Quality = quality;
 
 	std::vector<Triangle*> *Tris = new std::vector<Triangle*>();
 	std::vector<Primitive*>::iterator iScene;
@@ -80,7 +81,7 @@ void Renderer::Render()
 				Vector jitter = Vector(jit*r(), jit*r(), jit*r());
 				int j = i>0;
 				Vector direction = Normalize((destination - origin) + jitter*j);
-				Ray ray(origin, direction, 0.1f);
+				Ray ray(origin, direction, 0.0f);
 				
 				//Begin tracing
 				pixelColor += Trace(ray);
