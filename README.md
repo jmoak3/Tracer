@@ -10,4 +10,4 @@ It'll eventually be awesome, hopefully sooner than later.
 
 Imgur album of interesting renders showing its progress:
 
-ttp://imgur.com/a/e5kgZ[
+http://imgur.com/a/e5kgZ[
