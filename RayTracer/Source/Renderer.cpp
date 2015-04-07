@@ -115,72 +115,6 @@ RGB Renderer::Trace(const Ray & ray)
 	return RGB();
 }
 
-bool Renderer::SetupSpaceDivisions()
-{
-	Space = new std::vector<SpaceDivision>();
-	SpaceDivision initial(Scene);
-	Space->push_back(initial);
-	int size = Scene->size();
-	int num = 1;
-	while (SpaceDivisionsTooFull())
-	{
-		std::vector<SpaceDivision>::iterator iSpace;
-		std::vector<SpaceDivision> queue;
-		for (iSpace=Space->begin(); iSpace!=Space->end();)
-		{
-			if (iSpace->ShouldSplit())
-			{
-				SpaceDivision * newSplit = iSpace->GetSplitB();
-				for (int i=0;i<8;++i)
-					queue.push_back(newSplit[i]);
-				iSpace = Space->erase(iSpace);
-				++num;
-			}
-			else
-				++iSpace;
-		}
-		for (iSpace=queue.begin(); iSpace!=queue.end();++iSpace)
-		{
-			Space->push_back(*iSpace);
-		}
-	}
-
-	std::vector<SpaceDivision>::iterator iSpace;
-	int curr=0;
-	for (iSpace=Space->begin(); iSpace!=Space->end();++iSpace)
-	{
-		printf("Div %i: %i\n", curr, iSpace->Objects.size());
-		++curr;
-	}
-	printf("NumDivs: %i\n", Space->size());
-
-	printf("Space Created!\n");
-	bool foundCam = false;
-	Point camPoint = Cam.ScreenToWorld(Point(0.f,0.f,0.f));
-	for (iSpace = Space->begin(); iSpace != Space->end(); ++iSpace)
-	{
-		if (iSpace->Bounds.Contains(camPoint))
-		{
-			CameraDiv = &(*iSpace);
-			CurrSpaceDiv = CameraDiv;
-			foundCam = true;
-			return true;
-		}
-	}
-	return foundCam;
-}
-
-bool Renderer::SpaceDivisionsTooFull()
-{
-	std::vector<SpaceDivision>::iterator iSpace;
-	for (iSpace = Space->begin(); iSpace != Space->end(); ++iSpace)
-	{
-		if (iSpace->ShouldSplit())
-			return true;
-	}
-	return false;
-}
-
 bool Renderer::FindClosest(const Ray &ray, Hit *hit) 
 {
 	Hit triHit;
@@ -198,42 +132,5 @@ bool Renderer::FindClosest(const Ray &ray, Hit *hit)
 		}
 	}
 	*hit = triHit.tHit < bestHit.tHit ? triHit : bestHit;
-	return didWeHit;
-}
-
-bool Renderer::FindClosestSD(const Ray &ray, Hit *hit) 
-{
-	bool didWeHit = false;
-	CurrSpaceDiv = CameraDiv;
-	std::set<int> * visited = new std::set<int>();
-
-	int iter = 0;
-	//Infinite loop because going backwards!
-	while (!didWeHit)
-	{
-		++iter;
-		//printf("Finding intersection!\n");
-		//for each prim in currSpaceDiv, intersect with it.
-		if (CurrSpaceDiv == NULL || CurrSpaceDiv->Adjacent == NULL)
-			return false;
-
-		visited->insert(CurrSpaceDiv->DivID);
-
-		std::vector<Primitive*>::iterator iScene;
-		Hit currHit, bestHit;
-		std::vector<Primitive*>::iterator end = CurrSpaceDiv->Objects.end();
-
-		for (iScene = CurrSpaceDiv->Objects.begin(); iScene!=end; ++iScene)
-		{	
-			if ((*iScene)->Intersect(ray, &currHit), currHit.tHit < bestHit.tHit)
-			{
-				bestHit = currHit;
-				didWeHit = true;
-			}
-		}
-		*hit = bestHit;
-		CurrSpaceDiv = CurrSpaceDiv->GetNextDivision(ray, visited); //intersect among adjacent
-		//printf("%i\n", iter);
-	}
 	return didWeHit;
 }

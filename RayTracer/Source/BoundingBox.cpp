@@ -59,9 +59,11 @@ bool BoundingBox::Intersect(const Ray& ray) const
 	tzmax = ((&Min)[1-1*ray.sign[2]].z - ray.o.z) * ray.invd.z;
 	if ((tmin > tzmax) || (tzmin > tmax))
 		return false;
-	if (tmax > ray.maxt || tmin < ray.mint)
-		return false;
-	return true;
+    if (tzmin > tmin)
+        tmin = tzmin;
+    if (tzmax < tmax)
+        tmax = tzmax;
+    return ((tmax > ray.mint) && (tmin < ray.maxt));
 }
 
 bool BoundingBox::IntersectFast(const Ray& ray) const
@@ -79,6 +81,8 @@ bool BoundingBox::IntersectFast(const Ray& ray) const
 		t1 = tFar < t1 ? tFar : t1;
 		if (t0 > t1) return false;
 	}
+	if (t0 < ray.mint || t1 > ray.maxt)
+		return false;
 	return true;
 }
 

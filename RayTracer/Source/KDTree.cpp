@@ -38,13 +38,13 @@ KDNode* KDNode::Build(std::vector<Triangle*>* scene, int depth)
 		return node;
 	}
 	int total = scene->size();
-	if (depth > 10 || total < 6)
+	if (depth > 24 || total < 6)
 	{
-		BoundingBox bounds = (*scene->begin())->WorldBound();
+		BoundingBox bounds = (*scene->begin())->WorldBounds;
 		std::vector<Triangle*>::iterator iScene;
-		for (iScene = scene->begin(); iScene != scene->end(); ++iScene)
-			bounds = Union(bounds, (*iScene)->WorldBound());
-
+		for (iScene = scene->begin()+1; iScene != scene->end(); ++iScene)
+			bounds = Union(bounds, (*iScene)->WorldBounds);
+		
 		KDNode * node = new KDNode();
 		node->Bounds = bounds;
 		node->Left = new KDNode();
@@ -68,7 +68,7 @@ KDNode* KDNode::Build(std::vector<Triangle*>* scene, int depth)
 	if (axis==2)
 		std::sort(sortedObj.begin(), sortedObj.end(), AxisComparatorZ());
 
-	std::vector<Triangle*>::iterator iSort;
+	//std::vector<Triangle*>::iterator iSort;
 	//for (iSort = sortedObj.begin(); iSort != sortedObj.end(); ++iSort)
 	//	printf("%f, %f, %f\n", 
 	//	(*iSort)->WorldBound().GetCenter()[0], 
@@ -76,22 +76,21 @@ KDNode* KDNode::Build(std::vector<Triangle*>* scene, int depth)
 	//	(*iSort)->WorldBound().GetCenter()[2]);
 	//printf("sorted %i\n", axis);
 
-
 	std::vector<Triangle*> leftObjs(sortedObj.begin(), sortedObj.begin()+medLoc);
 	std::vector<Triangle*> rightObjs(sortedObj.begin()+medLoc, sortedObj.end());
-	assert(leftObjs.size()+rightObjs.size()==scene->size());
+	//assert(leftObjs.size()+rightObjs.size()==scene->size());
 
-	BoundingBox bounds = (*scene->begin())->WorldBound();
+	BoundingBox bounds = (*scene->begin())->WorldBounds;
 	std::vector<Triangle*>::iterator iScene;
-	for (iScene = scene->begin(); iScene != scene->end(); ++iScene)
-		bounds = Union(bounds, (*iScene)->WorldBound());
+	for (iScene = scene->begin()+1; iScene != scene->end(); ++iScene)
+		bounds = Union(bounds, (*iScene)->WorldBounds);
 
-	std::vector<Triangle*>::iterator iLeft;
+	/*std::vector<Triangle*>::iterator iLeft;
 	std::vector<Triangle*>::iterator iRight;
 	std::vector<Triangle*> leftQueue;
 	std::vector<Triangle*> rightQueue;
 	
-	/*for (iLeft = leftObjs.begin(); iLeft != leftObjs.end(); ++iLeft)
+	for (iLeft = leftObjs.begin(); iLeft != leftObjs.end(); ++iLeft)
 	{
 		for (iRight = rightObjs.begin(); iRight != rightObjs.end(); ++iRight)
 		{
@@ -105,7 +104,19 @@ KDNode* KDNode::Build(std::vector<Triangle*>* scene, int depth)
 		leftObjs.push_back(*iLeft);
 	for (iRight = rightQueue.begin(); iRight != rightQueue.end(); ++iRight)
 		rightObjs.push_back(*iRight);*/
-		
+	
+	if (leftObjs.size() == scene->size() || rightObjs.size() == scene->size())
+	{
+		KDNode * node = new KDNode();
+		node->Bounds = bounds;
+		node->Left = new KDNode();
+		node->Right = new KDNode();
+		node->Leaf = true;
+		node->Objects = *scene;
+
+		return node;
+	}
+
 	KDNode * node = new KDNode();
 	node->Bounds = bounds;
 	node->Left = KDNode::Build(&leftObjs, depth+1);
@@ -118,17 +129,13 @@ KDNode* KDNode::Build(std::vector<Triangle*>* scene, int depth)
 
 bool KDNode::Intersect(const Ray & ray, Hit * hit)
 {
-	if (Bounds.Intersect(ray))
+	if (Objects.size() != 0 && Bounds.Intersect(ray))
 	{
-		Hit left, right;
-		Hit currHit, bestHit;
-		bool l = false;
-		bool r = false;
-		bool didWeHit = false;
-		std::vector<Triangle*>::iterator iScene;
 		if (!Leaf)
 		{
 			Hit left, right;
+			bool l = false;
+			bool r = false;
 			l = Left->Intersect(ray, &left);
 			r = Right->Intersect(ray, &right);
 			*hit = left.tHit < right.tHit ? left : right;
@@ -136,7 +143,9 @@ bool KDNode::Intersect(const Ray & ray, Hit * hit)
 		}
 		else
 		{
-			//printf("%i num\n", Objects.size());
+			Hit currHit, bestHit;
+			bool didWeHit = false;
+			std::vector<Triangle*>::iterator iScene;
 			for (iScene = Objects.begin(); iScene!=Objects.end(); ++iScene)
 			{	
 				if ((*iScene)->Intersect(ray, &currHit) && currHit.tHit < bestHit.tHit)
@@ -146,7 +155,6 @@ bool KDNode::Intersect(const Ray & ray, Hit * hit)
 				}
 			}
 			*hit = bestHit;
-			//if (didWeHit) printf("%i num\n", Objects.size());
 			return didWeHit;
 		}
 	}

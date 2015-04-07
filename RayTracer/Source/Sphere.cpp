@@ -30,8 +30,8 @@ bool Sphere::Intersect(const Ray &ray, Hit *hit) const
 	(*WorldToObject)(ray, &r);
 
 	//SLOWER WITH BOUNDING BOX?
-	//if (!ObjectBounds.Intersect(r))
-	//	return false;
+	if (!ObjectBounds.Intersect(r))
+		return false;
 
 	float A = r.d.x*r.d.x + r.d.y*r.d.y + r.d.z*r.d.z;
 	float B = 2.f*(r.d.x*r.o.x + r.d.y*r.o.y + r.d.z*r.o.z);

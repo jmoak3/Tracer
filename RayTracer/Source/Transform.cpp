@@ -117,6 +117,7 @@ Ray Transform::operator()(const Ray &r) const
 	Ray ret = r;
 	(*this)(ret.o, &ret.o);
 	(*this)(ret.d, &ret.d);
+	ret.UpdateInverse();
 	return ret;
 }
 

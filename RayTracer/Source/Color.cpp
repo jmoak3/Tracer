@@ -24,6 +24,7 @@ Ray Material::ReflectRay(const Ray &ray, const Hit &hit, bool path) const
 	{
 		r.o = ray.o + ray.d*hit.tHit;
 		r.d = Normalize(ray.d - Vector(hit.normal*Dot(ray.d, hit.normal)*2.f));
+		r.UpdateInverse();
 		return r;
 	}
 	return CalcReflectLerp(ray, r, hit, path);
@@ -112,6 +113,7 @@ Ray Material::CalcReflectApprox(const Ray &ray, Ray &r, const Hit &hit) const
 	Vector v3 = Cross(v2, v1);
 	r.d = Normalize(v1 + v2*dx + v3*dy*GlossyReflective);
 	r.o = ray.o + ray.d*hit.tHit;
+	r.UpdateInverse();
 	return r;
 }
 
