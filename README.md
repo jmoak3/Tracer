@@ -23,14 +23,23 @@ Features:
     * KDTrees for Triangle Meshes
     * Early outs help avoid unnecessary recursion
     * Some CPU optimizations
+    * Fast Bounding Box Intersections
     
 
 * PathTracer
-  * Importance Distribution Reflecting across surfaces
+  * Gorgeous sample-convergence based images
+  * Russian Roulette Ray elimination
   * Per-Pixel Monte Carlo AA Sampling
   * High Speed
-    * Fast Convergence for less samples, using Direct Illumination, Diffuse Inter-reflectance, and Russian Roulette
+    * Fast Convergence for Few Samples
+      * Direct Illumination
+        * Diffuse, Specular, and Shadow Tests
+        * Diffuse Inter-reflectance to approximate Global Illumination
+        * Importance Distribution Reflections Across Surfaces
     * KDTrees for Triangle Meshes
+    * Some CPU optimizations
+    * Early outs help avoid unnecessary recursion
+    * Fast Bounding Box Intersections
   
   
 Imgur album of renders showing its progress:
