@@ -10,7 +10,7 @@ Images:
 Path Tracer, no fast convergence techniques, pre-optimization - 300 samples, 1000x1000 ~ 8 Hours
 
 ![ScreenShot](http://i.imgur.com/ctcLyVf.png)  
-Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 3 Minutes
+Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 3 Minutes (198480 MS)
 
 ![ScreenShot](http://i.imgur.com/9HevjW9.png)  
 Ray Tracer pre-optimizations - 1000x1000 ~ Somewhere around 20-30 Minutes (Exact time not recorded!)
