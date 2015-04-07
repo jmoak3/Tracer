@@ -9,7 +9,7 @@ Images:
 ![ScreenShot](http://i.imgur.com/QGuxkGy.png)  
 Path Tracer, no fast convergence techniques, pre-optimization - 300 samples, 1000x1000 ~ 8 Hours
 
-![ScreenShot](http://i.imgur.com/J4racIN.png)  
+![ScreenShot](http://i.imgur.com/lS6mWuf.png)  
 Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 1000x1000 ~  12 Minutes (757444 MS)
 
 ![ScreenShot](http://i.imgur.com/9HevjW9.png)  
