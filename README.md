@@ -10,6 +10,7 @@ It's pretty cool, and hopefully it'll be cooler soon.
 Features:
 ----------
 * RayTracer
+  * Triangle Mesh and Primitive Shape Support
   * Direct Illumination
     * Specular, Diffuse, and Glossy Reflections supported
     * Per-Point Monte Carlo Light Sampling
@@ -17,7 +18,7 @@ Features:
     * Per-Pixel Monte Carlo AA Sampling
     * Per-Point Monte Carlo Glossy Reflection Sampling
   * Refraction
-    * Uses refration and reflection rays to produce final image
+  * Translucency
   * Optimized
     * KDTrees for Triangle Meshes
     * Early outs help avoid unnecessary recursion
@@ -26,20 +27,22 @@ Features:
     
 
 * PathTracer
-  * Gorgeous sample-convergence based images
+  * Pretty sample-convergence based images
   * Russian Roulette Ray elimination
   * Per-Pixel Monte Carlo AA Sampling
+  * Triangle Mesh and Primitive Shape Support
   * High Speed
-    * Fast Convergence for Few Samples
+    * Options For Fast Convergence for Few Samples
       * Direct Illumination
         * Diffuse, Specular, and Shadow Tests
-        * Diffuse Inter-reflectance to approximate Global Illumination
-        * Importance Distribution Reflections Across Surfaces
+      * Diffuse Inter-reflectance to approximate Global Illumination
+      * Importance Distribution Reflections Across Surfaces
     * KDTrees for Triangle Meshes
     * Some CPU optimizations
     * Early outs help avoid unnecessary recursion
     * Fast Bounding Box Intersections
-  
+
+Quality object pasted to renderer object of your choice (path, ray) that describes how many samples of each type to take, which light approx techniques (Direct Illumination + Diffuse Inter-reflectancy vs doing a bajillion bouncing rays) to use to speed up, etc.
   
 Imgur album of renders showing its progress:
 http://imgur.com/a/e5kgZ
