@@ -66,26 +66,6 @@ bool BoundingBox::Intersect(const Ray& ray) const
     return ((tmax > ray.mint) && (tmin < ray.maxt));
 }
 
-bool BoundingBox::IntersectFast(const Ray& ray) const
-{
-	float t0 = ray.mint;
-	float t1 = ray.maxt;
-	for (int i = 0; i < 3; ++i)
-	{
-		float invRayDir = 1.f / ray.d[i];
-		float tNear = (Min[i] - ray.o[i]) * invRayDir;
-		float tFar = (Max[i] - ray.o[i]) * invRayDir;
-		if (tNear > tFar)
-			std::swap(tNear, tFar);
-		t0 = tNear > t0 ? tNear : t0;
-		t1 = tFar < t1 ? tFar : t1;
-		if (t0 > t1) return false;
-	}
-	if (t0 < ray.mint || t1 > ray.maxt)
-		return false;
-	return true;
-}
-
 bool BoundingBox::Intersect(const Ray& ray, Hit * hit) const
 {
 	float t0 = ray.mint;

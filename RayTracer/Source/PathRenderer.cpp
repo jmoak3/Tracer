@@ -84,6 +84,7 @@ RGB PathRenderer::CalcDirectLighting(const Ray &reflRay, const Hit &hit)
 
 		float invsize = 1.f;//Lights->size();
 		finalColor += (diffuse + specular)*invsize;
+		//finalColor.Bound(MIN_COLOR, MAX_COLOR);
 	}
 
 	return finalColor;
@@ -137,6 +138,9 @@ RGB PathRenderer::Trace(const Ray &reflRay)
 		return RGB();
 }
 
+//Only do Indirect Illumination if DirectLight also enabled.
+//Saves on branching in above function, and it looks like 
+//garbage alone, anyway
 RGB PathRenderer::DirectLightIndirectIllumTrace(const Ray &reflRay)
 {
 	Hit bestHit;
@@ -164,6 +168,7 @@ RGB PathRenderer::DirectLightIndirectIllumTrace(const Ray &reflRay)
 		c += CalcDirectLighting(reflRay, bestHit);
 		c += DirectLightIndirectIllumTrace(nextReflRay)*
 					2.f*Dot(bestHit.normal, nextReflRay.d)*bestHit.material.Color*rr;
+		//c.Bound(MIN_COLOR, MAX_COLOR);
 		return c;
 	}
 	else 

@@ -20,7 +20,6 @@ public:
 	Point GetCenter() const;
 	bool CanIntersect() const;
 	bool Intersect(const Ray& ray) const;
-	bool IntersectFast(const Ray& ray) const;
 	bool Intersect(const Ray& ray, Hit * hit) const;
 	bool Contains(const Point &p) const;
 	bool Touches(const BoundingBox &box) const;
