@@ -8,7 +8,8 @@ Started out as a lightning fast Raytracer (phong/diffuse/shadow samples and all 
 It's pretty cool, but hopefully it'll be cooler soon.
 
 Features:
-*sdadsda
+---------
+-sdadsda
 
 
 Imgur album of renders showing its progress:
