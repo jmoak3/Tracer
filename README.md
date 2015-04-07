@@ -1,15 +1,14 @@
 # Tracer
-A "simple" C++ RayTracer
+A "simple" C++ RayTracer made to learn more about graphics.
 
 The goals are to produce high quality images fast using interesting techniques.
 
-Started out as a lightning fast Raytracer (phong/diffuse/shadow samples and all that), but now has pathtracer renderer alongside it. 
+Started out as a lightning fast Raytracer (phong/diffuse/shadow, refraction, aa samples etc), but now has pathtracer renderer alongside it. 
 
-It's pretty cool, but hopefully it'll be cooler soon.
+It's pretty cool, and hopefully it'll be cooler soon.
 
 Features:
----------
-
+----------
 * RayTracer
   * Direct Illumination
     * Specular, Diffuse, and Glossy Reflections supported
