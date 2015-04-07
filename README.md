@@ -1,8 +1,8 @@
 # Tracer
 A "simple" C++ RayTracer made to learn more about graphics.
 
-The goals are to produce high quality images fast using interesting techniques..
-Started out as a lightning fast Raytracer (phong/diffuse/shadow, refraction, aa samples etc), but now has pathtracer renderer alongside it..
+The goals are to produce high quality images fast using interesting techniques. ..
+Started out as a lightning fast Raytracer (phong/diffuse/shadow, refraction, aa samples etc), but now has pathtracer renderer alongside it. ..
 It's pretty cool, and hopefully it'll be cooler soon.
 
 Images: 
