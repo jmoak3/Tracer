@@ -1,26 +1,24 @@
 # Tracer
 A "simple" C++ RayTracer made to learn more about graphics.
 
-The goals are to produce high quality images fast using interesting techniques.
-
-Started out as a lightning fast Raytracer (phong/diffuse/shadow, refraction, aa samples etc), but now has pathtracer renderer alongside it. 
-
+The goals are to produce high quality images fast using interesting techniques..
+Started out as a lightning fast Raytracer (phong/diffuse/shadow, refraction, aa samples etc), but now has pathtracer renderer alongside it..
 It's pretty cool, and hopefully it'll be cooler soon.
 
 Images: 
-![ScreenShot](http://i.imgur.com/QGuxkGy.png) 
+![ScreenShot](http://i.imgur.com/QGuxkGy.png) ..
 Path Tracer, no fast convergence techniques, pre-optimization - 300 samples, 1000x1000 ~ 8 Hours
 
-![ScreenShot](http://i.imgur.com/nKk5b2q.png)
+![ScreenShot](http://i.imgur.com/nKk5b2q.png)..
 Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 3 Minutes
 
-![ScreenShot](http://i.imgur.com/9HevjW9.png)
+![ScreenShot](http://i.imgur.com/9HevjW9.png)..
 Ray Tracer pre-optimizations - 1000x1000 ~ Less than 20 Minutes
 
-![ScreenShot](http://i.imgur.com/OcpYo2K.png)
+![ScreenShot](http://i.imgur.com/OcpYo2K.png)..
 Ray Tracer, pre-KDTree and optimizations - 1000x1000 ~ 5 Hours
 
-![ScreenShot](http://i.imgur.com/92z2vF9.png)
+![ScreenShot](http://i.imgur.com/92z2vF9.png)..
 Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 8 Hours
 
 Features:
