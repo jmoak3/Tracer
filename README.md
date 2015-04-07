@@ -7,6 +7,22 @@ Started out as a lightning fast Raytracer (phong/diffuse/shadow, refraction, aa 
 
 It's pretty cool, and hopefully it'll be cooler soon.
 
+Images: 
+![ScreenShot](http://i.imgur.com/QGuxkGy.png) 
+Path Tracer, no fast convergence techniques, pre-optimization - 300 samples, 1000x1000 ~ 8 Hours
+
+![ScreenShot](http://i.imgur.com/nKk5b2q.png)
+Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 3 Minutes
+
+![ScreenShot](http://i.imgur.com/9HevjW9.png)
+Ray Tracer pre-optimizations - 1000x1000 ~ Less than 20 Minutes
+
+![ScreenShot](http://i.imgur.com/OcpYo2K.png)
+Ray Tracer, pre-KDTree and optimizations - 1000x1000 ~ 5 Hours
+
+![ScreenShot](http://i.imgur.com/92z2vF9.png)
+Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 8 Hours
+
 Features:
 ----------
 * RayTracer
@@ -43,6 +59,9 @@ Features:
     * Fast Bounding Box Intersections
 
 Quality object pasted to renderer object of your choice (path, ray) that describes how many samples of each type to take, which light approx techniques (Direct Illumination + Diffuse Inter-reflectancy vs doing a bajillion bouncing rays) to use to speed up, etc.
+
+
+
   
 Imgur album of renders showing its progress:
 http://imgur.com/a/e5kgZ
