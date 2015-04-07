@@ -9,4 +9,5 @@ It'll eventually be awesome, hopefully sooner than later.
 
 
 Imgur album of interesting renders showing its progress:
-[url]http://imgur.com/a/e5kgZ[/url]
+
+ttp://imgur.com/a/e5kgZ[
