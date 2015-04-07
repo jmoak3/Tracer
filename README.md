@@ -56,7 +56,7 @@ Features:
     * Early outs help avoid unnecessary recursion
     * Fast Bounding Box Intersections
 
-Quality object pasted to renderer object of your choice (path, ray) that describes how many samples of each type to take, which light approx techniques (Direct Illumination + Diffuse Inter-reflectancy vs doing a bajillion bouncing rays) to use to speed up, etc.
+Quality object passed to renderer object of your choice (path, ray) that describes how many samples of each type to take, which light approx techniques (Direct Illumination + Diffuse Inter-reflectance vs doing a bajillion bouncing rays) to use to speed up, etc.
 
 
 
