@@ -68,5 +68,5 @@ My Computer
 * 12 GB DDR3 RAM
 
   
-Imgur album of renders showing its progress:
-http://imgur.com/a/e5kgZ
+Imgur album of renders showing its progress: http://imgur.com/a/e5kgZ
+-----------------------------------------------------------------------
