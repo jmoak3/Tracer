@@ -59,6 +59,13 @@ Features:
 Quality object passed to renderer object of your choice (path, ray) that describes how many samples of each type to take, which light approx techniques (Direct Illumination + Diffuse Inter-reflectance vs doing a bajillion bouncing rays) to use to speed up, etc.
 
 
+My Computer
+-----------
+* MSI GT70 Laptop
+* Intel Core™ i7-3610QM
+* NVIDIA GeForce GTX 670M | 3GB GDDR5
+* Windows 8.1
+* 12 GB DDR3 RAM
 
   
 Imgur album of renders showing its progress:
