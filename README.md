@@ -19,7 +19,7 @@ Ray Tracer pre-optimizations - 1000x1000 ~ Somewhere around 20-30 Minutes (Exact
 Ray Tracer, pre-KDTree and optimizations - 1000x1000 ~ 5 Hours 
 
 ![ScreenShot](http://i.imgur.com/92z2vF9.png)  
-Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 8 Hours
+Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 8 Hours (29935139 MS)
 
 Features:
 ----------
