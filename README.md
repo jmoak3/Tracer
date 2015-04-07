@@ -16,7 +16,7 @@ Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 51
 Ray Tracer pre-optimizations - 1000x1000 ~ Somewhere around 20-30 Minutes (Exact time not recorded!)
 
 ![ScreenShot](http://i.imgur.com/OcpYo2K.png)  
-Ray Tracer, pre-KDTree and optimizations - 1000x1000 ~ 5 Hours 
+Ray Tracer, pre-KDTree and optimizations, faking GI using low sample Glossy Reflections - 1000x1000 ~ 5 Hours 
 
 ![ScreenShot](http://i.imgur.com/92z2vF9.png)  
 Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 8 Hours (29935139 MS)
