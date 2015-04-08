@@ -36,7 +36,8 @@ Features:
     * Per-Point Monte Carlo Glossy Reflection Sampling
   * Refraction
   * Translucency
-  * Optimized
+  * High Speed
+    * Multithreading Support
     * KDTrees for Triangle Meshes
     * Early outs help avoid unnecessary recursion
     * Some CPU optimizations
@@ -49,6 +50,7 @@ Features:
   * Per-Pixel Monte Carlo AA Sampling
   * Triangle Mesh and Primitive Shape Support
   * High Speed
+    * Multithreading Support
     * Options For Fast Convergence for Few Samples
       * Direct Illumination
         * Diffuse, Specular, and Shadow Tests
