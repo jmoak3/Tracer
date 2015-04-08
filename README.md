@@ -21,7 +21,7 @@ Ray Tracer, pre-KDTree and optimizations, faking GI using low sample Glossy Refl
 ![ScreenShot](http://i.imgur.com/92z2vF9.png)  
 Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 8 Hours (29935139 MS)
 
-![ScreenShot](http://i.imgur.com/DhQFTTH.png)
+![ScreenShot](http://i.imgur.com/DhQFTTH.png)  
 Path Tracer, MultiCore Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 1 Minute (57608 MS)
 
 Features:
