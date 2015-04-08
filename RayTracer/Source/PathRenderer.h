@@ -9,10 +9,10 @@ public:
 	~PathRenderer() {delete Lights;};
 
 protected:
-	RGB CalcDirectLighting(const Ray &reflRay, const Hit &hit);
+	RGB CalcDirectLighting(const Ray &reflRay, const Hit &hit, RNG &rng);
 	void Render();
-	RGB Trace(const Ray &reflRay);
-	RGB DirectLightIndirectIllumTrace(const Ray &reflRay);
+	RGB Trace(const Ray &reflRay, RNG &rng);
+	RGB DirectLightIndirectIllumTrace(const Ray &reflRay, RNG &rng);
 	bool ShadowTest(const Ray &ray);
 	std::vector<Primitive*> *Lights; // for shadow tests (speed!)
 };

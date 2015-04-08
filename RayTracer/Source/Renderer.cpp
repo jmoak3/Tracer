@@ -5,18 +5,28 @@
 #include "Sphere.h"
 #include <fstream>
 #include <sys/timeb.h>
+#include <thread>
+#include <mutex>
 
 #define MAX_COLOR 0.999f
 #define MIN_COLOR 0.078f
 
-inline float r()
+static const int NumThreads = 5;
+std::mutex MyMutex;
+
+
+inline float r(RNG& rng)
 {
-	return (float)((rand()/(float)RAND_MAX)-0.5f);
+	std::uniform_real_distribution<float> d(-0.5f, 0.5f);
+	return d(rng);
+	//return (float)rand()/((float)RAND_MAX) - 0.5f;
 }
 
-inline float r1()
+inline float r1(RNG &rng)
 {
-	return (float)((rand()/(float)RAND_MAX));
+	std::uniform_real_distribution<float> d(0.f, 1.f);
+	return d(rng);
+	//return (float)rand()/((float)RAND_MAX));
 }
 
 inline long double GetMS()
@@ -48,52 +58,70 @@ Renderer::Renderer(std::vector<Primitive*>* scene, const Camera &ccamera, const 
 	Root = KDNode::Build(Tris);
 }
 
+void Renderer::ThreadedTrace(int y, RGB *imgBuffer, RNG &rng)
+{
+	for (int x=0;x<Width;++x)
+	{
+		Point p1 = Cam.WorldToFarPlane(Point(0.f, 0.f, 0.f));
+		Point p2 = Cam.WorldToFarPlane(Point(1.f, 1.f, 0.f));
+		float jit = (p2.x - p1.x); // the movement between a pixel
+
+		//Transform from Raster To Screen and Screen to World
+		RGB pixelColor; pixelColor.red = 0.f; pixelColor.green = 0.f; pixelColor.blue = 0.f;
+		for (int i=0;i<Samples;++i)
+		{
+			Point origin = Cam.ScreenToWorld(Point(0.f, 0.f, 0.f));
+			Point destination = Cam.WorldToFarPlane(Point((float)x, (float)y, 0.f));
+			Vector jitter = Vector(jit*r(rng), jit*r(rng), jit*r(rng));
+			int j = i>0;
+			Vector direction = Normalize((destination - origin) + jitter*j);
+			Ray ray(origin, direction, 0.0f);
+				
+			//Begin tracing
+			pixelColor += Trace(ray, rng);
+		}
+		pixelColor *= InvSamples;
+
+		pixelColor.Bound(MIN_COLOR, MAX_COLOR);
+		pixelColor *= 255.f;
+
+		imgBuffer[y*Width+x] = pixelColor;
+	}
+}
+
+
 void Renderer::Render()
 {
 	srand(time(0));
-	std::ofstream outFile;
-	outFile.open("file.ppm", std::ios::out);
-	if (outFile.bad())
-		return;
+	Height = Cam.height;
+	Width = Cam.width;
+	
+	std::thread thrd[NumThreads];
+	RNG* rng = new RNG[NumThreads];
 
-	//Identify x and y using camera's specs, and make for loop
-	const int height = Cam.height;
-	const int width = Cam.width;
-	
-	outFile << "P6 " << height << " " << width << " 255 ";
-	
-	Point p1 = Cam.WorldToFarPlane(Point(0.f, 0.f, 0.f));
-	Point p2 = Cam.WorldToFarPlane(Point(1.f, 1.f, 0.f));
-	float jit = (p2.x - p1.x); // the movement between a pixel
+	RGB *imgBuffer = new RGB[Width*Height];
 
 	long double startTime = GetMS();
 	int lastPercent = 0;
-	for (int y=0;y<height;++y)
+	int y = 0;
+	while (y < Height)
 	{
-		for (int x=0;x<width;++x)
+		int numCreatedThreads = 0;
+		for (int i=0;i<NumThreads;++i)
 		{
-			//Transform from Raster To Screen and Screen to World
-			RGB pixelColor; pixelColor.red = 0; pixelColor.green = 0; pixelColor.blue = 0;
-			for (int i=0;i<Samples;++i)
-			{
-				Point origin = Cam.ScreenToWorld(Point(0.f, 0.f, 0.f));
-				Point destination = Cam.WorldToFarPlane(Point((float)x, (float)y, 0.f));
-				Vector jitter = Vector(jit*r(), jit*r(), jit*r());
-				int j = i>0;
-				Vector direction = Normalize((destination - origin) + jitter*j);
-				Ray ray(origin, direction, 0.0f);
-				
-				//Begin tracing
-				pixelColor += Trace(ray);
-			}
-			pixelColor *= InvSamples;
-			pixelColor.Bound(MIN_COLOR, MAX_COLOR);
-
-			pixelColor *= 255.f;
-			outFile << (char)pixelColor.red << (char)pixelColor.green << (char)pixelColor.blue;
-			//printf("Finished Pixel\n");
+			rng[i].seed(i*1000*rand());
+			thrd[i] = std::thread(&Renderer::ThreadedTrace, this, y, imgBuffer, rng[i]);
+			++numCreatedThreads;
+			++y;
+			if (y+i+1>=Height) 
+				break;
 		}
-		int percent = 100*(float)y/(float)height;
+
+		for (int i=0;i<numCreatedThreads;++i)
+			if (thrd[i].joinable())
+				thrd[i].join();
+
+		int percent = 100*(float)(y)/(float)Height;
 		if (lastPercent != percent) 
 		{
 			printf("\r%i%% Complete; %0.01f Milliseconds Elapsed", percent, (long double)(GetMS() - startTime));
@@ -106,11 +134,22 @@ void Renderer::Render()
 		printf("\r%i%% Complete; %0.01f Milliseconds Elapsed", percent, (long double)(GetMS() - startTime));
 		lastPercent = percent;
 	}
+
+	std::ofstream outFile;
+	outFile.open("file.ppm", std::ios::out);
+	if (outFile.bad())
+		return;
+	outFile << "P6 " << Height << " " << Width << " 255 ";
+
+	for (int i=0; i<Width*Height;++i)
+	{
+		outFile << (char)imgBuffer[i].red << (char)imgBuffer[i].green << (char)imgBuffer[i].blue;
+	}
 	outFile.close();
 	printf("\n");
 }
 
-RGB Renderer::Trace(const Ray & ray)
+RGB Renderer::Trace(const Ray & ray, RNG &rng)
 {
 	return RGB();
 }

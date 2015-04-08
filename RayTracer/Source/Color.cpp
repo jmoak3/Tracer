@@ -4,18 +4,22 @@
 #include "Renderer.h"
 #include <assert.h>
 
-inline float ra1()
+inline float ra(RNG& rng)
 {
-	return (float)((rand()/(float)RAND_MAX));
+	std::uniform_real_distribution<float> d(-0.5f, 0.5f);
+	return d(rng);
+	//return (float)rand()/((float)RAND_MAX) - 0.5f;
 }
 
-inline float ra()
+inline float ra1(RNG &rng)
 {
-	return (float)((rand()/(float)RAND_MAX))-0.5f;
+	std::uniform_real_distribution<float> d(0.f, 1.f);
+	return d(rng);
+	//return (float)rand()/((float)RAND_MAX));
 }
 
 
-Ray Material::ReflectRay(const Ray &ray, const Hit &hit, bool path) const
+Ray Material::ReflectRay(const Ray &ray, const Hit &hit, bool path, RNG &rng) const
 {
 	Ray r(Point(), Vector(), hit.eps, ray.maxt, ray.time, ray.depth+1, hit.material.Refractive);
 
@@ -27,11 +31,11 @@ Ray Material::ReflectRay(const Ray &ray, const Hit &hit, bool path) const
 		r.UpdateInverse();
 		return r;
 	}
-	return CalcReflectLerp(ray, r, hit, path);
+	return CalcReflectLerp(ray, r, hit, path, rng);
 	//return CalcReflectApprox(ray, r, hit);
 }
 
-Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path) const
+Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path, RNG &rng) const
 {
 	// For lord and land - and pipeline stalls
 	if (path)
@@ -41,7 +45,7 @@ Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path)
 			r.o = ray.o + ray.d*hit.tHit;
 			
 			Vector properRefl = Normalize(ray.d - Vector(2.f*(Dot(ray.d, hit.normal))*hit.normal));
-			Vector jitter = Vector(ra()*Specular, ra()*Specular, ra()*Specular);
+			Vector jitter = Vector(ra(rng)*Specular, ra(rng)*Specular, ra(rng)*Specular);
 			r.d = Normalize(properRefl+jitter);
 			r.UpdateInverse();
 			return r;
@@ -56,8 +60,8 @@ Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path)
 								Cross(temp, basis1);
 		basis2 = Normalize(basis2);
 		Vector basis3 = Cross(basis1, basis2);
-		float u = ra1()*6.28319f;
-		float v = ra1();
+		float u = ra1(rng)*6.28319f;
+		float v = ra1(rng);
 		float w = sqrt(v);
 		r.d = Normalize(basis2*cos(u)*w + basis3*sin(u)*w + basis1*sqrt(1.f-v));
 		r.UpdateInverse();
@@ -75,8 +79,8 @@ Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path)
 								Cross(temp, basis1);
 		basis2 = Normalize(basis2);
 		Vector basis3 = Cross(basis1, basis2);
-		float u = ra1()*6.28319f;
-		float v = ra1();
+		float u = ra1(rng)*6.28319f;
+		float v = ra1(rng);
 		float w = sqrt(v);
 		Vector jitter = Normalize(basis2*cos(u)*w + basis3*sin(u)*w + basis1*sqrt(1.f-v));
 		
@@ -87,16 +91,16 @@ Ray Material::CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path)
 	}
 }
 
-Ray Material::CalcReflectApprox(const Ray &ray, Ray &r, const Hit &hit) const
+Ray Material::CalcReflectApprox(const Ray &ray, Ray &r, const Hit &hit, RNG &rng) const
 {
-	float dx = ra()*GlossyReflective;
-	float dy = ra()*GlossyReflective;
+	float dx = ra(rng)*GlossyReflective;
+	float dy = ra(rng)*GlossyReflective;
 	int tries = 0;
 	int maxTries = 20;
 	while ((dx*dx) + (dy*dy) > (GlossyReflective*GlossyReflective) && tries < maxTries)
 	{
-		dx = ra()*GlossyReflective; 
-		dy = ra()*GlossyReflective;
+		dx = ra(rng)*GlossyReflective; 
+		dy = ra(rng)*GlossyReflective;
 		++tries;
 	}
 	if (tries >= maxTries)

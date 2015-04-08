@@ -5,6 +5,8 @@ class Ray;
 struct Hit;
 class Vector;
 #include <algorithm>
+#include <random>
+typedef std::mt19937 RNG;
 
 struct RGB
 {
@@ -115,10 +117,10 @@ public:
 	Refractive = 1.0f; RefrAbsorbance = 1.f;};
 	~Material() {};
 	
-	Ray ReflectRay(const Ray &ray, const Hit &hit, bool path = false) const;
+	Ray ReflectRay(const Ray &ray, const Hit &hit, bool path, RNG &rng) const;
 	Ray RefractRay(const Ray &ray, const Hit &hit, bool * isValid) const;
-	Ray CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path = false) const;
-	Ray CalcReflectApprox(const Ray &ray, Ray &r, const Hit &hit) const;
+	Ray CalcReflectLerp(const Ray &ray, Ray &r, const Hit &hit, bool path, RNG &rng) const;
+	Ray CalcReflectApprox(const Ray &ray, Ray &r, const Hit &hit, RNG &rng) const;
 	RGB Color;
 	float Specular, Diffuse, Reflective, GlossyReflective, Refractive, RefrAbsorbance;
 	float Emissive;

@@ -4,14 +4,18 @@
 #define MAX_COLOR 0.999f
 #define MIN_COLOR 0.078f
 
-inline float r()
+inline float r(RNG& rng)
 {
-	return (float)((rand()/(float)RAND_MAX)-0.5f);
+	std::uniform_real_distribution<float> d(-0.5f, 0.5f);
+	return d(rng);
+	//return (float)rand()/((float)RAND_MAX) - 0.5f;
 }
 
-inline float r1()
+inline float r1(RNG &rng)
 {
-	return (float)((rand()/(float)RAND_MAX));
+	std::uniform_real_distribution<float> d(0.f, 1.f);
+	return d(rng);
+	//return (float)rand()/((float)RAND_MAX));
 }
 
 RayRenderer::RayRenderer(std::vector<Primitive*>* scene, const Camera &ccamera, const QualityDesc &quality)
@@ -39,7 +43,7 @@ void RayRenderer::Render()
 	Renderer::Render();
 }
 
-RGB RayRenderer::computeColor(const Ray &reflRay, const Hit &hit)
+RGB RayRenderer::computeColor(const Ray &reflRay, const Hit &hit, RNG &rng)
 {
 	Normal normal = hit.normal;
 	Material shapeMaterial = hit.material;
@@ -64,7 +68,7 @@ RGB RayRenderer::computeColor(const Ray &reflRay, const Hit &hit)
 		RGB sampleColor;
 		for (int i=0;i<LightSamples;++i)
 		{
-			Vector jitter = Vector(r(), r(), r());
+			Vector jitter = Vector(r(rng), r(rng), r(rng));
 			float shouldJitter = 
 				std::min(((float)LightSamples-1.f), 1.f);
 			jitter = radius*Normalize(jitter)*(shouldJitter);
@@ -97,7 +101,7 @@ RGB RayRenderer::computeColor(const Ray &reflRay, const Hit &hit)
 	return finalColor;
 }
 
-RGB RayRenderer::Trace(const Ray &reflRay)
+RGB RayRenderer::Trace(const Ray &reflRay, RNG &rng)
 {
 	if (reflRay.depth > Depth)
 		return RGB();
@@ -118,20 +122,20 @@ RGB RayRenderer::Trace(const Ray &reflRay)
 		RGB transparency = RGB(expf(absorb.red), expf(absorb.green), expf(absorb.blue));
 		for (int i=0;i<GlossyReflectiveSamplesToRun;++i)
 		{
-			RGB c = computeColor(reflRay, bestHit);
+			RGB c = computeColor(reflRay, bestHit, rng);
 			
 			//Early out before calcing the refr and refl!
 			if (reflRay.depth+1 <= Depth) 
 			{
 				bool isRefr = (bestHit.material.RefrAbsorbance<1.f);
-				Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit, false);
+				Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit, false, rng);
 				Ray nextRefrRay = bestHit.material.RefractRay(reflRay, bestHit, &isRefr);
 				float refl = bestHit.material.Reflective;
 				bool canRefl = refl > 0.f && !c.IsBlack();
 				bool canRefr = isRefr && !transparency.IsBlack();
 				sampleColor += c + 
-					(canRefl ? 	c*Trace(nextReflRay)*refl : RGB()) 
-					+ (canRefr ? transparency*Trace(nextRefrRay) : RGB());
+					(canRefl ? 	c*Trace(nextReflRay, rng)*refl : RGB()) 
+					+ (canRefr ? transparency*Trace(nextRefrRay, rng) : RGB());
 				//OPTIMIZE FURTHER!
 			}
 			else

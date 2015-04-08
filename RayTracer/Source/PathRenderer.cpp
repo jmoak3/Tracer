@@ -3,14 +3,19 @@
 #include <utility>
 #define MAX_COLOR 0.999f
 #define MIN_COLOR 0.078f
-inline float r()
+
+inline float r(RNG& rng)
 {
-	return (float)((rand()/(float)RAND_MAX)-0.5f);
+	std::uniform_real_distribution<float> d(-0.5f, 0.5f);
+	return d(rng);
+	//return (float)rand()/((float)RAND_MAX) - 0.5f;
 }
 
-inline float r1()
+inline float r1(RNG &rng)
 {
-	return (float)((rand()/(float)RAND_MAX));
+	std::uniform_real_distribution<float> d(0.f, 1.f);
+	return d(rng);
+	//return (float)rand()/((float)RAND_MAX));
 }
 
 PathRenderer::PathRenderer(std::vector<Primitive*>* scene, const Camera &ccamera, const QualityDesc &quality)
@@ -27,14 +32,12 @@ PathRenderer::PathRenderer(std::vector<Primitive*>* scene, const Camera &ccamera
 
 void PathRenderer::Render()
 {
-	const int height = Cam.height;
-	const int width = Cam.width;
-	printf("%ix%i Path %i Samples\n", width, height, Samples);
+	printf("%ix%i Path %i Samples\n", Cam.width,  Cam.height, Samples);
 	Renderer::Render();
 }
 
 
-RGB PathRenderer::CalcDirectLighting(const Ray &reflRay, const Hit &hit)
+RGB PathRenderer::CalcDirectLighting(const Ray &reflRay, const Hit &hit, RNG &rng)
 {
 	Normal normal = hit.normal;
 	Material shapeMaterial = hit.material;
@@ -56,7 +59,7 @@ RGB PathRenderer::CalcDirectLighting(const Ray &reflRay, const Hit &hit)
 		float radius = currLight->Radius;
 		Point lightPos = (*currLight->ObjectToWorld)(Point(0.f, 0.f, 0.f));
 		
-		Vector jitter = Vector(r(), r(), r());
+		Vector jitter = Vector(r(rng), r(rng), r(rng));
 		jitter = radius*Normalize(jitter);
 		
 		Vector l = ((lightPos+jitter) - hitPos);
@@ -90,10 +93,10 @@ RGB PathRenderer::CalcDirectLighting(const Ray &reflRay, const Hit &hit)
 	return finalColor;
 }
 
-RGB PathRenderer::Trace(const Ray &reflRay)
+RGB PathRenderer::Trace(const Ray &reflRay, RNG &rng)
 {
 	if (Quality.PathEnableIndirectIllum && Quality.PathEnableDirectLighting)
-		return DirectLightIndirectIllumTrace(reflRay);
+		return DirectLightIndirectIllumTrace(reflRay, rng);
 
 	Hit bestHit;
 	if (FindClosest(reflRay, &bestHit))
@@ -107,7 +110,7 @@ RGB PathRenderer::Trace(const Ray &reflRay)
 		{
 			if (reflRay.depth+1>2)
 			{	
-				if (r1() < maxRefl*0.9f) 
+				if (r1(rng) < maxRefl*0.9f) 
 					c *= (0.9f*maxRefl);
 				else 
 					return RGB(true);
@@ -117,22 +120,22 @@ RGB PathRenderer::Trace(const Ray &reflRay)
 		{
 			if (reflRay.depth+1>5)
 			{	
-				if (r1() < maxRefl*0.9f) 
+				if (r1(rng) < maxRefl*0.9f) 
 					c *= (0.9f*maxRefl);
 				else 
 					return RGB(true);
 			}
 		}
 
-		Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit, true);
+		Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit, true, rng);
 
 		if (Quality.PathEnableDirectLighting)
 		{
-			c += CalcDirectLighting(reflRay, bestHit);
+			c += CalcDirectLighting(reflRay, bestHit, rng);
 			c.Bound(MIN_COLOR, MAX_COLOR);
 		}
 
-		return c*Trace(nextReflRay);
+		return c*Trace(nextReflRay, rng);
 	}
 	else 
 		return RGB();
@@ -141,7 +144,7 @@ RGB PathRenderer::Trace(const Ray &reflRay)
 //Only do Indirect Illumination if DirectLight also enabled.
 //Saves on branching in above function, and it looks like 
 //garbage alone, anyway
-RGB PathRenderer::DirectLightIndirectIllumTrace(const Ray &reflRay)
+RGB PathRenderer::DirectLightIndirectIllumTrace(const Ray &reflRay, RNG &rng)
 {
 	Hit bestHit;
 	if (FindClosest(reflRay, &bestHit))
@@ -157,16 +160,16 @@ RGB PathRenderer::DirectLightIndirectIllumTrace(const Ray &reflRay)
 		float rr = 1.f;
 		if (reflRay.depth+1>2)
 		{	
-			if (r1() < maxRefl) 
+			if (r1(rng) < maxRefl) 
 				rr = (1.f/maxRefl);
 			else 
 				return RGB();
 		}
 		//rr = std::min(1.f, rr);
-		Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit, true);
+		Ray nextReflRay = bestHit.material.ReflectRay(reflRay, bestHit, true, rng);
 
-		c += CalcDirectLighting(reflRay, bestHit);
-		c += DirectLightIndirectIllumTrace(nextReflRay)*
+		c += CalcDirectLighting(reflRay, bestHit, rng);
+		c += DirectLightIndirectIllumTrace(nextReflRay, rng)*
 					2.f*Dot(bestHit.normal, nextReflRay.d)*bestHit.material.Color*rr;
 		//c.Bound(MIN_COLOR, MAX_COLOR);
 		return c;

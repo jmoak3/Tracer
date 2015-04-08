@@ -10,9 +10,9 @@ public:
 
 protected:
 	void Render();
-	RGB Trace(const Ray &reflRay);
+	RGB Trace(const Ray &reflRay, RNG &rng);
 	bool ShadowTest(const Ray &ray);
-	RGB computeColor(const Ray &reflRay, const Hit & hit);
+	RGB computeColor(const Ray &reflRay, const Hit & hit, RNG &rng);
 	
 	std::vector<Primitive*> *Lights; // for shadow tests (speed!)
 	int LightSamples;

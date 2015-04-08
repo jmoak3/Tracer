@@ -177,10 +177,10 @@ int main(int argc, char * argv[])
 		}
 	}
 	
-	Transform *drag = new Transform((Translate(Vector(0.f, -2.8f, 0.f)))
+	Transform *drag = new Transform((Translate(Vector(0.f, -2.8f, 1.f)))
 									(RotateY(-45))
 									(RotateX(-90))
-									(Scale(1.2f, 1.2f, 1.2f)));	
+									(Scale(0.6f, 0.6f, 0.6f)));	
 	
 	//addDrag(scene, dragonColor, drag);
 
@@ -188,7 +188,7 @@ int main(int argc, char * argv[])
 	Material lightMat; lightMat.Color = white; 
 	lightMat.Emissive = 3.f;
 
-	addSphere(scene, lightMat, 1.f, 0.f, 1.9f, 0.f);
+	addSphere(scene, lightMat, 1.f, 0.f, 1.9f, 1.f);
 
 	Transform camTrans = (Translate(Vector(0.f, -1.0f, -8.f)));
 
@@ -202,7 +202,7 @@ int main(int argc, char * argv[])
 	quality.Samples = 100;
 	quality.PathEnableDirectLighting = true;
 	quality.PathEnableIndirectIllum = true;
-	float dim = 1000;
+	float dim = 512;
 	Camera camera(camTrans, dim, dim, dim);
 	Renderer* renderer = new PathRenderer(scene, camera, quality);
 	renderer->Render();
