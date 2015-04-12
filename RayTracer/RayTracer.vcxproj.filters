@@ -46,6 +46,15 @@
     <Filter Include="Michelangelo\Public">
       <UniqueIdentifier>{a161dc86-dcf7-4b09-9b9f-a4bdd5d16c97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripting">
+      <UniqueIdentifier>{d83a50eb-2818-409d-b61e-2d18c04f2efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripting\Public">
+      <UniqueIdentifier>{8ffc6a2e-2d42-412e-8849-fd38bbceb105}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripting\Private">
+      <UniqueIdentifier>{a9204506-5a04-470b-bd25-101b5cbe99a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Point.h">
@@ -111,6 +120,9 @@
     <ClInclude Include="Source\KDTree.h">
       <Filter>Constructions\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scripting.h">
+      <Filter>Scripting\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Point.cpp">
@@ -170,6 +182,9 @@
     </ClCompile>
     <ClCompile Include="Source\KDTree.cpp">
       <Filter>Constructions\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripting.cpp">
+      <Filter>Scripting\Private</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

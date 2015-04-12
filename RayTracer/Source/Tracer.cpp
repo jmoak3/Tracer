@@ -8,6 +8,7 @@
 #include <algorithm>
 #include "ObjLoader.h"
 #include "QualityDesc.h"
+#include "Scripting.h"
 
 
 void addTrisToScene(std::vector<Primitive*> *scene, TriangleMesh* mesh)
@@ -57,7 +58,24 @@ void addDrag(std::vector<Primitive*> *scene, Material mat, Transform * T)
 
 
 int main(int argc, char * argv[])
-{	
+{
+	std::string err;
+	Renderer* renderer = init_renderer_from_script("..\\ray.lua", &err);
+	if (renderer == NULL)
+	{
+		printf(err.c_str());
+		printf("\n");
+	}
+	else
+	{
+		renderer->Render();
+	}
+
+	return 0;
+}
+
+int stuff()
+{
 	printf("\n\n");
 	std::vector<Primitive*> *scene = new std::vector<Primitive*>();
 	
@@ -199,7 +217,7 @@ int main(int argc, char * argv[])
 	quality.GlossyReflectiveSamples = 1;
 	quality.Depth = 1;
 	
-	quality.Samples = 100;
+	quality.Samples = 1;
 	quality.PathEnableDirectLighting = true;
 	quality.PathEnableIndirectIllum = true;
 	float dim = 512;

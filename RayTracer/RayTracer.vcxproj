@@ -27,6 +27,7 @@
     <ClInclude Include="Source\Ray.h" />
     <ClInclude Include="Source\RayRenderer.h" />
     <ClInclude Include="Source\Renderer.h" />
+    <ClInclude Include="Source\Scripting.h" />
     <ClInclude Include="Source\Shape.h" />
     <ClInclude Include="Source\Sphere.h" />
     <ClInclude Include="Source\Transform.h" />
@@ -47,6 +48,7 @@
     <ClCompile Include="Source\Quaternion.cpp" />
     <ClCompile Include="Source\Ray.cpp" />
     <ClCompile Include="Source\RayRenderer.cpp" />
+    <ClCompile Include="Source\Scripting.cpp" />
     <ClCompile Include="Source\Tracer.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\Shape.cpp" />
@@ -54,6 +56,11 @@
     <ClCompile Include="Source\Transform.cpp" />
     <ClCompile Include="Source\TriangleMesh.cpp" />
     <ClCompile Include="Source\Vector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lua\Lua.vcxproj">
+      <Project>{50b3b885-208d-4847-80ff-0476845f710c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DB9CB3C5-C472-4108-992D-A92BFB8396DA}</ProjectGuid>
@@ -92,9 +99,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>Z:\repos\RayTracer\Lua\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>..\Release\Lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
