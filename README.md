@@ -1,12 +1,12 @@
 # Tracer
-A "simple" C++ RayTracer made to learn more about graphics, with a simple Lua interface by stephanwilliams
+A "simple" C++ RayTracer made to learn more about graphics, with a simple Lua interface by stephanwilliams.
 
 The goals are to produce high quality images fast using interesting techniques.  
 Started out as a lightning fast Raytracer (phong/diffuse/shadow, refraction, aa samples etc), but now has pathtracer renderer alongside it.  
 It's pretty cool, and hopefully it'll be cooler soon.
 
 
-The Lua interface currently only supports spheres - just comment out the code that branches to lua if you want to render triangles with this!
+The Lua interface currently only supports spheres - just comment out the code that branches to Lua if you want to render triangles with this!
 
 Images: 
 ![ScreenShot](http://i.imgur.com/QGuxkGy.png)  
