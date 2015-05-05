@@ -1,5 +1,5 @@
 # Tracer
-A "simple" C++ RayTracer made to learn more about graphics, with a simple Lua interface by stephanwilliams.
+A "simple" C++ RayTracer made to learn more about graphics, with a simple Lua interface by Github user stephanwilliams.
 
 The goals are to produce high quality images fast using interesting techniques.  
 Started out as a lightning fast Raytracer (phong/diffuse/shadow, refraction, aa samples etc), but now has pathtracer renderer alongside it.  
