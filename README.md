@@ -12,8 +12,11 @@ Images:
 ![ScreenShot](http://i.imgur.com/QGuxkGy.png)  
 Path Tracer, no fast convergence techniques, pre-optimization - 300 samples, 1000x1000 ~ 8 Hours
 
-![ScreenShot](http://i.imgur.com/lS6mWuf.png)  
-Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 1000x1000 ~  12 Minutes (757444 MS)
+![ScreenShot](http://i.imgur.com/DhQFTTH.png)  
+Path Tracer, MultiCore Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 47 Seconds (46608 MS)
+
+![ScreenShot](http://i.imgur.com/92z2vF9.png)  
+Path Tracer, Pre-optimizations, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 8 Hours (29935139 MS)
 
 ![ScreenShot](http://i.imgur.com/9HevjW9.png)  
 Ray Tracer pre-optimizations - 1000x1000 ~ Somewhere less than 20 Minutes
@@ -21,11 +24,6 @@ Ray Tracer pre-optimizations - 1000x1000 ~ Somewhere less than 20 Minutes
 ![ScreenShot](http://i.imgur.com/OcpYo2K.png)  
 Ray Tracer, pre-KDTree and optimizations, faking GI using low sample Glossy Reflections - 1000x1000 ~ 5 Hours 
 
-![ScreenShot](http://i.imgur.com/92z2vF9.png)  
-Path Tracer, Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 8 Hours (29935139 MS)
-
-![ScreenShot](http://i.imgur.com/DhQFTTH.png)  
-Path Tracer, MultiCore Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 47 Seconds (46608 MS)
 
 Features:
 ----------
