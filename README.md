@@ -10,7 +10,7 @@ The Lua interface currently only supports spheres - just comment out the code th
 
 Images: 
 ![ScreenShot](http://i.imgur.com/QGuxkGy.png)  
-Path Tracer, no fast convergence techniques, pre-optimization - 300 samples, 1000x1000 ~ 8 Hours
+Path Tracer, no fast convergence techniques, pre-optimization - 300 samples, 1000x1000 ~ 4 Hours
 
 ![ScreenShot](http://i.imgur.com/DhQFTTH.png)  
 Path Tracer, MultiCore Direct Illumination and Diffuse Inter-reflectance - 100 samples, 512x512 ~ 47 Seconds (46608 MS)
